@@ -321,18 +321,16 @@ void CPartFile::Init()
 	m_tCreated = 0;
 	m_eFileOp = PFOP_NONE;
 	m_uFileOpProgress = 0;
-//DropSrc
-	m_LastRemovedTimeNNS = ::GetTickCount();
-	m_LastRemovedTimeFQ  = ::GetTickCount();
-	m_LastRemovedTimeFR = ::GetTickCount();
-	m_LastRemovedTimeHQR = ::GetTickCount();
-//DropSrc
     m_bpreviewprio = false;
     m_random_update_wait = (uint32)(rand()/(RAND_MAX/1000));
     lastSwapForSourceExchangeTick = ::GetTickCount();
 	//m_DeadSourceList.Init(false);
     m_Valid_FQS_QRS_Count = 0;	//Sivka: AutoHL added by lama
-
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_LastRemovedTimeNNS = ::GetTickCount();
+	m_LastRemovedTimeFQ  = ::GetTickCount();
+	m_LastRemovedTimeHQR = ::GetTickCount();
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 }
 
 CPartFile::~CPartFile()
@@ -2407,10 +2405,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 				Kademlia::CSearchManager::stopSearch(GetKadFileSearchID(), true);
 			}
 		}
-
-//DropSrc
-
-		//theApp.AddDebugLogLine(false,"(%i - %i) = %i  > %i", dwCurTick, m_LastRemovedTime, (dwCurTick - m_LastRemovedTime), theApp.glob_prefs->GetDropSourcesTimer()*1000*60);
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 		if ((dwCurTick - m_LastRemovedTimeNNS) >= thePrefs.GetDropSourcesTimerNNS()*60000){	
 			m_LastRemovedTimeNNS = ::GetTickCount();
 			if(thePrefs.GetDropSourcesNNS())
@@ -2425,9 +2420,8 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 			m_LastRemovedTimeHQR = ::GetTickCount();
 			if(thePrefs.GetDropSourcesHQR())
 				RemoveHighQueueRanking();
-
 		}
-//DropSrc
+//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 		// check if we want new sources from server
 		if ( !m_bLocalSrcReqQueued && ((!m_LastSearchTime) || (dwCurTick - m_LastSearchTime) > SERVERREASKTIME) && theApp.serverconnect->IsConnected()
 			&& GetFileHardLimitSoft() > GetSourceCount() && !stopped )  //>>> WiZaRd - AutoHL added by lama
@@ -5698,116 +5692,13 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart){
 	AddLogLine(true, GetResString(IDS_AICH_WORKED), CastItoXBytes(nRecovered), CastItoXBytes(length), nPart, GetFileName());
 	//AICH successfully recovered %s of %s from part %u for %s
 }
-//Drop
-void CPartFile::RemoveQueueUnknown(unsigned int number_sources_to_remove)
-{
-	unsigned int removed=0;
-		for (POSITION pos = srclist.GetHeadPosition(); pos != NULL && removed < number_sources_to_remove;){
-		CUpDownClient* cur_src = srclist.GetNext(pos);
-		EDownloadState nDLState = cur_src->GetDownloadState();
-		if (nDLState==DS_NONE)	{
-			if (!cur_src->SwapToAnotherFile(_T("RemoveQueueUnknown"),true, true, true, NULL)) {
-				cur_src->ClearWhenNeeded(); //Pawcio
-				removed ++; // Count removed source	
-			}
-		}
-	}
-	AddModLogLine(false, _T("ReSuRReCTioN::RemoveQueueUnknown (%i) %s"),removed,GetFileName());
-}
-void CPartFile::RemoveQueueAsking (unsigned int number_sources_to_remove)
-{
-	unsigned int removed=0;
-		for (POSITION pos = srclist.GetHeadPosition(); pos != NULL && removed < number_sources_to_remove;){
-		CUpDownClient* cur_src = srclist.GetNext(pos);
-		EDownloadState nDLState = cur_src->GetDownloadState();
-		if (nDLState==DS_CONNECTED)	{
-			if (!cur_src->SwapToAnotherFile(_T("RemoveQueueAsking"),true, true, true, NULL)) {
-				cur_src->ClearWhenNeeded(); //Pawcio
-				removed ++; // Count removed source	
-			}
-		}
-	}
-	AddModLogLine(false, _T("ReSuRReCTioN::RemoveQueueAsking (%i) %s"),removed,GetFileName());
-}
-void CPartFile::RemoveQueueConnecting (unsigned int number_sources_to_remove)
-{
-	unsigned int removed=0;
-	for (POSITION pos = srclist.GetHeadPosition(); pos != NULL && removed < number_sources_to_remove;){
-		CUpDownClient* cur_src = srclist.GetNext(pos);
-		EDownloadState nDLState = cur_src->GetDownloadState();
-		if (nDLState==DS_CONNECTING)	{
-			if (!cur_src->SwapToAnotherFile(_T("RemoveQueueConnecting"),true, true, true, NULL)) {
-				cur_src->ClearWhenNeeded(); //Pawcio
-				removed ++; // Count removed source	
-			}
-		}
-	}
-	AddModLogLine(false, _T("ReSuRReCTioN::RemoveQueueConnecting (%i) %s"),removed,GetFileName());
-}
-//Drop
 uint16 CPartFile::GetMaxSources() const
 {
 	// Ignore any specified 'max sources' value if not in 'extended mode' -> don't use a parameter which was once
 	// specified in GUI but can not be seen/modified any longer..
 	return (!thePrefs.IsExtControlsEnabled() || m_uMaxSources == 0) ? thePrefs.GetMaxSourcePerFileDefault() : m_uMaxSources;
 }
-//DropSrc
-void CPartFile::RemoveHighQueueRanking()
-{
-	POSITION pos1;
-	uint32 removed = 0;	
 	
-	for(pos1 = srclist.GetHeadPosition(); pos1 != NULL; )
-	{
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if (cur_src != NULL && (cur_src->GetRemoteQueueRank() > thePrefs.GetDropSourcesHQRVal()))
-		{
-			if (!cur_src->SwapToAnotherFile(_T("Remove HQR"),true,true,true,NULL)) {	
-				theApp.downloadqueue->RemoveSource(cur_src);
-				cur_src->ClearWhenNeeded(); //Pawcio
-				removed ++;
-			}
-		}
-	}
-	AddModLogLine(false, _T("RemoveFullQueueRanking(%s) : %i sources removed"),GetFileName(),removed);		
-}
-void CPartFile::RemoveQueueFullSources()
-{
-	//theApp.emuledlg->AddDebugLogLine(false, "RemoveQueueFullSources(%s)",GetFileName());
-	POSITION pos1;
-	uint32 removed = 0;	
-
-	for(pos1 = srclist.GetHeadPosition(); pos1 != NULL; )
-	{
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if (cur_src->ExtProtocolAvailable() && cur_src->GetDownloadState() == DS_ONQUEUE && cur_src->IsRemoteQueueFull())
-		{
-			theApp.downloadqueue->RemoveSource(cur_src);
-			cur_src->ClearWhenNeeded(); //Pawcio
-			removed ++;
-		}
-	}
-	AddModLogLine(false, _T("RemoveQueueFullSources(%s) : %i sources removed"),GetFileName(),removed);
-}
-
-void CPartFile::RemoveNoNeededPartsSources()
-{
-	POSITION pos1;
-	uint32 removed = 0;	
-	
-	for(pos1 = srclist.GetHeadPosition(); pos1 != NULL; )
-	{
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if (cur_src->GetDownloadState() == DS_NONEEDEDPARTS)
-		{
-			theApp.downloadqueue->RemoveSource(cur_src);
-			cur_src->ClearWhenNeeded(); //Pawcio
-			removed ++;
-		}
-	}
-	AddModLogLine(false, _T("RemoveNoNeededPartsSources(%s) : %i sources removed"),GetFileName(),removed);		
-}
-//DropSrc
 uint16 CPartFile::GetMaxSourcePerFileSoft() const
 {
 	UINT temp = ((UINT)GetMaxSources() * 9L) / 10;
@@ -6079,7 +5970,125 @@ uint16 CPartFile::GetFileHardLimitSoft()
 		return MAX_SOURCES_FILE_SOFT;
 	return temp;
 }
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+void CPartFile::RemoveLow2LowIPSourcesManual()
+	{
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		if(cur_src->GetDownloadState() == DS_LOWTOLOWIP)
 
+			theApp.downloadqueue->RemoveSource(cur_src, true);
+
+		
+		}
+	}
+
+void CPartFile::RemoveUnknownErrorBannedSourcesManual()
+	{
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		switch(cur_src->GetDownloadState()){
+			case DS_NONE:
+			case DS_ERROR:
+			case DS_BANNED:	
+				
+				theApp.downloadqueue->RemoveSource(cur_src, true);
+			default: break;
+			}
+		}
+	}
+
+void CPartFile::CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
+	{
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		switch(cur_src->GetDownloadState()){
+			case DS_NONEEDEDPARTS:
+				if(!cur_src->SwapToAnotherFile( _T("Removed: NoNeededSources"), true, true, true , NULL ))
+					{
+					
+					theApp.downloadqueue->RemoveSource(cur_src, true);
+				
+					}
+				break;
+			case DS_ONQUEUE:
+				if(cur_src->IsRemoteQueueFull()){
+					
+					theApp.downloadqueue->RemoveSource(cur_src, true);
+
+					}
+				else if(cur_src->GetRemoteQueueRank() >  thePrefs.GetMaxRemoveQRS()){
+					
+					theApp.downloadqueue->RemoveSource(cur_src, true);
+
+					}
+			break;
+			case DS_NONE:
+			case DS_ERROR:
+			case DS_BANNED:
+			case DS_LOWTOLOWIP: 
+				
+				theApp.downloadqueue->RemoveSource(cur_src, true);
+
+			default: break;
+			}
+		}
+	}
+//////////drop auto////////////
+/////////
+////////
+	void CPartFile::RemoveHighQueueRanking()
+{
+	POSITION pos1;
+	uint32 removed = 0;	
+
+		for(pos1 = srclist.GetHeadPosition(); pos1 != NULL; ){
+			CUpDownClient* cur_src = srclist.GetNext(pos1);
+			if (cur_src != NULL && (cur_src->GetRemoteQueueRank() > thePrefs.GetMaxRemoveQRS())){
+				if (!cur_src->SwapToAnotherFile(_T("Remove HQR"),true,true,true,NULL)) {	
+					theApp.downloadqueue->RemoveSource(cur_src);
+					//cur_src->ClearWhenNeeded(); //Pawcio
+					removed ++;
+				}
+			}
+		}
+
+	AddDebugLogLine(false, _T("Rimozione fonti con la coda troppo alta(%s) : %i fonti rimosse"),GetFileName(),removed);		
+}
+void CPartFile::RemoveQueueFullSources()
+{
+	POSITION pos1;
+	uint32 removed = 0;	
+		for(pos1 = srclist.GetHeadPosition(); pos1 != NULL; ){
+			CUpDownClient* cur_src = srclist.GetNext(pos1);
+			if (cur_src->ExtProtocolAvailable() && cur_src->GetDownloadState() == DS_ONQUEUE 
+				&& cur_src->IsRemoteQueueFull()){
+				theApp.downloadqueue->RemoveSource(cur_src);
+				//cur_src->ClearWhenNeeded(); //Pawcio
+				removed ++;
+			}
+		}
+
+	AddDebugLogLine(false, _T("Rimozione fonti con Coda piena(%s) : %i fonti rimosse"),GetFileName(),removed);
+}
+
+void CPartFile::RemoveNoNeededPartsSources()
+{
+	POSITION pos1;
+	uint32 removed = 0;	
+
+		for(pos1 = srclist.GetHeadPosition(); pos1 != NULL; ){
+			CUpDownClient* cur_src = srclist.GetNext(pos1);
+			if (cur_src->GetDownloadState() == DS_NONEEDEDPARTS){	
+				theApp.downloadqueue->RemoveSource(cur_src);
+				//cur_src->ClearWhenNeeded(); //Pawcio
+				removed ++;
+			}
+		}
+
+	AddDebugLogLine(false, _T("Rimozione fonti con parti non necessarie(%s) : %i fonti rimosse"),GetFileName(),removed);		
+}
+//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 uint16    CPartFile::GetFileHardLimit() const 
 {
 	return m_iFileHardLimit; 

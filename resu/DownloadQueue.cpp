@@ -79,6 +79,11 @@ CDownloadQueue::CDownloadQueue()
 	m_cRequestsSentToServer = 0;
     m_dwLastA4AFtime = 0; // ZZ:DownloadManager
 	m_uiHLCount = thePrefs.GetMaxSourcesHL(); //>>> WiZaRd - AutoHL added by lama
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_dwLastNNSDrop = ::GetTickCount();
+	m_dwLastFQDrop = ::GetTickCount()+MIN2MS(3);
+	m_dwLastHighQRDrop = ::GetTickCount()+MIN2MS(5);
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 }
 
 void CDownloadQueue::AddPartFilesToShare()

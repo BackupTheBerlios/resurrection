@@ -47,6 +47,7 @@
 // IP-to-Country +
 #include "IP2Country.h" 
 // IP-to-Country -
+#include "Clientlist.h"//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 
 
 #ifdef _DEBUG
@@ -89,7 +90,6 @@ CDownloadListCtrl::CDownloadListCtrl()
 }
 
 CDownloadListCtrl::~CDownloadListCtrl(){
-	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );//LSD3
 	if (m_PrioMenu)	VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_SourcesMenu)	VERIFY( m_SourcesMenu.DestroyMenu() );
     if (m_WSMenu) VERIFY( m_WSMenu.DestroyMenu() ); //[ionix] Hawkstar DL-Feedback
@@ -1475,6 +1475,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
+			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 			// enable commands if there is at least one item which can be used for the action
 			m_FileMenu.EnableMenuItem(MP_CANCEL, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_STOP, iFilesToStop > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1591,6 +1592,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	}
 	else{	// nothing selected
 		int total;
+		m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, MF_GRAYED);//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_CANCEL, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PAUSE, MF_GRAYED);
@@ -1775,6 +1777,68 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					}
 					SetRedraw(true);
 					break;
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+				case MP_DROPLOWTOLOWIPSRCS: // Added by sivka
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->RemoveLow2LowIPSourcesManual();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_DROPUNKNOWNERRORBANNEDSRCS: // Added by sivka
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->RemoveUnknownErrorBannedSourcesManual();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_DROPNONEEDEDSRCS: // Added by sivka
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->/*RemoveNoNeededSourcesManual*/RemoveNoNeededPartsSources();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_DROPHIGHQRSRCS: // Added by sivka
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->/*RemoveHighQRSourcesManual*/RemoveHighQueueRanking();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP: // Added by sivka
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+					///////////////////////////////////////////
+				case MP_DROPQUEUEFULLSRCS: { // Added by Tarod
+					if(selectedCount > 1){
+					while (!selectedList.IsEmpty()) {
+						if (!selectedList.GetHead()->IsStopped()){
+							selectedList.GetHead()->RemoveQueueFullSources();
+						}
+						selectedList.RemoveHead(); 
+					}
+					break;
+					}
+					file->RemoveQueueFullSources();
+					break;
+										   }
+//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -1944,75 +2008,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
                 //[ionix] Hawkstar DL-Feedback 
-//Drop
-				case MP_DROPNONEEDEDSRCS: { // Added by Tarod
-					while (!selectedList.IsEmpty()){
-						CPartFile* pfile = selectedList.GetHead();
-						if (!pfile->IsStopped()){
-							pfile->RemoveNoNeededPartsSources();//DS_NONEEDEDPARTS DL-6
-					}
-						selectedList.RemoveHead();
-					}
-					break;
-				}
-				
-				case MP_DROPQUEUEFULLSRCS: { // Added by Tarod
-					if(selectedCount > 1){
-					while (!selectedList.IsEmpty()) {
-						if (!selectedList.GetHead()->IsStopped()){
-							selectedList.GetHead()->RemoveQueueFullSources();
-						}
-						selectedList.RemoveHead(); 
-					}
-					break;
-					}
-					file->RemoveQueueFullSources();
-					break;
-										   }
-				//LSD GO
-				
-				case MP_DROPQUEUEUNKNOWN: { // LSD Status Unknown
-					if(selectedCount > 1){
-					while (!selectedList.IsEmpty()){
-						if (!selectedList.GetHead()->IsStopped()){
-							selectedList.GetHead()->RemoveQueueUnknown(); //DS_NONE DL-11
-						}
-						selectedList.RemoveHead();
-					}
-					break;
-					}
-					file->RemoveQueueUnknown();
-					break;
-				}
-				case MP_DROPCONNECTING: { // LSD Status Connecting
-					if(selectedCount > 1){
-					while (!selectedList.IsEmpty()){
-						if (!selectedList.GetHead()->IsStopped()){
-							selectedList.GetHead()->RemoveQueueConnecting(); //DS_CONNECTING DL-3
-						}
-						selectedList.RemoveHead();
-						}
-					break;
-					}
-					file->RemoveQueueConnecting();
-					break;
-				}
-				case MP_DROP_ASKING: { // LSD Status Asking
-					if(selectedCount > 1){
-					while (!selectedList.IsEmpty()) {
-						if (!selectedList.GetHead()->IsStopped()){
-							selectedList.GetHead()->RemoveQueueAsking(); //DS_CONNECTED DL-2
-						}
-						selectedList.RemoveHead();
-					}
-					break;
-					}
-					file->RemoveQueueAsking();
-					break;
-				}
-//Drop
-
-
 				case MP_STOP:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -2188,12 +2183,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			CPartFile* file = (CPartFile*)content->owner; // added by sivka
 
 			switch (wParam){
-			//Drop Src 
- 				case MP_DROP_CLIENT: //LSD
-					DropSingleClient(client);
-					break;
-			//Drop Src
-
 				case MP_SHOWLIST:
 					client->RequestSharedFileList();
 					break;
@@ -2647,7 +2636,10 @@ void CDownloadListCtrl::OnNMDblclkDownloadlist(NMHDR *pNMHDR, LRESULT *pResult)
 void CDownloadListCtrl::CreateMenues(){
 	if (m_PrioMenu)  	VERIFY( m_PrioMenu.DestroyMenu() );
 	if (m_SourcesMenu)	VERIFY( m_SourcesMenu.DestroyMenu() );
- 	if (m_DropMenu) 	VERIFY( m_DropMenu.DestroyMenu() );//LSD3
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	if (m_DropMenu) 
+		VERIFY( m_DropMenu.DestroyMenu() );
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
         if (m_WSMenu)       VERIFY( m_WSMenu.DestroyMenu() ); //[ionix] Hawkstar DL-Feedback
 	if (m_FileMenu)		VERIFY( m_FileMenu.DestroyMenu() );
 
@@ -2655,6 +2647,7 @@ void CDownloadListCtrl::CreateMenues(){
 	m_FileMenu.CreatePopupMenu();
 	m_FileMenu.AddMenuTitle(GetResString(IDS_DOWNLOADMENUTITLE), true);
 	// Add 'Download Priority' sub menu
+	//
 	m_PrioMenu.CreateMenu();
 	m_PrioMenu.AddMenuTitle(NULL, true);
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));
@@ -2672,24 +2665,24 @@ void CDownloadListCtrl::CreateMenues(){
     m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK6,_T("Foren (Pure Text) without Upload"), _T("FILECOMMENTS"));
     // [ionix] - Hawkstar DL-Feedback
 m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
-//Drop
-	//Drop Sub-Menu //LSD3
-	m_DropMenu.CreateMenu();
-	m_DropMenu.AddMenuTitle(NULL, true);
-	m_DropMenu.AppendMenu(MF_STRING, MP_DROPNONEEDEDSRCS, _T("Drop NNS"), _T("LSD_BUT_NNS")); // Added by Tarod
-	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEFULLSRCS, _T("Drop FULLQ"), _T("LSD_BUT_FULLQ")); // Added by Tarod
 
-	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEUNKNOWN, _T("Drop UNKNOWN"), _T("UNK")); // LSD
-	m_DropMenu.AppendMenu(MF_STRING, MP_DROP_ASKING, _T("Drop ASKING"), _T("ASK")); // LSD
-	m_DropMenu.AppendMenu(MF_STRING, MP_DROPCONNECTING, _T("Drop CONNECTING"), _T("CON")); // LSD
-//Drop
 	// Add file commands
 	//
 	m_FileMenu.AppendMenu(MF_STRING, MP_PAUSE, GetResString(IDS_DL_PAUSE), _T("PAUSE"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_STOP, GetResString(IDS_DL_STOP), _T("STOP"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_RESUME, GetResString(IDS_DL_RESUME), _T("RESUME"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_CANCEL, GetResString(IDS_MAIN_BTN_CANCEL), _T("DELETE"));
-	m_SourcesMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS)/*, _T("RestoreWindow")*/);
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_DropMenu.CreateMenu();
+	m_DropMenu.AddMenuTitle( _T("RIMUOVI"), true);
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, GetResString(IDS_DROP_LOWIPTOLOWIP), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, GetResString(IDS_DROP_UNKNOW_ERROR_BANNED), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, GetResString(IDS_DROP_NNS), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPQUEUEFULLSRCS, GetResString(IDS_DROP_FQS), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, GetResString(IDS_DROP_HQS), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, GetResString(IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP), _T("DROP"));
+        //Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+        m_SourcesMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS)/*, _T("RestoreWindow")*/);
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_OPEN, GetResString(IDS_DL_OPEN), _T("OPENFILE"));
 	if (thePrefs.IsExtControlsEnabled() && !thePrefs.GetPreviewPrio())
@@ -2705,6 +2698,7 @@ m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResSt
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
 		m_SourcesMenu.CreateMenu();
+		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_DROP_MENUE), _T("DROP"));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY));
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_SETSOURCELIMIT, GetResString(IDS_SETPFSLIMIT));
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_SourcesMenu.m_hMenu, GetResString(IDS_A4AF));
@@ -3197,14 +3191,3 @@ void CDownloadListCtrl::ShowClientDialog(CUpDownClient* pClient)
 	CClientDetailDialog dialog(pClient, this);
 	dialog.DoModal();
 }
-//Drop src
-void CDownloadListCtrl::DropSingleClient(CUpDownClient* single)  // LSD MP_DROP_CLIENT
-{
-	if (single != NULL /*&& single->GetDownloadState() != DS_DOWNLOADING*/) {//KTS drop downloading src
-		if (!single->SwapToAnotherFile(GetResString(IDS_LSDDROP), single,true,true)) {
-			//if (!single->Disconnected())//Pawcio safe delete
-			theApp.downloadqueue->RemoveSource(single);
-		}
-	}	
-}
-//Drop Src

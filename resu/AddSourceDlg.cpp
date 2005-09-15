@@ -60,7 +60,6 @@ void CAddSourceDlg::DoDataExchange(CDataExchange* pDX)
 
 void CAddSourceDlg::SetFile(CPartFile *pFile)
 {
-	if( pFile )
 	m_pFile = pFile;
 }
 

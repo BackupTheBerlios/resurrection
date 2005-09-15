@@ -55,16 +55,6 @@ m_htiClientPerc = NULL;
  //Telp Start push small file
     m_htiEnablePushSmallFile = NULL; 
 //Telp End push small file  
-//Pastagua+DropSrc
-	m_htiDropSources = NULL;
-	m_htiDropSourcesTimerNNS = NULL;
-	m_htiDropSourcesTimerFQ = NULL;
-	m_htiDropSourcesTimerHQR = NULL;
-	m_htiDropSourcesNNS = NULL;
-	m_htiDropSourcesFQ = NULL;
-	m_htiDropSourcesHQR = NULL;
-	m_htiDropSourcesHQRVal = NULL;
-//Pastagua-DropSRc
 //Telp Start push rare file
     m_htiEnablePushRareFile = NULL; 
 //Telp End push rare file
@@ -82,12 +72,7 @@ m_htiClientPerc = NULL;
         m_htiCreditsNone = NULL;
 	
 	// CreditSystem
-// Upload Tweaks
-	m_htiUploadTweaks = NULL;
-	m_htiUpSlotsMin = NULL;
-	m_iUpSlotsMin = 0;
-	m_htiUpSlotsMax = NULL;
-	m_iUpSlotsMax = 0;
+
 //==> Chunk Selection Patch by Xman [lama]
 	m_htiEnableCSP = NULL;
 //<== Chunk Selection Patch by Xman [lama]
@@ -106,6 +91,16 @@ m_htiClientPerc = NULL;
 	m_htiAntiCase2 = NULL;
 	m_htiAntiCase3 = NULL;
 	// <== Anti Uploader Ban - Stulle
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_htiDropSources = NULL;
+	m_htiDropSourcesTimerNNS = NULL;
+	m_htiDropSourcesTimerFQ = NULL;
+	m_htiDropSourcesTimerHQR = NULL;
+	m_htiDropSourcesNNS = NULL;
+	m_htiDropSourcesFQ = NULL;
+	m_htiDropSourcesHQR = NULL;
+    m_htiHqrBox = NULL;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -133,7 +128,7 @@ int iImgSecu = 8;
 		// IP-to-Country -
 int iImgCS = 8; // Creditsystems
 int iImgUM = 8; // default icon
-int iImgDropSources = 8; //Drop
+		int iImgDrop = 8;//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 		int iImgPS = 8;
 		int iImgSFM = 8;
 CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
@@ -150,9 +145,8 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 			iImgSFM = piml->Add(CTempIconLoader(_T("Sharedfiles")));
 			// <--- Morph: PowerShare
  //<<-- ADDED STORMIT -  Morph: PowerShared //
-//Pastagua+DropSrc
-			iImgDropSources = piml->Add(CTempIconLoader(_T("Log")));
-			//Pastagua-DropSrc
+					iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
+
 //Telp+ Menu VipeR
 		m_AdditionalVipeR = m_ctrlTreeOptions.InsertGroup(_T("Misc Functions "), iImgAddTweaks, TVI_ROOT);
 //Telp- Menu VipeR 
@@ -174,21 +168,7 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_htiIP2CountryName_LONG = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_COUNTRYNAME_LONG), m_htiIP2CountryName, m_iIP2CountryName == IP2CountryName_LONG);
 		m_htiIP2CountryShowFlag = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_COUNTRYNAME_SHOWFLAG), m_htiIP2CountryName, m_bIP2CountryShowFlag);
 		// IP-to-Country -
-//Pastagua+DropSrc
-		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(_T("Drop Sources System"),iImgDropSources, TVI_ROOT);
-		m_ctrlTreeOptions.SetItemState(m_htiDropSources, TVIS_BOLD, TVIS_BOLD);
-		m_htiDropSourcesNNS = m_ctrlTreeOptions.InsertCheckBox(_T("Drop Non Needed Sources"), m_htiDropSources, m_iDropSources = 1);
-		m_htiDropSourcesTimerNNS = m_ctrlTreeOptions.InsertItem(_T("Time for NNS (min)"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
-		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerNNS, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiDropSourcesFQ = m_ctrlTreeOptions.InsertCheckBox(_T("Drop Full Queue Sources"), m_htiDropSources, m_iDropSources = 3);
-		m_htiDropSourcesTimerFQ = m_ctrlTreeOptions.InsertItem(_T("Time for FQ(min)"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
-		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerFQ, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiDropSourcesHQR = m_ctrlTreeOptions.InsertCheckBox(_T("Drop High Queue Rank Sources:"), m_htiDropSources, m_iDropSources = 7);
-		m_htiDropSourcesTimerHQR = m_ctrlTreeOptions.InsertItem(_T("Time for HQR (min)"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
-		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerHQR, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiDropSourcesHQRVal = m_ctrlTreeOptions.InsertItem(_T("More than:"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
-		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesHQRVal, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		//Pastagua-DropSrc	
+
 		//Telp Start payback first
 		m_htiPBF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACK_FIRST), m_AdditionalVipeR, m_bPBF);
 //Telp End payback first
@@ -205,7 +185,21 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_htiAntiCase3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_3), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 2);
 		m_ctrlTreeOptions.Expand(m_htiAntiUploaderBanLimit, TVE_EXPAND);
 		// <== Anti Uploader Ban - Stulle
-
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);
+		m_htiDropSourcesNNS = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DROPS1), m_htiDropSources, m_iDropSources = 1);
+		m_htiDropSourcesTimerNNS = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPS2), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
+		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerNNS, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiDropSourcesFQ = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DROPS3), m_htiDropSources, m_iDropSources = 3);
+		m_htiDropSourcesTimerFQ = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPS2), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
+		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerFQ, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiDropSourcesHQR = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DROPS4), m_htiDropSources, m_iDropSources = 7);
+		m_htiDropSourcesTimerHQR = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPS2), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
+		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerHQR, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiHqrBox = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPHQSLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
+		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiDropSources, TVE_EXPAND);
+		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 	//==> Chunk Selection Patch by Xman [lama]
 		m_htiEnableCSP = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CSP_ENABLE), iImgCSP, m_htiSFM);
 		m_ctrlTreeOptions.SetItemState(m_htiEnableCSP, TVIS_BOLD, TVIS_BOLD);
@@ -257,21 +251,23 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 //Telp Start push rare file
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiEnablePushRareFile, m_bEnablePushRareFile); //eMulefan83 push rare file
 //Telp End push rare file
-//Pastagua+DropSrc
-	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesNNS, m_iDropSourcesNNS);
-	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerNNS, m_iDropSourcesTimerNNS);
-	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesFQ, m_iDropSourcesFQ);
-	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerFQ, m_iDropSourcesTimerFQ);
-	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesHQR, m_iDropSourcesHQR);
-	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerHQR, m_iDropSourcesTimerHQR);
-	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesHQRVal, m_iDropSourcesHQRVal);
-	//Pastagua-DropSrc
+
 DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystem
  // ==> Anti Uploader Ban - Stulle
 	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
 	DDV_MinMaxInt(pDX, m_iAntiUploaderBanLimit, 0, 20);
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, (int &)m_iAntiUploaderBanCase);
 	// ==> Anti Uploader Ban - Stulle
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiHqrBox, iMaxRemoveQRS);
+		DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesNNS, m_iDropSourcesNNS);
+		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerNNS, m_iDropSourcesTimerNNS);
+		DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesFQ, m_iDropSourcesFQ);
+		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerFQ, m_iDropSourcesTimerFQ);
+		DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesHQR, m_iDropSourcesHQR);
+		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerHQR, m_iDropSourcesTimerHQR);
+		DDV_MinMaxInt(pDX, iMaxRemoveQRS, 2500, 100000);
+		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 //==> Chunk Selection Patch by Xman [lama]
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiEnableCSP, m_iEnableCSP);
 //<== Chunk Selection Patch by Xman [lama]
@@ -286,17 +282,7 @@ BOOL CPPgVipeR::OnInitDialog()
 	m_iIP2CountryName = thePrefs.GetIP2CountryNameMode(); 
 	m_bIP2CountryShowFlag = thePrefs.IsIP2CountryShowFlag();
 	// IP-to-Country -
-//PastaguaDropSrc
-	m_iDropSourcesNNS = thePrefs.m_bDropSourcesNNS;
-	m_iDropSourcesTimerNNS = thePrefs.m_iDropSourcesTimerNNS;
-	m_iDropSourcesFQ = thePrefs.m_bDropSourcesFQ;
-	m_iDropSourcesTimerFQ = thePrefs.m_iDropSourcesTimerFQ;
-	m_iDropSourcesFR = thePrefs.m_bDropSourcesFR;
-	m_iDropSourcesTimerFR = thePrefs.m_iDropSourcesTimerFR;
-	m_iDropSourcesHQR = thePrefs.m_bDropSourcesHQR;
-	m_iDropSourcesTimerHQR = thePrefs.m_iDropSourcesTimerHQR;
-	m_iDropSourcesHQRVal = thePrefs.m_iDropSourcesHQRVal;
-	//Pastagua-DropSrc
+
 m_iCreditSystem = thePrefs.GetCreditSystem(); // CreditSystem 
 
 //client percentage
@@ -314,7 +300,15 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 //Telp Start push rare file
     m_bEnablePushRareFile = thePrefs.enablePushRareFile; //Hawkstar, push rare file
 //Telp End push rare file
-
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_iDropSourcesNNS = thePrefs.m_bDropSourcesNNS;
+	m_iDropSourcesTimerNNS = thePrefs.m_iDropSourcesTimerNNS;
+	m_iDropSourcesFQ = thePrefs.m_bDropSourcesFQ;
+	m_iDropSourcesTimerFQ = thePrefs.m_iDropSourcesTimerFQ;
+	m_iDropSourcesHQR = thePrefs.m_bDropSourcesHQR;
+	m_iDropSourcesTimerHQR = thePrefs.m_iDropSourcesTimerHQR;
+    iMaxRemoveQRS = (int) thePrefs.GetMaxRemoveQRS();
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 //==> Chunk Selection Patch by Xman [lama]
 	m_iEnableCSP	= thePrefs.m_iEnableCSP;
 //<== Chunk Selection Patch by Xman [lama]
@@ -378,12 +372,7 @@ void CPPgVipeR::Localize(void)
 		if (m_htiEnableCSPXman) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPXman, GetResString(IDS_CSP_XMAN));		
 //<== Chunk Selection Patch by Xman [lama]
 
-//Pastagua+DropSrc
-		if (m_htiDropSourcesNNS) m_ctrlTreeOptions.SetItemText(m_htiDropSourcesNNS,_T("Drop NNS (No Needed Sources)"));
-		if (m_htiDropSourcesFQ) m_ctrlTreeOptions.SetItemText(m_htiDropSourcesFQ,_T("Drop FQ (Full Queue)"));
-		if (m_htiDropSourcesHQR) m_ctrlTreeOptions.SetItemText(m_htiDropSourcesHQR,_T("Drop HQR(High Queue Rank)"));
-		//Pastagua-DropSrc
-	}
+}
 }
 
 ////////////////////////////////////// OnApply //////////////////////////////////////
@@ -393,37 +382,6 @@ BOOL CPPgVipeR::OnApply()
 	thePrefs.enableClientPerc = m_bEnableClientPerc;
 
 thePrefs.SetCreditSystem(m_iCreditSystem); // CreditSystem
-
-//Pastagua+DropSrc
-	if(m_iDropSourcesTimerNNS < 15)
-		thePrefs.m_iDropSourcesTimerNNS = 15;
-	else
-		thePrefs.m_iDropSourcesTimerNNS = m_iDropSourcesTimerNNS;
-
-	if(m_iDropSourcesTimerFQ < 15)
-		thePrefs.m_iDropSourcesTimerFQ = 15;
-	else
-		thePrefs.m_iDropSourcesTimerFQ = m_iDropSourcesTimerFQ;
-
-	if(m_iDropSourcesTimerFR < 15)
-		thePrefs.m_iDropSourcesTimerFR = 15;
-	else
-		thePrefs.m_iDropSourcesTimerFR = m_iDropSourcesTimerFR;
-
-	if(m_iDropSourcesTimerHQR < 15)
-		thePrefs.m_iDropSourcesTimerHQR = 15;
-	else
-		thePrefs.m_iDropSourcesTimerHQR = m_iDropSourcesTimerHQR;
-	thePrefs.SetDropSourcesNNS(m_iDropSourcesNNS);
-	thePrefs.SetDropSourcesFQ(m_iDropSourcesFQ);
-	thePrefs.SetDropSourcesFR(m_iDropSourcesFR);
-	thePrefs.SetDropSourcesHQR(m_iDropSourcesHQR);
-	if(m_iDropSourcesHQRVal < 2500)
-		thePrefs.m_iDropSourcesHQRVal = 2500;
-	else
-		thePrefs.m_iDropSourcesHQRVal = m_iDropSourcesHQRVal;
-	//Pastagua-DropSrc
-
 
 // IP-to-Country +
 	if(	(thePrefs.m_iIP2CountryNameMode != IP2CountryName_DISABLE || thePrefs.m_bIP2CountryShowFlag) !=
@@ -450,7 +408,24 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 		thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
 	}
 	// <== Anti Uploader Ban - Stulle
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	if(m_iDropSourcesTimerNNS < 2)
+		thePrefs.m_iDropSourcesTimerNNS = 2;
+	else thePrefs.m_iDropSourcesTimerNNS = m_iDropSourcesTimerNNS;
 
+	if(m_iDropSourcesTimerFQ < 2)
+		thePrefs.m_iDropSourcesTimerFQ = 2;
+	else thePrefs.m_iDropSourcesTimerFQ = m_iDropSourcesTimerFQ;
+
+	if(m_iDropSourcesTimerHQR < 2)
+		thePrefs.m_iDropSourcesTimerHQR = 2;
+	else thePrefs.m_iDropSourcesTimerHQR = m_iDropSourcesTimerHQR;
+	
+	thePrefs.SetDropSourcesNNS(m_iDropSourcesNNS);
+	thePrefs.SetDropSourcesFQ(m_iDropSourcesFQ);
+	thePrefs.SetDropSourcesHQR(m_iDropSourcesHQR);
+	thePrefs.SetMaxRemoveQRS(iMaxRemoveQRS ? iMaxRemoveQRS : 5000);
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 //Telp start payback first
 	thePrefs.m_bPBF = m_bPBF;
 //Telp end payback first
@@ -496,7 +471,16 @@ void CPPgVipeR::OnDestroy()
 	m_htiSelectiveShare = NULL;	//MORPH - Added by SiRoB, SLUGFILLER: hideOS
  //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
 	m_htiShareOnlyTheNeed = NULL; //MORPH - Added by SiRoB, SHARE_ONLY_THE_NEED
-
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_htiDropSources = NULL;
+	m_htiDropSourcesTimerNNS = NULL;
+	m_htiDropSourcesTimerFQ = NULL;
+	m_htiDropSourcesTimerHQR = NULL;
+	m_htiDropSourcesNNS = NULL;
+	m_htiDropSourcesFQ = NULL;
+	m_htiDropSourcesHQR = NULL;
+    m_htiHqrBox = NULL;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 //==> Chunk Selection Patch by Xman [lama]
 	m_htiEnableCSP			 = NULL;
 //<== Chunk Selection Patch by Xman [lama]

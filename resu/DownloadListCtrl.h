@@ -81,9 +81,6 @@ class CDownloadListCtrl : public CMuleListCtrl, public CDownloadListListCtrlItem
 	friend class CDownloadListListCtrlItemWalk;
 
 public:
-//Drop src
-	void    DropSingleClient (CUpDownClient* single);	// LSD MP_DROP_CLIENT
-//Drop src
 	CDownloadListCtrl();
 	virtual ~CDownloadListCtrl();
 
@@ -119,9 +116,6 @@ protected:
 	CTitleMenu	m_PrioMenu;
 	CTitleMenu	m_FileMenu;
 	CMenu		m_SourcesMenu;
-	// Drop src
-	CTitleMenu		m_DropMenu;//LSD
-	//Drop src
 	CTitleMenu	m_WSMenu; //[ionix] Hawkstar DL-Feedback
 	bool		m_bRemainSort;
 	typedef std::pair<void*, CtrlItem_Struct*> ListItemsPair;
@@ -157,11 +151,7 @@ protected:
 	protected:
 	CSettingsSaver m_SettingsSaver;
 // END adding by sivka
-//[ionix] Drop Menue start
-public:
-	void	DropAllFullQ();
-	void	DropAllNNS();
-	void	DropAllTooMany();
-	void	DropAllHighQueueSources();
-// [ionix] Drop Menue end
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	CTitleMenu m_DropMenu;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 };

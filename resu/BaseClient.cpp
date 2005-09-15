@@ -749,9 +749,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	// [ionix] - WiZaRd - Anti Mod Faker Version
 	if(thePrefs.IsAntiModIdFaker())
 	{
-		//if ( StrStrI(m_strModVersion, GetModIdVersion()) //he uses our string 
-		//	&& (  !StrStr(m_strModVersion, GetModIdVersion())  //but not the same case... 
-		//	|| !StrStrI(m_strClientSoftware,_T("eMule v0.45b")))) //or not the same version
 		if(theAntiLeechClass.CheckForModThief(this))
 		{
 			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
@@ -971,9 +968,6 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	// [ionix] - WiZaRd - Anti Mod Faker Version
 	if(thePrefs.IsAntiModIdFaker())
 	{
-		//if ( StrStrI(m_strModVersion, GetModIdVersion()) //he uses our string 
-		//	&& (  !StrStr(m_strModVersion, GetModIdVersion())  //but not the same case... 
-		//	|| !StrStrI(m_strClientSoftware,_T("eMule v0.44d")))) //or not the same version
 		if(theAntiLeechClass.CheckForModThief(this))
 		{
 			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
@@ -1021,17 +1015,28 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 
 	// eD2K Name
 	// [ionix] - WiZaRd - AntiNickThief
-	if (thePrefs.m_bAntiNickThief)
+
+	//always send the "lure" tag!
+
+	//if (thePrefs.m_bAntiNickThief)
+
 	{
 		CTag tagName(CT_NAME, theAntiLeechClass.GetAntiNickThiefNick());
 		tagName.WriteTagToFile(data, utf8strRaw);
 	}
-	else
-	{
-	// TODO implement multi language website which informs users of the effects of bad mods
-	CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
-	tagName.WriteTagToFile(data, utf8strRaw);
-	}
+
+//	else
+
+//	{
+
+//		// TODO implement multi language website which informs users of the effects of bad mods
+
+//		CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
+
+//		tagName.WriteTagToFile(data, utf8strRaw);
+
+//	}
+
 	// [ionix] - WiZaRd - AntiNickThief 
 
 	// eD2K Version
@@ -2786,41 +2791,6 @@ EUtf8Str CUpDownClient::GetUnicodeSupport() const
 	return utf8strNone;
 
 }
-//DropSrc 
-void CUpDownClient::ClearWhenNeeded(){
-	ASSERT(theApp.clientlist->IsValidClient(this));
-
-	//Check wheter object is still used somewhere else
-
-	if (m_nUploadState!=US_NONE && m_nUploadState!=US_ERROR)
-		//Object is on Upload Queue
-		return;
-
-	if (GetChatState())
-		//Used on chat
-		return;
-
-	//End check
-
-	if (socket){
-		ASSERT (theApp.listensocket->IsValidSocket(socket));
-		socket->Safe_Delete();
-	}
-
-	socket = 0;
-    if (m_iFileListRequested){
-		AddDebugLogLine(false,GetResString(IDS_SHAREDFILES_FAILED),GetUserName());
-        m_iFileListRequested = 0;
-	}
-
-	if (m_Friend)
-		theApp.friendlist->RefreshFriend(m_Friend);
-
-	theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);//LSD High CPU when too many src
-
-	delete this;
-}
-//DropSrc
 
 // IP-to-Country +
 CString	CUpDownClient::GetCountryName(bool longName) const {

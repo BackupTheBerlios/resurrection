@@ -3452,7 +3452,6 @@ STRINGTABLE
 BEGIN
     IDS_PW_CON_CAPFRM       "Capacities"
     IDS_STATS_MNUTREECPYSPE "Resurrection Stat"
-    IDS_LSDDROP             "Drop src"
     IDS_COUNTRY             "Country"
     IDS_EnableDownloadInColor "Download files in color"
     IDS_WC_ADDRESS          "Address"
@@ -4526,10 +4525,25 @@ END
 STRINGTABLE 
 BEGIN
     IDS_DOWNFAKECHECKVER    "Downloading Fake Check version file"
+   IDS_DROP_LOWIPTOLOWIP   "Drop Low ID to Low ID"
+    IDS_DROP_UNKNOW_ERROR_BANNED "Drop Unknown, Error and banned user"
+    IDS_DROP_NNS            "Drop not need sources"
+    IDS_DROP_FQS            "Drop ""Full Queue"" sources"
+    IDS_DROP_HQS            "Drop Hight Queue rating sources"
+    IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 
+                            "Drop NNS, FQS, HQRS, ERR, BAN & L2L"
+    IDS_DROP_MENUE          "Drop sources manually"
+    IDS_DROPTIME            "Waiting time for sourcen droped  [1-4h]"
 END
 
 STRINGTABLE 
 BEGIN
+ IDS_DROPS               "Drop sources automatically:"
+    IDS_DROPHQSLIMIT        "Drop sources with queues higher to:"
+    IDS_DROPS1              "that they have 'not need sources'"
+    IDS_DROPS2              "every minute"
+    IDS_DROPS3              "that they have 'Full queue'"
+    IDS_DROPS4              "that they have queues higher"
     IDS_LOG_FC_LOADED       "Loaded Fake Check from ""%s"" in %ums"
     IDS_DOWNFAKECHECKFILE   "Downloading Fake Check file"
     IDS_LOG_FC_INFO         "Found Fake Reference:%u  Duplicate:%u  Merged:%u"

@@ -346,7 +346,9 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				}
 				case 5:{
-					Sbuffer = client->GetClientSoftVer();
+
+					Sbuffer = client->DbgGetFullClientSoftVer();
+
 					if (Sbuffer.IsEmpty())
 						Sbuffer = GetResString(IDS_UNKNOWN);
 					break;

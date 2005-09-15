@@ -65,7 +65,7 @@ CClientCredits::CClientCredits(CreditStruct* in_credits)
 CClientCredits::CClientCredits(const uchar* key)
 {
 	m_pCredits = new CreditStruct;
-	memset(m_pCredits, 0, sizeof(CreditStruct));
+	MEMSET(m_pCredits, 0, sizeof(CreditStruct));
 	md4cpy(m_pCredits->abyKey, key);
 	InitalizeIdent();
 	m_dwUnSecureWaitTime = ::GetTickCount();

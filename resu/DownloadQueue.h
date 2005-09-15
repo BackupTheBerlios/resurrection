@@ -208,4 +208,10 @@ public:
 	// AutoHL [Aireoreion]
 	bool	IsInit()		{return m_bIsInit == true;}
 //<<< WiZaRd - AutoHL added by lama
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	private:
+	DWORD	m_dwLastNNSDrop;
+	DWORD	m_dwLastFQDrop;
+	DWORD	m_dwLastHighQRDrop;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 };

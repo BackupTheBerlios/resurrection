@@ -561,7 +561,6 @@
 #define IDS_TBN_NEWCHATMSG              639
 #define IDS_PW_CON_CAPFRM               640
 #define IDS_STATS_MNUTREECPYSPE         641
-#define IDS_LSDDROP                     642
 #define IDS_COUNTRY                     643
 #define IDS_EnableDownloadInColor       644
 #define IDS_WC_ADDRESS                  645
@@ -2225,10 +2224,6 @@
 #define IDC_CCOLL_BASICOPTIONS          2950
 #define IDC_CCOLL_ADVANCEDOPTIONS       2951
 #define IDC_ACK_OPTS                    2952
-#define IDC_TRANSFER_DROP_FULLQ         2952
-#define IDC_TRANSFER_DROP_NNS           2953
-#define IDC_TRANSFER_DROP_TOO_MANY      2954
-#define IDC_TRANSFER_DROP_HIGH_QUEUE_SOURCES 2955
 #define IDC_EnableDownloadInColor       2957
 #define IDC_SLIDER1                     2957
 #define IDC_MAXDOWN                     2958
@@ -2301,22 +2296,10 @@
 #define IDC_IP2COUNTRY_VERSION          5028
 #define IDC_IPFILTER_VERSION            5029
 #define IDC_FAKELIST_VERSION            5030
-#define IDC_DropHighQR                  5361
-#define IDC_HighQRValue                 5362
-#define IDC_HighQRValueStatic2          5363
-#define IDC_HighQRDropTimer             5365
-#define IDC_HighQRDropTimerStatic1      5366
-#define IDC_DropNNS                     5367
-#define IDC_DropNNSTimer                5368
-#define IDC_DropNNSTimerStatic1         5369
-#define IDC_DropFullQ                   5370
-#define IDC_DropFullQTimer              5371
-#define IDC_DropFullQTimerStatic1       5372
 #define IDC_ABILITABANDIERINE           2952
 #define IDC_BTL                         3004
 #define IDC_BTL_TEXT                    3005
 #define IDC_DLOC                        4022
-#define IDC_DropLog                     5373
 #define IDC_STATIC_COLORS               5409
 #define IDC_URL_FOR_UPDATING_IP2COUNTRY_VERFILE 5601
 #define IDS_URL_FOR_UPDATING_IP2COUNTRY_VERFILE 5601
@@ -2467,6 +2450,21 @@
 #define IDD_PPG_VipeR                   60063
 #define IDS_POWERSHARE_ON               60064
 #define IDS_POWERSHARE_OFF              60065
+#define IDS_DROP_LOWIPTOLOWIP           60066
+#define IDS_DROP_UNKNOW_ERROR_BANNED    60067
+#define IDS_DROP_NNS                    60068
+#define IDS_DROP_FQS                    60069
+#define IDS_DROP_HQS                    60070
+#define IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 60071
+#define IDS_DROP_MENUE                  60072
+#define IDS_DROPTIME                    60073
+#define IDS_DROPS                       60074
+#define IDS_DROPHQSLIMIT               60075
+#define IDS_DROPS1                    60076
+#define IDS_DROPS2                      60077
+#define IDS_DROPS3                      60078
+#define IDS_DROPS4                     60079
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

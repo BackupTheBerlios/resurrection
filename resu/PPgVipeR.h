@@ -25,6 +25,16 @@ protected:
 	bool m_bEnableClientPerc;
 	//client percentage
 //Telp- Menu VipeR
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	int iMaxRemoveQRS;
+	int m_iDropSources;
+	bool m_iDropSourcesNNS;
+	int m_iDropSourcesTimerNNS;
+	bool m_iDropSourcesFQ;
+	int m_iDropSourcesTimerFQ;
+	bool m_iDropSourcesHQR;
+	int m_iDropSourcesTimerHQR;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 //CreditSyst
 int m_iCreditSystem;
 	HTREEITEM m_htiCreditSystem;
@@ -95,27 +105,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiUpSlotsMin;
 	HTREEITEM m_htiUpSlotsMax;
 
-//Pastagua+DropSrc
-	HTREEITEM m_htiDropSources;
-	HTREEITEM m_htiDropSourcesNNS;
-	HTREEITEM m_htiDropSourcesTimerNNS;
-	HTREEITEM m_htiDropSourcesFQ;
-	HTREEITEM m_htiDropSourcesTimerFQ;
-	HTREEITEM m_htiDropSourcesHQR;
-	HTREEITEM m_htiDropSourcesTimerHQR;
-	HTREEITEM m_htiDropSourcesHQRVal;
-	int m_iDropSources;
-	bool m_iDropSourcesNNS;
-	int m_iDropSourcesTimerNNS;
-	bool m_iDropSourcesFQ;
-	int m_iDropSourcesTimerFQ;
-	bool m_iDropSourcesFR;
-	int m_iDropSourcesTimerFR;
-	bool m_iDropSourcesHQR;
-	int m_iDropSourcesTimerHQR;
-	int m_iDropSourcesHQRVal;
-	//Pastagua-DropSrc
-
 //==> Chunk Selection Patch by Xman [lama]
 	int m_iEnableCSP;
 //<== Chunk Selection Patch by Xman [lama]
@@ -124,9 +113,17 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiEnableCSPNormal;
 	HTREEITEM m_htiEnableCSPXman;
 //<== Chunk Selection Patch by Xman [lama]
-	int m_iUpSlotsMin;
-	int m_iUpSlotsMax;
 
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	HTREEITEM m_htiDropSources;
+	HTREEITEM m_htiDropSourcesNNS;
+	HTREEITEM m_htiDropSourcesTimerNNS;
+	HTREEITEM m_htiDropSourcesFQ;
+	HTREEITEM m_htiDropSourcesTimerFQ;
+	HTREEITEM m_htiDropSourcesHQR;
+	HTREEITEM m_htiDropSourcesTimerHQR;
+	HTREEITEM m_htiHqrBox;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 // IP-to-Country +
 	IP2CountryNameSelection	m_iIP2CountryName;
 	HTREEITEM m_htiIP2CountryName;
@@ -142,9 +139,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();
 	virtual BOOL OnKillActive();
-	
-
-	
 	
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnDestroy();

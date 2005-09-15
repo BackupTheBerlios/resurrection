@@ -111,30 +111,7 @@ public:
 	// ZZ:UploadSpeedSense <--
 	static	uint16	maxupload;
 	static	uint16	maxdownload;
-//DropSrc
-	static	bool	m_bDropSourcesNNS;
-	static	bool	m_bDropSourcesFQ;
-	static	bool	m_bDropSourcesFR;
-	static	bool	m_bDropSourcesHQR;
-	static	uint32	m_iDropSourcesTimerNNS;
-	static	uint32	m_iDropSourcesTimerFQ;
-	static	uint32	m_iDropSourcesTimerFR;
-	static	uint32	m_iDropSourcesTimerHQR;
-	static	uint32	m_iDropSourcesHQRVal;
-	static void		SetDropSourcesNNS(bool in)					{m_bDropSourcesNNS = in;}
-	static void		SetDropSourcesFQ(bool in)					{m_bDropSourcesFQ = in;}
-	static void		SetDropSourcesFR(bool in)					{m_bDropSourcesFR = in;}
-	static void		SetDropSourcesHQR(bool in)					{m_bDropSourcesHQR = in;}
-	static uint32	GetDropSourcesTimerNNS()					{return m_iDropSourcesTimerNNS;}
-	static uint32	GetDropSourcesTimerFQ()						{return m_iDropSourcesTimerFQ;}
-	static uint32	GetDropSourcesTimerFR()						{return m_iDropSourcesTimerFR;}
-	static uint32	GetDropSourcesTimerHQR()					{return m_iDropSourcesTimerHQR;}
-	static uint32	GetDropSourcesHQRVal()						{return m_iDropSourcesHQRVal;}
-	static bool		GetDropSourcesNNS()							{return m_bDropSourcesNNS;}
-	static bool		GetDropSourcesFQ()							{return m_bDropSourcesFQ;}
-	static bool		GetDropSourcesFR()							{return m_bDropSourcesFR;}
-	static bool		GetDropSourcesHQR()		{return m_bDropSourcesHQR;}
-//DropSrc
+
 	//KTS+ Display User Hash
 	#ifdef _UNICODE
 	static	TCHAR    olduserhash[64];
@@ -230,7 +207,15 @@ static  uint8	m_uScoreRatioThres;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
 
 static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
-
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	static    uint16  MaxRemoveQRS;
+	static	bool	m_bDropSourcesNNS;
+	static	bool	m_bDropSourcesFQ;
+	static	bool	m_bDropSourcesHQR;
+	static	uint32	m_iDropSourcesTimerNNS;
+	static	uint32	m_iDropSourcesTimerFQ;
+	static	uint32	m_iDropSourcesTimerHQR;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 	//DkD [sivka: -Upload Datarate Per Client-]
     static uint32  UpDataratePerClient;
     //end [sivka: -Upload Datarate Per Client-]
@@ -1090,7 +1075,19 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 	static	int		GetActivationLimitSLS()  {return m_iActivationLimitSLS;}
 	static	int		GetSourcesToSaveSLS()    {return m_iSourcesToSaveSLS;}
 	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
-
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	static   uint16 CPreferences::GetMaxRemoveQRS()				{ return MaxRemoveQRS; }
+ 	static   void	SetMaxRemoveQRS(int in)						{MaxRemoveQRS=in;}
+	static void		SetDropSourcesNNS(bool in)					{m_bDropSourcesNNS = in;}
+	static void		SetDropSourcesFQ(bool in)					{m_bDropSourcesFQ = in;}
+	static void		SetDropSourcesHQR(bool in)					{m_bDropSourcesHQR = in;}
+	static uint32	GetDropSourcesTimerNNS()					{return m_iDropSourcesTimerNNS;}
+	static uint32	GetDropSourcesTimerFQ()						{return m_iDropSourcesTimerFQ;}
+	static uint32	GetDropSourcesTimerHQR()					{return m_iDropSourcesTimerHQR;}
+	static bool		GetDropSourcesNNS()							{return m_bDropSourcesNNS;}
+	static bool		GetDropSourcesFQ()							{return m_bDropSourcesFQ;}
+	static bool		GetDropSourcesHQR()							{return m_bDropSourcesHQR;}
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 	static	UINT	GetBufferTimeLimit()		{return m_iBufferTimeLimit;} //FrankyFive: Buffer Time Limit
 
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Upload Datarate Per Client

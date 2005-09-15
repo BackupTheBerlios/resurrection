@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#define MOD_VERSION _T("ReSuRReCTioN 1.1 Beta 1d") //[lama] ModVersion
+#define MOD_VERSION _T("ReSuRReCTioN 1.1 Beta 1e") //[lama] ModVersion
 // MOD Note: Do not change this part - Merkur
 #define	EMULE_PROTOCOL			0x01
 // MOD Note: end
@@ -358,8 +358,6 @@
 #define  FT_CATEGORY			 0x53	// <uint32>
 #define	 FT_ATTRANSFERREDHI		 0x54	// <uint32>
 #define	 FT_MAXSOURCES			 0x55	// <uint32>
-#define MP_SIVKA_FILE_SETTINGS		17009 //Sivka AutoHL added by lama
-#define FT_RELEASE				0x78	// <uint32>	// Super Release
 #define	 FT_MEDIA_ARTIST		 0xD0	// <string>
 #define	TAG_MEDIA_ARTIST		"\xD0"	// <string>
 #define	 FT_MEDIA_ALBUM			 0xD1	// <string>

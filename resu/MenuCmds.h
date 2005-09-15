@@ -193,15 +193,20 @@
 #define Irc_OpCommands			10250
 //Note: reserve at least 100 ID's (Irc_ChanCommands-Irc_ChanCommands+99).
 #define Irc_ChanCommands		Irc_OpCommands+50
-//Drop Src
-#define MP_DROP_CLIENT			10264
-#define MP_DROPNONEEDEDSRCS		10275
-#define MP_DROPQUEUEFULLSRCS	10276
-#define MP_DROPQUEUEUNKNOWN		10278
-#define MP_DROP_ASKING			10279
-#define	MP_DROPCONNECTING		10280
-//Drop Src
-#define MP_SIVKA_FILE_SETTINGS	17009 //Sivka AutoHL added by lama
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+#define MP_DROPLOWTOLOWIPSRCS		17001
+#define MP_DROPUNKNOWNERRORBANNEDSRCS	17002
+#define MP_DROPNONEEDEDSRCS		11003
+#define MP_DROPFULLQSRCS		11004
+#define MP_DROPHIGHQRSRCS		11005
+#define MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP	11006
+#define MP_DROPQUEUEFULLSRCS	11011
+#define MP_DROPQUEUETOOMANY		11007
+#define MP_DROPQUEUEUNKNOWN		11008
+#define MP_DROPCONNECTING		11009
+#define MP_DROP_ASKING			11010
+//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+#define MP_SIVKA_FILE_SETTINGS	17011 //Sivka AutoHL added by lama
 //KTS+ webcache
 #define MP_PRIOWCRELEASE		20000//jp webcache release
 //KTS- webcache

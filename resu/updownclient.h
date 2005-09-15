@@ -221,9 +221,6 @@ public:
 	CUpDownClient(CClientReqSocket* sender = 0);
 	CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_userid, uint32 in_serverup, uint16 in_serverport, bool ed2kID = false);
 	virtual ~CUpDownClient();
-//DropSrc
-	void ClearWhenNeeded();//Pawcio
-//DropSrc 
 //Telp Start push rare file
 	float			GetRareFilePushRatio() const ; // Added by Tarod
 //Telp End push rare file

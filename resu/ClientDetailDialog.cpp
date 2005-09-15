@@ -94,12 +94,13 @@ BOOL CClientDetailPage::OnSetActive()
 		else
 			GetDlgItem(IDC_DHASH)->SetWindowText(_T("?"));
 		
-		GetDlgItem(IDC_DSOFT)->SetWindowText(client->GetClientSoftVer());
+		GetDlgItem(IDC_DSOFT)->SetWindowText(client->DbgGetFullClientSoftVer());
 
 		buffer.Format(_T("%s"),(client->HasLowID() ? GetResString(IDS_IDLOW):GetResString(IDS_IDHIGH)));
 		GetDlgItem(IDC_DID)->SetWindowText(buffer);
 		
-		if (client->GetServerIP()){
+		if (client->GetServerIP())
+		{
 			CString strServerIP = ipstr(client->GetServerIP());
 			GetDlgItem(IDC_DSIP)->SetWindowText(strServerIP);
 			
@@ -135,7 +136,8 @@ BOOL CClientDetailPage::OnSetActive()
 		buffer.Format(_T("%s"),CastItoXBytes(client->GetDatarate(), false, true));
 		GetDlgItem(IDC_DAVDR)->SetWindowText(buffer);
 		
-		if (client->Credits()){
+		if (client->Credits())
+		{
 			GetDlgItem(IDC_DUPTOTAL)->SetWindowText(CastItoXBytes(client->Credits()->GetDownloadedTotal(), false, false));
 			GetDlgItem(IDC_DDOWNTOTAL)->SetWindowText(CastItoXBytes(client->Credits()->GetUploadedTotal(), false, false));
 			buffer.Format(_T("%.1f"),(float)client->Credits()->GetScoreRatio(client->GetIP()));

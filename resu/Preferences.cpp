@@ -67,18 +67,6 @@ int		CPreferences::m_iSourcesToSaveSLS;
 bool	CPreferences::m_bUseSaveLoadSources;
 //Ackronic END - Aggiunto da Aenarion[ITA] - SLS
 
-//DropSrc
-bool	CPreferences::m_bDropSourcesNNS;
-bool	CPreferences::m_bDropSourcesFQ;
-bool	CPreferences::m_bDropSourcesHQR;
-bool	CPreferences::m_bDropSourcesFR;
-uint32	CPreferences::m_iDropSourcesTimerNNS;
-uint32	CPreferences::m_iDropSourcesTimerFQ;
-uint32	CPreferences::m_iDropSourcesTimerFR;
-uint32	CPreferences::m_iDropSourcesTimerHQR;
-uint32	CPreferences::m_iDropSourcesHQRVal;
-//DropSrc
-
 //Start IP to Country
 IP2CountryNameSelection	CPreferences::m_iIP2CountryNameMode;
 bool	CPreferences::m_bIP2CountryShowFlag;
@@ -91,6 +79,15 @@ SYSTEMTIME	CPreferences::m_IP2CountryVersion;
 int     CPreferences::m_iCreditSystem;  // Credit System
 uint8	CPreferences::m_uScoreRatioThres;	// Credit System
 
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+bool	CPreferences::m_bDropSourcesNNS;
+bool	CPreferences::m_bDropSourcesFQ;
+bool	CPreferences::m_bDropSourcesHQR;
+uint32	CPreferences::m_iDropSourcesTimerNNS;
+uint32	CPreferences::m_iDropSourcesTimerFQ;
+uint32	CPreferences::m_iDropSourcesTimerHQR;
+uint16	CPreferences::MaxRemoveQRS;
+//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 
 // [Maella/sivka: -ReAsk SRCs after IP Change-]
 uint32	CPreferences::uLastKnownID;
@@ -1899,18 +1896,7 @@ void CPreferences::SavePreferences()
 	//Telp Start push rare file
     ini.WriteBool(_T("EnablePushRareFile"), enablePushRareFile, _T("eMule")); //Hawkstar, push rare file
 //Telp End push rare file
-//DropSrc
 
-	ini.WriteInt(_T("DropSourcesTimerNNS"),m_iDropSourcesTimerNNS);
-	ini.WriteInt(_T("DropSourcesNNS"),m_bDropSourcesNNS);
-	ini.WriteInt(_T("DropSourcesTimerFQ"),m_iDropSourcesTimerFQ);
-	ini.WriteInt(_T("DropSourcesFQ"),m_bDropSourcesFQ);
-	ini.WriteInt(_T("DropSourcesTimerFR"),m_iDropSourcesTimerFR);
-	ini.WriteInt(_T("DropSourcesFR"),m_bDropSourcesFR);
-	ini.WriteInt(_T("DropSourcesTimerHQR"),m_iDropSourcesTimerHQR);
-	ini.WriteInt(_T("DropSourcesHQR"),m_bDropSourcesHQR);
-	ini.WriteInt(_T("DropSourcesHQRVal"),m_iDropSourcesHQRVal);
-//DropSrc
 //Telp Start push small file
     ini.WriteBool(_T("EnablePushSmallFile"), enablePushSmallFile, _T("eMule")); //Hawkstar, push small file
 //Telp End push small file
@@ -1936,7 +1922,15 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("QuickStartMaxConPerFive"), m_QuickStartMaxConPerFive);
 	ini.WriteInt(_T("QuickStartMinutes"), m_QuickStartMinutes);
 	// [TPT] - quick start
-
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	ini.WriteInt(_T("DropSourcesTimerNNS"),m_iDropSourcesTimerNNS);
+	ini.WriteInt(_T("DropSourcesNNS"),m_bDropSourcesNNS);
+	ini.WriteInt(_T("DropSourcesTimerFQ"),m_iDropSourcesTimerFQ);
+	ini.WriteInt(_T("DropSourcesFQ"),m_bDropSourcesFQ);
+	ini.WriteInt(_T("DropSourcesTimerHQR"),m_iDropSourcesTimerHQR);
+	ini.WriteInt(_T("DropSourcesHQR"),m_bDropSourcesHQR);
+    ini.WriteInt(_T("MaxRemoveQueueRatingSources"),MaxRemoveQRS);
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 	// [ionix] quickstart after ip change added by lama
 	ini.WriteBool(_T("QuickStartAfterIPChange"), m_bQuickStartAfterIPChange);
 	// [ionix] quickstart after ip change	
@@ -2541,6 +2535,15 @@ void CPreferences::LoadPreferences()
 	if (m_iActivationLimitSLS > 200) m_iActivationLimitSLS = 200;*/
 	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
 
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	m_iDropSourcesTimerNNS = ini.GetInt(_T("DropSourcesTimerNNS"), 15);
+	m_bDropSourcesNNS = ini.GetBool(_T("DropSourcesNNS"), false);
+	m_iDropSourcesTimerFQ = ini.GetInt(_T("DropSourcesTimerFQ"));
+	m_bDropSourcesFQ = ini.GetBool(_T("DropSourcesFQ"), false);
+	m_iDropSourcesTimerHQR = ini.GetInt(_T("DropSourcesTimerHQR"));
+	m_bDropSourcesHQR = ini.GetBool(_T("DropSourcesHQR"), false);
+    MaxRemoveQRS=ini.GetInt(_T("MaxRemoveQueueRatingSources"),5000);
+	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 	
 	//FrankyFive: read Buffer Time Limit (with backward compatibility)
 	m_iBufferTimeLimit=ini.GetInt(_T("BufferTimeLimit"),10);
@@ -2567,17 +2570,6 @@ void CPreferences::LoadPreferences()
 	m_uiMaxSourcesHL = ini.GetInt(_T("MaxSourcesHL"), 7500); 
 	m_uiMaxAutoHL = max(m_uiMinAutoHL, m_uiMaxAutoHL); 
 //<<< WiZaRd - AutoHL added by lama
-//DropSrc
-	m_iDropSourcesTimerNNS = ini.GetInt(_T("DropSourcesTimerNNS"), 15);
-	m_bDropSourcesNNS = ini.GetBool(_T("DropSourcesNNS"), false);
-	m_iDropSourcesTimerFQ = ini.GetInt(_T("DropSourcesTimerFQ"), 15);
-	m_bDropSourcesFQ = ini.GetBool(_T("DropSourcesFQ"), false);
-	m_iDropSourcesTimerFR = ini.GetInt(_T("DropSourcesTimerFR"), 60);
-	m_bDropSourcesFR = ini.GetBool(_T("DropSourcesFR"), false);
-	m_iDropSourcesTimerHQR = ini.GetInt(_T("DropSourcesTimerHQR"), 30);
-	m_bDropSourcesHQR = ini.GetBool(_T("DropSourcesHQR"), false);
-	m_iDropSourcesHQRVal = ini.GetInt(_T("DropSourcesHQRVal"), 4000);
-//DropSrc
 // [TPT] - quick start	added by lama
 	m_QuickStart=ini.GetBool(_T("QuickStart"),false);
 	m_QuickStartMaxCon=ini.GetInt(_T("QuickStartMaxCon"), 1201);

@@ -112,15 +112,6 @@ public:
 	CPartFile(CString edonkeylink,uint8 cat=0);
 	CPartFile(class CED2KFileLink* fileLink,uint8 cat=0);
 	virtual ~CPartFile();
-//DropSrc
-	void	RemoveQueueFullSources();
-	void	RemoveNoNeededPartsSources();
-	void	RemoveHighQueueRanking();
-	void	RemoveQueueTooMany(); //KTS
-	void	RemoveQueueUnknown(unsigned int number_sources_to_remove = -1); //LSD
-	void	RemoveQueueAsking (unsigned int number_sources_to_remove = -1); //LSD
-	void	RemoveQueueConnecting (unsigned int number_sources_to_remove = -1); //LSD
-//DropSrc
 	bool	IsPartFile() const { return !(status == PS_COMPLETE); }
 
 	// eD2K filename
@@ -339,12 +330,7 @@ protected:
 	CSettingsSaver m_SettingsSaver; //Sivka added by lama
 
 private:
-	 //DropSrc
-	DWORD	m_LastRemovedTimeNNS;
-	DWORD	m_LastRemovedTimeFQ;
-	DWORD	m_LastRemovedTimeFR;
-	DWORD	m_LastRemovedTimeHQR;
-//DropSrc
+
 	BOOL 		PerformFileComplete(); // Lord KiRon
 	static UINT CompleteThreadProc(LPVOID pvParams); // Lord KiRon - Used as separate thread to complete file
 	static UINT AFX_CDECL AllocateSpaceThread(LPVOID lpParam);
@@ -423,6 +409,22 @@ public:
 	uint16  GetFileHardLimitSoft(); 
 	uint16  GetMaxSourcePerFileUDP();
 //<<< WiZaRd - AutoHL added by lama
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+private:
+	uint16	m_MaxRemoveQRS;
+	DWORD	m_LastRemovedTimeNNS;
+	DWORD	m_LastRemovedTimeFQ;
+	DWORD	m_LastRemovedTimeHQR;
+public:
+	void	RemoveLow2LowIPSourcesManual();
+	void	RemoveUnknownErrorBannedSourcesManual();
+	void	RemoveHighQRSourcesManual();
+	void	CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
+	void	RemoveQueueFullSources();
+	void	RemoveNoNeededPartsSources();
+	void	RemoveHighQueueRanking();
+//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+
 //KTS+ webcache
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 	// JP added netfinity download throttler
