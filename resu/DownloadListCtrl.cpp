@@ -22,7 +22,7 @@
 #include "MenuCmds.h"
 #include "ClientDetailDialog.h"
 #include "FileDetailDialog.h"
-#include "SivkaFileSettings.h" //added by sivka (AutoHL) added by lama
+#include "SivkaFileSettings.h" //added by sivka (AutoHL)
 #include "commentdialoglst.h"
 #include "MetaDataDlg.h"
 #include "InputBox.h"
@@ -954,7 +954,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 
 		case 6:		// sources
 		{
-			buffer = lpUpDownClient->DbgGetFullClientSoftVer(); //Spe64 change
+			buffer = lpUpDownClient->DbgGetFullClientSoftVer();
 			if (buffer.IsEmpty())
 				buffer = GetResString(IDS_UNKNOWN);
 			CRect rc(lpRect);
@@ -963,10 +963,8 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 		}
 
 		case 7:		// prio
-			if (lpUpDownClient->GetDownloadState()==DS_ONQUEUE)
-			{
-				if( lpUpDownClient->IsRemoteQueueFull() )
-				{
+			if (lpUpDownClient->GetDownloadState()==DS_ONQUEUE){
+				if (lpUpDownClient->IsRemoteQueueFull()){
 					buffer = GetResString(IDS_QUEUEFULL);
 					dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 				}
@@ -1007,79 +1005,24 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
                         buffer += _T(" (") + GetResString(IDS_NONEEDEDPARTS) + _T(")");
                     } else if(lpUpDownClient->GetDownloadState() == DS_DOWNLOADING) {
                         buffer += _T(" (") + GetResString(IDS_TRANSFERRING) + _T(")");
-                    } else if(lpUpDownClient->IsSwapSuspended(lpUpDownClient->GetRequestFile())) {
+                   } else if(lpUpDownClient->IsSwapSuspended(lpUpDownClient->GetRequestFile())) {
                         buffer += _T(" (") + GetResString(IDS_SOURCESWAPBLOCKED) + _T(")");
                     }
-
+           
                     if (lpUpDownClient && lpUpDownClient->GetRequestFile() && lpUpDownClient->GetRequestFile()->GetFileName()){
                         buffer.AppendFormat(_T(": \"%s\""),lpUpDownClient->GetRequestFile()->GetFileName());
                     }
                 }
 			}
-
+		
             if(thePrefs.IsExtControlsEnabled() && !lpUpDownClient->m_OtherRequests_list.IsEmpty()) {
                 buffer.Append(_T("*"));
             }
-// ZZ:DownloadManager <--
+          // ZZ:DownloadManager <--
 
-			COLORREF crOldTxtColor = dc->SetTextColor((COLORREF)RGB(200,80,200));; // EastShare - Moddified by TAHO, color
-			if (lpCtrlItem->type == AVAILABLE_SOURCE){
-				switch (lpUpDownClient->GetDownloadState()) {
-					case DS_CONNECTING:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(210,210,10));
-						break;
-					case DS_CONNECTED:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(210,210,10));
-						break;
-					case DS_WAITCALLBACK:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(210,210,10));
-						break;
-					case DS_ONQUEUE:
-						if( lpUpDownClient->IsRemoteQueueFull() ){
-							crOldTxtColor = dc->SetTextColor((COLORREF)RGB(10,130,160));
-						}
-						else {
-							if ( lpUpDownClient->GetRemoteQueueRank()){
-								int	m_iDifference = lpUpDownClient->GetDiffQR();
-								if(m_iDifference == 0){
-									crOldTxtColor = dc->SetTextColor((COLORREF)RGB(60,10,240));
-								}
-								else if(m_iDifference > 0){
-									crOldTxtColor = dc->SetTextColor((COLORREF)RGB(240,125,10));
-								}
-								else if(m_iDifference < 0){
-									crOldTxtColor = dc->SetTextColor((COLORREF)RGB(10,180,50));
-								}
-							}
-							else{
-								crOldTxtColor = dc->SetTextColor((COLORREF)RGB(50,80,140));
-							}
-						}
-						break;
-					case DS_DOWNLOADING:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(192,0,0));
-						break;
-					case DS_REQHASHSET:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(245,240,100));
-						break;
-					case DS_NONEEDEDPARTS:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(30,200,240)); 
-						break;
-					case DS_LOWTOLOWIP:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(135,135,135)); 
-						break;
-					case DS_TOOMANYCONNS:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(135,135,135)); 
-						break;
-					default:
-						crOldTxtColor = dc->SetTextColor((COLORREF)RGB(135,135,135)); 
-				}
-			}
-			// EastShare END - Added by TAHO, color
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
-			dc->SetTextColor(crOldTxtColor); // EastShare - Added by TAHO, color
-			break;
-				}
+						break;
+								}
 		case 9:		// remaining time & size
 			break;
 		case 10:	// last seen complete
