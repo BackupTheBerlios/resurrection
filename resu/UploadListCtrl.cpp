@@ -258,14 +258,12 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	}
 	else
 		odc->SetBkColor(GetBkColor());
-	//COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
 	CRect cur_rec(lpDrawItemStruct->rcItem);
-	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
-    if (client->GetSlotNumber() > theApp.uploadqueue->GetActiveUploadsCount()) {
-        dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
+	COLORREF crOldTextColor = dc.SetTextColor(m_crWindowText);
+
 // upload colors
 	if(thePrefs.IsUploadColor()) //2bc-colors-check
 	{
@@ -299,8 +297,6 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 // upload colors
 	else if(client->GetSlotNumber() > theApp.uploadqueue->GetActiveUploadsCount()) 
 		dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
-
-    }
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){
