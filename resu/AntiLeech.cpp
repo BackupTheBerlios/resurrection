@@ -11,7 +11,7 @@
 //
 //AntiLeechClass currently contains:
 //- AntiNickThief v2.2
-//- AntiModThief v2.1
+//- AntiModThief v2.2
 //for details see below!
 //
 //
@@ -65,6 +65,13 @@
 //
 //
 //Revision History:
+
+//v2.2: added another possibility to detect modfakers
+
+//		Note that you have to change the VERSION_BUILD definition in Version.h!
+
+//
+
 //v2.1:	Also check for correct length (this is to ban clients appending s.thing to
 //		the modstring before sending it (might be Community-Tags?)
 //
@@ -147,7 +154,37 @@ CString	CAntiLeech::GetAntiNickThiefNick()
 
 bool CAntiLeech::FindOurTagIn(const CString& tocomp)
 {
-	return (tocomp.Find(m_sAntiNickThiefTag) != -1);
+
+	//is he mirroring our current tag?
+
+	if(tocomp.Find(m_sAntiNickThiefTag) != -1)
+
+		return true;
+
+
+
+	//if we are below the timelimit, then also check for the old string!
+
+	if(m_uiAntiNickThiefCreateTimer > ::GetTickCount() //should always be true...
+
+		&& !m_sAntiNickThiefUpdate.IsEmpty() //just to be sure... :)
+
+		//is usually+1Day, let's check if we have changed the string below MAX_RECHECK
+
+		&& m_uiAntiNickThiefCreateTimer - GetTickCount() > MAX_VALID-MAX_RECHECK
+
+		//and we find the old string...		
+
+		&& tocomp.Find(m_sAntiNickThiefUpdate) != -1)
+
+		return true;
+
+
+
+	//else he is a nice guy ;)
+
+	return false;
+
 }
 //<<< AntiNickThief
 //>>> AntiModThief
@@ -164,7 +201,9 @@ bool CAntiLeech::CheckForModThief(const CUpDownClient* client)
 	return (StrStrI(tocomp, OurMod) //uses our string 
 		&& (tocomp.GetLength() != OurMod.GetLength() //but not the correct length 
 		|| !StrStr(tocomp, OurMod) //but not in correct case           
-		|| (client->GetClientSoftVer() != m_sMyVersion) //or wrong version 
+		|| client->GetClientSoftVer() != m_sMyVersion //or wrong version
+//removed because GetVersion() works different than in my own version and does not return the "real" version...
+		//|| client->GetVersion() != ((CemuleApp::m_nVersionMjr<<17)|(CemuleApp::m_nVersionMin<<10)|(CemuleApp::m_nVersionUpd<<7)|(CemuleApp::m_nVersionBld))
 		));
 }
 //<<< AntiModThief
