@@ -10,11 +10,6 @@ class CSourceSaver // WAS // class CSourceSaver //[ionix]- SLS - //
 public:
 	CSourceSaver(void);
 	~CSourceSaver(void);
- // WAS NOT HERE //[ionix]- SLS - //
-	bool Process(CPartFile* file); // WAS NOT HERE //[ionix]- SLS - //
-////	void Process(CPartFile* file, int maxSourcesToSave=10); // WAS NOT HERE //[ionix]- SLS - //
-	void DeleteFile(CPartFile* file, bool ErrIfFailed = true);
- // WAS NOT HERE //[ionix]- SLS - //
 
 protected:
 	class CSourceData
@@ -47,10 +42,6 @@ protected:
 	typedef CTypedPtrList<CPtrList, CSourceData*> SourceList;
 
 	void LoadSourcesFromFile(CPartFile* file, SourceList* sources, CString& slsfile);
- // WAS NOT HERE //[ionix]- SLS - //
-	void SaveSources(CPartFile* file, SourceList* prevsources, CString& slsfile, int maxSourcesToSave);
-////	void SaveSourcesToFile(CPartFile* file, SourceList* prevsources, CString& slsfile);
- // WAS NOT HERE //[ionix]- SLS - //
 	void AddSourcesToDownload(CPartFile* file, SourceList* sources);
 
 	bool m_LoadSourcesOnStart;

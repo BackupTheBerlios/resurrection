@@ -200,12 +200,7 @@ static  uint8	m_uScoreRatioThres;
 //Sezione Ackronic:
 //
 
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	static  int		m_iActivationLimitSLS;
-	static  int		m_iSourcesToSaveSLS;
-	static  bool	m_bUseSaveLoadSources;
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
-
+	
 static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	static    uint16  MaxRemoveQRS;
@@ -1078,11 +1073,7 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 /////////////////////////////////////////////////////////////
 //Sezione Ackronic:
 //
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	static	bool	UseSaveLoadSources()	 {return m_bUseSaveLoadSources;}
-	static	int		GetActivationLimitSLS()  {return m_iActivationLimitSLS;}
-	static	int		GetSourcesToSaveSLS()    {return m_iSourcesToSaveSLS;}
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
+	
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	static   uint16 CPreferences::GetMaxRemoveQRS()				{ return MaxRemoveQRS; }
  	static   void	SetMaxRemoveQRS(int in)						{MaxRemoveQRS=in;}

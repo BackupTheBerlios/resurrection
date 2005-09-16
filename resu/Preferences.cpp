@@ -61,12 +61,6 @@ char	CPreferences::olduserhash[64];
 #endif
 //KTS- Display User Hash
 
-//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-int		CPreferences::m_iActivationLimitSLS;
-int		CPreferences::m_iSourcesToSaveSLS;
-bool	CPreferences::m_bUseSaveLoadSources;
-//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
-
 //Start IP to Country
 IP2CountryNameSelection	CPreferences::m_iIP2CountryNameMode;
 bool	CPreferences::m_bIP2CountryShowFlag;
@@ -836,16 +830,6 @@ void CPreferences::Init()
 			AfxMessageBox(strError, MB_ICONERROR);
 		}
 	}
-
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	CString sSourceListsPath = CString(GetTempDir()) + _T("\\Saved Sources");
-	if (UseSaveLoadSources() && !PathFileExists(sSourceListsPath.GetBuffer()) && !::CreateDirectory(sSourceListsPath.GetBuffer(), 0)) {
-		CString strError;
-		strError.Format(_T("Failed to create source lists directory \"%s\" - %s"), sSourceListsPath, GetErrorMessage(GetLastError()));
-		AfxMessageBox(strError, MB_ICONERROR);
-	}
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
-
 
 	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
 		CreateUserHash();
@@ -1886,11 +1870,7 @@ void CPreferences::SavePreferences()
 //
 
 
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	ini.WriteInt(_T("ActivationLimitSLS"), m_iActivationLimitSLS);	
-	ini.WriteInt(_T("SourcesToSaveSLS"), m_iSourcesToSaveSLS);	
-	ini.WriteBool(_T("UseSaveLoadSources"), m_bUseSaveLoadSources);
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
+	
 //Telp Start payback first
 	ini.WriteBool(_T("PBF"),m_bPBF ,_T("eMule"));
 	//Telp End payback First
@@ -2537,18 +2517,7 @@ void CPreferences::LoadPreferences()
 //Sezione Ackronic:
 //
 
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	m_iActivationLimitSLS = ini.GetInt(_T("ActivationLimitSLS"), 100);	
-	m_iSourcesToSaveSLS = ini.GetInt(_T("SourcesToSaveSLS"), 10);	
-	m_bUseSaveLoadSources=ini.GetBool(_T("UseSaveLoadSources"), true);
-	////////////////////////////////////////////////////////////////
-	/*if (m_iSourcesToSaveSLS <= 0) m_iSourcesToSaveSLS = 1;
-	if (m_iSourcesToSaveSLS > 25) m_iSourcesToSaveSLS = 25;
-	if (m_iActivationLimitSLS <= 0)  m_iActivationLimitSLS = 1;
-	if (m_iActivationLimitSLS > 200) m_iActivationLimitSLS = 200;*/
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
-
-//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	m_iDropSourcesTimerNNS = ini.GetInt(_T("DropSourcesTimerNNS"), 15);
 	m_bDropSourcesNNS = ini.GetBool(_T("DropSourcesNNS"), false);
 	m_iDropSourcesTimerFQ = ini.GetInt(_T("DropSourcesTimerFQ"));

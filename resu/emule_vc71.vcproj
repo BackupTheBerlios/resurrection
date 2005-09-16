@@ -584,9 +584,6 @@
 				RelativePath="Sockets.cpp">
 			</File>
 			<File
-				RelativePath=".\SourceSaver.cpp">
-			</File>
-			<File
 				RelativePath="StatisticFile.cpp">
 			</File>
 			<File

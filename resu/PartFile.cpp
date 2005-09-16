@@ -2043,7 +2043,7 @@ void CPartFile::WriteCompleteSourcesCount(CSafeMemFile* file) const
 {
 	file->WriteUInt16(m_nCompleteSourcesCount);
 }
-//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
+
 int CPartFile::GetValidSourcesCount() const
 {
 	int counter = 0;
@@ -2065,19 +2065,7 @@ uint16 CPartFile::GetNotCurrentSourcesCount() const
 	}
 	return counter;
 }
-//int CPartFile::GetValidSourcesCount() const
-//{
-//	return m_anStates[DS_ONQUEUE]+m_anStates[DS_DOWNLOADING]+m_anStates[DS_CONNECTED]+m_anStates[DS_REMOTEQUEUEFULL];
-//}
-//uint16 CPartFile::GetNotCurrentSourcesCount() const
-//{
-//	return srclist.GetCount() - m_anStates[DS_DOWNLOADING] - m_anStates[DS_ONQUEUE];
-//}
-//uint16 CPartFile::GetAvailableSrcCount() const
-//{
-//	return m_anStates[DS_ONQUEUE]+m_anStates[DS_DOWNLOADING];
-//}
-//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
+
 uint32 CPartFile::GetNeededSpace() const
 {
 	if (m_hpartfile.GetLength() > GetFileSize())
@@ -2433,10 +2421,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 		count++;
 		if (count == 3){
 			count = 0;
-			//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-			if (thePrefs.UseSaveLoadSources())
-				m_sourcesaver.Process(this);
-				//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
+			
 			UpdateAutoDownPriority();
 			UpdateDisplayedInfo();
 			UpdateCompletedInfos();
@@ -3087,10 +3072,7 @@ BOOL CPartFile::PerformFileComplete()
 	// remove part.met file
 	if (_tremove(m_fullname))
 		theApp.QueueLogLine(true,GetResString(IDS_ERR_DELETEFAILED) + _T(" - ") + CString(strerror(errno)),m_fullname);
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	else
-		m_sourcesaver.DeleteFile(this);
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
+	
 	// remove backup files
 	CString BAKName(m_fullname);
 	BAKName.Append(PARTMET_BAK_EXT);
@@ -3244,10 +3226,7 @@ void CPartFile::DeleteFile(){
 
 	if (_tremove(m_fullname))
 		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + CString(strerror(errno)), m_fullname);
-	//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-	else
-		m_sourcesaver.DeleteFile(this);
-	//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
+	
 	CString partfilename(RemoveFileExtension(m_fullname));
 	if (_tremove(partfilename))
 		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + CString(strerror(errno)), partfilename);

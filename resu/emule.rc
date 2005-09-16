@@ -3489,7 +3489,6 @@ BEGIN
     IDS_SIVKA_ASK_LOG       "Log banned clients"
     IDS_CHECK_SIVKA_BANLOG  "activate Sivka BanLog"
     IDS_CHECK_SIVKABAN      "activate Sivka-Ban"
-    IDS_SOURCE_LOADER_SAVER "SLS"
     IDS_ACKRONIC_SETTINGS   "AcKroNiC Setting"
     IDS_POWERRELEASE        "PowerRelease"
 END

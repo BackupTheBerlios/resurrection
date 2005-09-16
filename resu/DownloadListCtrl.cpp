@@ -851,12 +851,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				case SF_LINK:
 					buffer = GetResString(IDS_SW_LINK);
 					break;
-					//Ackronic START - Aggiunto da Aenarion[ITA] - SLS
-				case SF_SLS:
-					buffer = GetResString(IDS_SOURCE_LOADER_SAVER); //ADDED IDS by FrankyFive
-					break;
-					//Ackronic END - Aggiunto da Aenarion[ITA] - SLS
-			}
+					}
 			dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			break;
 

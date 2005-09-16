@@ -197,7 +197,6 @@ enum ESourceFrom{
 	SF_SOURCE_EXCHANGE	= 2,
 	SF_PASSIVE			= 3,
 	SF_LINK				= 4,
-	SF_SLS				= 5//Ackronic - Aggiunto da Aenarion[ITA] - SLS
 };
 
 struct PartFileStamp{

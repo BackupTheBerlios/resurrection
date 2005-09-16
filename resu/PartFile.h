@@ -17,7 +17,6 @@
 #include "KnownFile.h"
 #include "DeadSourceList.h"
 #include "CorruptionBlackBox.h"
-#include "SourceSaver.h"//Ackronic - Aggiunto da Aenarion[ITA] - SLS
 #include "StatisticFile.h"
 #include "SettingsSaver.h" //added by sivka added by lama [autoHL]
 enum EPartFileStatus{
@@ -326,7 +325,6 @@ protected:
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile(uint8 cat=0);
 	void	Init();
-	CSourceSaver m_sourcesaver;//Ackronic - Aggiunto da Aenarion[ITA] - SLS
 	CSettingsSaver m_SettingsSaver; //Sivka added by lama
 
 private:
