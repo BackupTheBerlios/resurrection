@@ -58,7 +58,7 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 // ==> Anti Uploader Ban - Stulle
 	int m_iAntiUploaderBanLimit;
 	int m_iAntiUploaderBanCase;
-// ==> Anti Uploader Ban - Stulle
+	// <== Anti Uploader Ban - Stulle
 // ==> Anti Uploader Ban - Stulle
 	HTREEITEM m_htiAntiUploaderBanLimit;
 	HTREEITEM m_htiAntiCase1;

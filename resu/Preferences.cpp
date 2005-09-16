@@ -545,10 +545,6 @@ bool	CPreferences::m_bPeerCacheWasFound;
 bool	CPreferences::m_bPeerCacheEnabled;
 uint16	CPreferences::m_nPeerCachePort;
 bool	CPreferences::m_bPeerCacheShow;
-// ==> Anti Uploader Ban - Stulle
-uint16  CPreferences::m_iAntiUploaderBanLimit;
-uint8	CPreferences::AntiUploaderBanCaseMode;
-// <== Anti Uploader Ban - Stulle
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
 SYSTEMTIME	CPreferences::m_FakesDatVersion;
 bool	CPreferences::UpdateFakeStartup;
@@ -621,6 +617,11 @@ bool	CPreferences::IsWebCacheTestPossible()//jp check proxy config
 		&& m_bHighIdPossible
 		&& !theApp.listensocket->TooManySockets());// no fake high ID
 }
+// ==> Anti Uploader Ban - Stulle
+uint16  CPreferences::m_iAntiUploaderBanLimit;
+uint8	CPreferences::AntiUploaderBanCaseMode;
+// <== Anti Uploader Ban - Stulle
+
 //Jp proxy configuration test end
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 uint8	CPreferences::webcacheTrustLevel;
@@ -648,6 +649,7 @@ webcacheReleaseAllowed = true; //jp webcache release
 m_bHighIdPossible = false; // JP detect fake HighID (from netfinity)
 //JP set standard values for stuff that doesn't need to be saved. This should probably be somewhere else END
 //KTS- webcache
+
 }
 
 CPreferences::~CPreferences()
@@ -2127,10 +2129,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("AutoUPdateIP2Country"),AutoUpdateIP2Country,_T("eMule"));
 	//Commander - Added: IP2Country Auto-updating - End
 ini.WriteString(_T("UpdateURLIP2Country"),UpdateURLIP2Country,_T("eMule"));//Commander - Added: IP2Country auto-updating
-// ==> Anti Uploader Ban - Stulle
-	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit,_T("StulleMule"));
-	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode,_T("StulleMule"));
-	// <== Anti Uploader Ban - Stulle
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
 	ini.WriteBinary(_T("FakesDatVersion"), (LPBYTE)&m_FakesDatVersion, sizeof(m_FakesDatVersion),_T("eMule")); 
 	ini.WriteBool(_T("UpdateFakeStartup"),UpdateFakeStartup,_T("eMule"));
@@ -2167,7 +2165,10 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 //==> Chunk Selection Patch by Xman [shadow2004]
 	ini.WriteInt(_T("EnableCSP"),m_iEnableCSP,_T("NextEMF"));
 //<== Chunk Selection Patch by Xman [shadow2004]
-
+	// ==> Anti Uploader Ban - Stulle
+	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit,_T("StulleMule"));
+	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode,_T("StulleMule"));
+	// <== Anti Uploader Ban - Stulle
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2929,6 +2930,10 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_nPeerCachePort = ini.GetInt(_T("PCPort"), 0);
 	m_bPeerCacheShow = ini.GetBool(_T("Show"), false);
 //Sivka (AutoHL) added by lama
+// ==> Anti Uploader Ban - Stulle
+	m_iAntiUploaderBanLimit = ini.GetInt(_T("AntiUploaderBanLimit"), 0, _T("StulleMule"));
+	AntiUploaderBanCaseMode = ini.GetInt(_T("AntiUploaderBanCaseMode"), 1, _T("StulleMule"));
+	// <== Anti Uploader Ban - Stulle
   bReAskSRCAfterIPChange = ini.GetBool(_T("ReAskSRCAfterIPChange"),false); // [Maella/sivka: -ReAsk SRCs after IP Change-]
 	m_activeConnectionControl = ini.GetBool(_T("ActiveConnectionControl"), false,_T("eMule"));//Obelix
     //Sivka (AutoHL) added by lama

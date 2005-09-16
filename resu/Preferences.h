@@ -689,6 +689,10 @@ static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat
 //==> Chunk Selection Patch by Xman [lama]
 	static	int		m_iEnableCSP;
 //<== Chunk Selection Patch by Xman [lama]
+	// ==> Anti Uploader Ban - Stulle
+	static uint16 m_iAntiUploaderBanLimit;
+	static uint8 AntiUploaderBanCaseMode;
+	// <== Anti Uploader Ban - Stulle
 	enum Table
 	{
 		tableDownload, 
@@ -742,11 +746,6 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 //Telp Start push small file
     static bool GetEnablePushSmallFile()			{return enablePushSmallFile;} //Hawkstar, push small file
 //Telp End push small file
-// ==> Anti Uploader Ban - Stulle
-	static uint16 m_iAntiUploaderBanLimit;
-	static uint8 AntiUploaderBanCaseMode;
-	// <== Anti Uploader Ban - Stulle
-
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
 	static SYSTEMTIME		m_FakesDatVersion;
 	static bool		UpdateFakeStartup;
@@ -1480,10 +1479,6 @@ static	uint16	GetMaxSourcePerFileSoft();
 	static	int		GetCreditSystem()					{return m_iCreditSystem;}
 	static	bool	UseCreditSystem()					{if (m_iCreditSystem != 3) return true; else return false;}
 	// Credit System
-// ==> Anti Uploader Ban - Stulle
-	static	uint8	GetAntiUploaderBanLimit()	{return m_iAntiUploaderBanLimit;}
-	static	uint8	GetAntiUploaderBanCase()	{return AntiUploaderBanCaseMode;}
-	// <== Anti Uploader Ban - Stulle
 
 static	CString	GetUpdateURLFakeList()				{return CString(UpdateURLFakeList);}		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 static	CString	GetUpdateURLIPFilter()				{return CString(UpdateURLIPFilter);}//MORPH START added by Yun.SF3: Ipfilter.dat update
@@ -1523,7 +1518,10 @@ static LPSYSTEMTIME   GetIPfilterVersion()				{return &m_IPfilterVersion;}
 	static bool		IsSivkaBan()				{return m_bUseSivkaBan;}
 	static bool		IsSivkaBanLog()				{return m_bLogSivkaBan;}
 //<==- Sivka - Aggressive Client Handling [WiZaRd]
-
+	// ==> Anti Uploader Ban - Stulle
+	static	uint16	GetAntiUploaderBanLimit()	{return m_iAntiUploaderBanLimit;}
+	static	uint8	GetAntiUploaderBanCase()	{return AntiUploaderBanCaseMode;}
+	// <== Anti Uploader Ban - Stulle
 	//START adding by sivka (AutoHL) added by lama
 	static bool		m_EnableAutoHLTemp;
 	static void		SetEnableAutoHLTemp(bool in)		{m_EnableAutoHLTemp=in;}

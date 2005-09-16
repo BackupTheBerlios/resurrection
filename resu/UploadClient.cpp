@@ -1062,37 +1062,42 @@ void CUpDownClient::AddRequestCount(const uchar* fileid)
 // ==> Anti Uploader Ban - Stulle
 bool CUpDownClient::AntiUploaderBanActive()
 {
-// Credits()->GetDownloadedTotal() <== data amount the other client gave us
-// Credits()->GetUploadedTotal(); <== data amount the other client got from us
+// credits->GetDownloadedTotal() <== data amount the other client gave us
+// credits->GetUploadedTotal() <== data amount the other client got from us
 
 	if (thePrefs.GetAntiUploaderBanLimit() != 0){
+		if (credits->GetUploadedTotal() > credits->GetDownloadedTotal()) // we don't want a negative result!
+			return false;
+		else
+		{
 		switch (thePrefs.GetAntiUploaderBanCase())	{
 
 			case CS_1:{
-				if ((Credits()->GetDownloadedTotal()) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
+					if ((credits->GetDownloadedTotal()) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
 					m_iAntiUploaderBan = 1;
 				else
 					m_iAntiUploaderBan = 0;
 					  } break;
 
 			case CS_2:{
-				if (((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
+					if (((credits->GetDownloadedTotal())-(credits->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
 					m_iAntiUploaderBan = 1;
 				else
 					m_iAntiUploaderBan = 0;
 					  } break;
 
 			case CS_3:{
-				if (((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20)){
+					if (((credits->GetDownloadedTotal())-(credits->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20)){
 					SetAntiUploadBanThird(true);
 					m_iAntiUploaderBan = 1; }
-				else if ((((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) > 0) && GetAntiUploadBanThird())
+					else if ((((credits->GetDownloadedTotal())-(credits->GetUploadedTotal())) > 0) && GetAntiUploadBanThird())
 					m_iAntiUploaderBan = 1;
 				else { 
 					SetAntiUploadBanThird(false);
 					m_iAntiUploaderBan = 0; }
 					  } break;
 		}
+			}
 		if (m_iAntiUploaderBan == 1)
 			return true;
 		else return false;
@@ -1118,6 +1123,10 @@ void  CUpDownClient::UnBan()
 
 void CUpDownClient::Ban(LPCTSTR pszReason)
 {
+// ==> Anti Uploader Ban - Stulle
+	if (AntiUploaderBanActive())
+		return
+		// <== Anti Uploader Ban - Stulle
 	theApp.clientlist->AddTrackClient(this);
 	if (!IsBanned()){
 		if (thePrefs.GetLogBannedClients())
