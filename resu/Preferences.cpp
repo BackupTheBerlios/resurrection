@@ -124,7 +124,12 @@ bool	CPreferences::enablePushRareFile; //Hawkstar, push rare file
 //Telp Start push small file
 bool	CPreferences::enablePushSmallFile; //Hawkstar, push small file
 //Telp End push small file
-
+// eF-Mod :: InvisibleMode
+bool    CPreferences::m_bInvisibleMode;         
+bool    CPreferences::m_bStartInvisible; 
+UINT    CPreferences::m_iInvisibleModeHotKeyModifier; 
+char    CPreferences::m_cInvisibleModeHotKey; 
+// eF-Mod end
 int		CPreferences::m_iDbgHeap;
 CString	CPreferences::strNick;
 uint16	CPreferences::minupload;
@@ -1940,6 +1945,14 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("UpDataratePerClient"), UpDataratePerClient);
 	//end [sivka: Upload DataRate Per Client]
 
+	// eF-Mod :: Invisible Mode
+    ini.WriteBool	(_T("InvisibleMode"),m_bInvisibleMode);
+	ini.WriteBool	(_T("StartInvisible"),m_bStartInvisible);
+    ini.WriteInt	(_T("InvisibleModeHKKey"),(int)m_cInvisibleModeHotKey);
+    ini.WriteInt	(_T("InvisibleModeHKKeyModifier"),m_iInvisibleModeHotKeyModifier); 
+	// eF-Mod end
+
+
 	// Barry - New properties...
     ini.WriteBool(_T("AutoConnectStaticOnly"), m_bAutoConnectToStaticServersOnly);
 	ini.WriteBool(_T("AutoTakeED2KLinks"), autotakeed2klinks);
@@ -2551,6 +2564,13 @@ void CPreferences::LoadPreferences()
 	//DkD - [sivka: Upload DataRate Per Client]
 	UpDataratePerClient=ini.GetInt(_T("UpDataratePerClient"),5);
 	//end [sivka: Upload DataRate Per Client]
+
+	// eF-Mod :: Invisible Mode
+	char c = (char)ini.GetInt(_T("InvisibleModeHKKey"), (int)'E'); 
+	SetInvisibleMode( ini.GetBool(_T("InvisibleMode"), false),           
+    ini.GetInt(_T("InvisibleModeHKKeyModifier"), MOD_CONTROL | MOD_SHIFT | MOD_ALT), c); 
+    m_bStartInvisible = ini.GetBool(_T("StartInvisible"), true); //>>> StartUp InvisibleMode Enhancement 
+	// eF-Mod end 
 
 	
 
@@ -3311,4 +3331,16 @@ void CPreferences::SetMaxGraphUploadRate(int in){
 
 bool CPreferences::IsDynUpEnabled()	{
 	return m_bDynUpEnabled || maxGraphUploadRate == UNLIMITED;
-}
+}// eF-Mod :: InvisibleMode
+void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key) 
+{ 
+    m_bInvisibleMode = on; 
+    m_iInvisibleModeHotKeyModifier = keymodifier; 
+    m_cInvisibleModeHotKey = key; 
+    if(theApp.emuledlg!=NULL){ 
+        //Always unregister, the keys could be different. 
+        theApp.emuledlg->UnRegisterInvisibleHotKey(); 
+        if(m_bInvisibleMode)    theApp.emuledlg->RegisterInvisibleHotKey(); 
+    } 
+}     
+// eF-Mod end

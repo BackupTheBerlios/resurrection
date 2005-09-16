@@ -300,6 +300,35 @@ protected:
 	CxSkinButton	m_co_ToolsBtn;
 	CxSkinButton	m_co_HelpBtn;
 //<== Toolbar [shadow2004]
+// eF-Mod :: InvisibleMode
+
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+	HICON	m_icoSysTrayMessage;
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
+public:
+	BOOL	RegisterInvisibleHotKey();
+	BOOL	UnRegisterInvisibleHotKey();
+protected:
+	LRESULT	OnHotKey(WPARAM wParam, LPARAM lParam);
+
+	// Allows "invisible mode" on multiple instances of eMule
+	afx_msg LRESULT OnRestoreWindowInvisibleMode(WPARAM, LPARAM);
+	static BOOL CALLBACK AskEmulesForInvisibleMode(HWND hWnd, LPARAM lParam);
+
+private:
+	void	ToggleShow();
+	void	ToggleHide();
+	bool	b_TrayWasVisible;
+	bool	b_HideApp;
+
+public:  
+     BOOL     IsWndVisible;   
+private:  
+     bool     m_bstartUpInvisibleChecked;   
+     bool     m_bStartInvisible;   
+     void     HideWindow();   
+	 // eF-Mod end
+
 };
 
 
@@ -336,3 +365,16 @@ enum EWebinterfaceOrders
 	WEBGUIIA_KAD_STOP,
 	WEBGUIIA_KAD_RCFW
 };
+// eF-Mod :: InvisibleMode
+enum EEmuleHotKeysIDs
+{
+	HOTKEY_INVISIBLEMODE_ID
+};
+
+enum EEMuleInvisibleModeEnumOptions
+{
+	INVMODE_RESTOREWINDOW,
+	INVMODE_REGISTERHOTKEY,
+	INVMODE_HIDEWINDOW //MORPH - Toggle Show Hide window 
+};
+// eF-Mod end

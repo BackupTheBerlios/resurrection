@@ -346,9 +346,8 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				}
 				case 5:{
-
-					Sbuffer = client->DbgGetFullClientSoftVer();
-
+					//Sbuffer = client->GetClientSoftVer();
+					Sbuffer = client->DbgGetFullClientSoftVer(); // Maella -Support for tag ET_MOD_VERSION 0x55
 					if (Sbuffer.IsEmpty())
 						Sbuffer = GetResString(IDS_UNKNOWN);
 					break;

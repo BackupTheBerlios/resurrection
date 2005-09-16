@@ -34,6 +34,8 @@ public:
 	virtual void OnTrayRButtonDblClk(CPoint pt);
 	virtual void OnTrayMouseMove(CPoint pt);
 
+	void HideTray();  //>>> [WiZaRd] - StartUp InvisibleMode Enhancement 
+
 protected:
 	bool* m_pbMinimizeToTray;
     bool m_bCurIconDelete;

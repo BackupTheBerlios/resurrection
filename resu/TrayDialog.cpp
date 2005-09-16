@@ -19,6 +19,7 @@
 #include "TrayDialog.h"
 #include "emuledlg.h"
 #include "UserMsgs.h"
+#include "Preferences.h" //[ionix] - Invisible Mode 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -302,6 +303,11 @@ void CTrayDialog::OnSysCommand(UINT nID, LPARAM lParam)
 	{
 		if ((nID & 0xFFF0) == SC_MINIMIZE)
 		{
+			// eF-Mod :: InvisibleMode
+            if (thePrefs.GetInvisibleMode()) 
+                ShowWindow(SW_HIDE);         
+			else
+			// eF-Mod end
 			if (TrayShow())
 				ShowWindow(SW_HIDE);		
 		}
@@ -310,6 +316,11 @@ void CTrayDialog::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 	else if ((nID & 0xFFF0) == SC_MINIMIZETRAY)
 	{
+		// eF-Mod :: InvisibleMode
+        if (thePrefs.GetInvisibleMode())
+			ShowWindow(SW_HIDE);  
+		else
+		// eF-Mod end
 		if (TrayShow())
 			ShowWindow(SW_HIDE);
 	}
@@ -372,3 +383,9 @@ void CTrayDialog::RestoreWindow()
 {
 	ShowWindow(SW_SHOW);
 }
+//>>> [WiZaRd] - StartUp InvisibleMode Enhancement  
+void CTrayDialog::HideTray()  
+{  
+     ShowWindow(SW_HIDE);  
+}  
+//<<< [WiZaRd] - StartUp InvisibleMode Enhancement  

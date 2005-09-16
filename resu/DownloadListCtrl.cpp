@@ -2715,7 +2715,8 @@ m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResSt
     m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_WSMenu.m_hMenu, _T("DL-Feedback"), _T("FILECOMMENTS")); //[ionix] Hawkstar DL-Feedback 
 }
 
-CString CDownloadListCtrl::getTextList() {
+CString CDownloadListCtrl::getTextList()
+{
 	CString out;
 
 	for (ListItems::iterator it = m_ListItems.begin(); it != m_ListItems.end(); it++)

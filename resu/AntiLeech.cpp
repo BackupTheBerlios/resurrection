@@ -164,19 +164,12 @@ bool CAntiLeech::FindOurTagIn(const CString& tocomp)
 
 
 	//if we are below the timelimit, then also check for the old string!
-
 	if(m_uiAntiNickThiefCreateTimer > ::GetTickCount() //should always be true...
-
 		&& !m_sAntiNickThiefUpdate.IsEmpty() //just to be sure... :)
-
 		//is usually+1Day, let's check if we have changed the string below MAX_RECHECK
-
 		&& m_uiAntiNickThiefCreateTimer - GetTickCount() > MAX_VALID-MAX_RECHECK
-
 		//and we find the old string...		
-
 		&& tocomp.Find(m_sAntiNickThiefUpdate) != -1)
-
 		return true;
 
 

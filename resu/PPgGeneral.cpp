@@ -30,9 +30,7 @@
 #include "ChatWnd.h"
 #include "SharedFilesWnd.h"
 #include "KademliaWnd.h"
-//#include "IrcWnd.h" removed irc [lama]
 #include "WebServices.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "StringConversion.h"
 #include "Log.h"
 
@@ -73,13 +71,36 @@ BEGIN_MESSAGE_MAP(CPPgGeneral, CPropertyPage)
 	ON_BN_CLICKED(IDC_WEBSVEDIT , OnBnClickedEditWebservices)
 	ON_BN_CLICKED(IDC_ONLINESIG, OnSettingsChange)
 	ON_BN_CLICKED(IDC_CHECK4UPDATE, OnBnClickedCheck4Update)
+	// eF-Mod :: InvisibleMode
+	ON_CBN_SELCHANGE(IDC_INVISIBLE_MODE_SELECT_COMBO, OnSettingsChange) 
+	ON_CBN_SELCHANGE(IDC_INVISIBLE_MODE_KEY_COMBO, OnCbnSelchangeKeymodcombo) 
+	ON_BN_CLICKED(IDC_INVISIBLE_MODE, OnBoxesChange) 
+	ON_BN_CLICKED(IDC_INVISIBLE_ONSTART, OnBoxesChange)	//>>> [ionix] - StartUp InvisibleMode Enhancement
+	// eF-Mod end
 	ON_WM_HSCROLL()
-	//ON_WM_HELPINFO() removed help [lama]
 END_MESSAGE_MAP()
 
 void CPPgGeneral::LoadSettings(void)
 {
 	GetDlgItem(IDC_NICK)->SetWindowText(thePrefs.GetUserNick());
+
+	// eF-Mod :: InvisibleMode
+		m_iActualKeyModifier = thePrefs.GetInvisibleModeHKKeyModifier(); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO))->SelectString(-1, CString(thePrefs.GetInvisibleModeHKKey())); 
+		if (!thePrefs.GetInvisibleMode()){ 
+			GetDlgItem(IDC_INVISIBLE_MODE_SELECT_STATIC)->EnableWindow(false); 
+			GetDlgItem(IDC_INVISIBLE_MODE_MODIFIER_STATIC)->EnableWindow(false); 
+			GetDlgItem(IDC_INVISIBLE_MODE_KEY_STATIC)->EnableWindow(false); 
+			GetDlgItem(IDC_INVISIBLE_MODE_SYMBOL_STATIC)->EnableWindow(false); 
+			GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO)->EnableWindow(false); 
+			GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO)->EnableWindow(false); 
+			CheckDlgButton(IDC_INVISIBLE_MODE, 0); 
+			GetDlgItem(IDC_INVISIBLE_ONSTART)->EnableWindow(false); 
+		} else 
+			CheckDlgButton(IDC_INVISIBLE_MODE, 1); 
+
+			CheckDlgButton(IDC_INVISIBLE_ONSTART, thePrefs.IsStartInvisible());
+		// eF-Mod end
 
 	for(int i = 0; i < m_language.GetCount(); i++)
 		if(m_language.GetItemData(i) == thePrefs.GetLanguageID())
@@ -135,6 +156,14 @@ BOOL CPPgGeneral::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 	InitWindowStyles(this);
 
+	// eF-Mod :: InvisibleMode
+	// Add keys to ComboBox 
+	for(int i='A'; i<='Z'; i++) 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO))->AddString(CString((TCHAR)(i))); 
+	for(int i='0'; i<='9'; i++) 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO))->AddString(CString((TCHAR)(i))); 
+	// eF-Mod end
+
 	((CEdit*)GetDlgItem(IDC_NICK))->SetLimitText(thePrefs.GetMaxUserNickLength());
 
 	CWordArray aLanguageIDs;
@@ -186,6 +215,18 @@ void ModifyAllWindowStyles(CWnd* pWnd, DWORD dwRemove, DWORD dwAdd)
 
 BOOL CPPgGeneral::OnApply()
 {
+
+	// eF-Mod :: InvisibleMode
+	CString sKey; 
+	((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO))->GetLBText(((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO))->GetCurSel(), sKey); 
+	if (IsDlgButtonChecked(IDC_INVISIBLE_MODE)!=0) 
+		thePrefs.SetInvisibleMode(true,m_iActualKeyModifier,sKey[0]); 
+	else 
+		thePrefs.SetInvisibleMode(false,m_iActualKeyModifier,sKey[0]); 
+
+	thePrefs.m_bStartInvisible = IsDlgButtonChecked(IDC_INVISIBLE_ONSTART)!=0;
+	// eF-Mod end
+
 	CString strNick;
 	GetDlgItem(IDC_NICK)->GetWindowText(strNick);
 	strNick.Trim();
@@ -227,7 +268,6 @@ BOOL CPPgGeneral::OnApply()
 			theApp.emuledlg->sharedfileswnd->Localize();
 			theApp.emuledlg->chatwnd->Localize();
 			theApp.emuledlg->Localize();
-			//theApp.emuledlg->ircwnd->Localize(); removed irc [lama]
 			theApp.emuledlg->kademliawnd->Localize();
 		}
 	}
@@ -274,6 +314,38 @@ void CPPgGeneral::Localize(void)
 {
 	if(m_hWnd)
 	{
+		// eF-Mod :: InvisibleMode
+		// Add key modifiers to ComboBox 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->ResetContent(); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_CTRLKEY)); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_ALTKEY)); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_SHIFTKEY)); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_CTRLKEY) + _T(" + ") + GetResString(IDS_ALTKEY)); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_CTRLKEY) + _T(" + ") + GetResString(IDS_SHIFTKEY)); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_ALTKEY) + _T(" + ") + GetResString(IDS_SHIFTKEY)); 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->AddString(GetResString(IDS_CTRLKEY) + _T(" + ") + GetResString(IDS_ALTKEY) + _T(" + ") + GetResString(IDS_SHIFTKEY)); 
+
+		CString key_modifier; 
+		if (m_iActualKeyModifier & MOD_CONTROL) 
+			key_modifier=GetResString(IDS_CTRLKEY); 
+		if (m_iActualKeyModifier & MOD_ALT){ 
+			if (!key_modifier.IsEmpty()) key_modifier += " + "; 
+			key_modifier+=GetResString(IDS_ALTKEY); 
+		} 
+		if (m_iActualKeyModifier & MOD_SHIFT){ 
+			if (!key_modifier.IsEmpty()) key_modifier += " + "; 
+			key_modifier+=GetResString(IDS_SHIFTKEY); 
+		} 
+		((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->SelectString(-1,key_modifier); 
+
+		GetDlgItem(IDC_INVISIBLE_MODE_GROUP_BOX)->SetWindowText(GetResString(IDS_INVMODE_GROUP)); 
+		GetDlgItem(IDC_INVISIBLE_MODE)->SetWindowText(GetResString(IDS_INVMODE)); 
+		GetDlgItem(IDC_INVISIBLE_MODE_SELECT_STATIC)->SetWindowText(GetResString(IDS_INVMODE_HOTKEY)); 
+		GetDlgItem(IDC_INVISIBLE_MODE_MODIFIER_STATIC)->SetWindowText(GetResString(IDS_INVMODE_MODKEY)); 
+		GetDlgItem(IDC_INVISIBLE_MODE_KEY_STATIC)->SetWindowText(GetResString(IDS_INVMODE_VKEY)); 
+		GetDlgItem(IDC_INVISIBLE_ONSTART)->SetWindowText(GetResString(IDS_INVMODE_ONSTART)); 
+		// eF-Mod end
+
 		SetWindowText(GetResString(IDS_PW_GENERAL));
 		GetDlgItem(IDC_NICK_FRM)->SetWindowText(GetResString(IDS_QL_USERNAME));
 		GetDlgItem(IDC_LANG_FRM)->SetWindowText(GetResString(IDS_PW_LANG));
@@ -364,24 +436,35 @@ void CPPgGeneral::OnBnClickedCheck4Update()
 	GetDlgItem(IDC_DAYS)->ShowWindow( IsDlgButtonChecked(IDC_CHECK4UPDATE)?SW_SHOW:SW_HIDE );
 }
 
-/*void CPPgGeneral::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_General);
-}
 
-BOOL CPPgGeneral::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
+void CPPgGeneral::SetBoxes() 
+{     
+	bool bImode = IsDlgButtonChecked(IDC_INVISIBLE_MODE)!=0; 
 
-BOOL CPPgGeneral::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/
+	GetDlgItem(IDC_INVISIBLE_MODE_SELECT_STATIC)->EnableWindow(bImode); 
+	GetDlgItem(IDC_INVISIBLE_MODE_MODIFIER_STATIC)->EnableWindow(bImode); 
+	GetDlgItem(IDC_INVISIBLE_MODE_KEY_STATIC)->EnableWindow(bImode); 
+	GetDlgItem(IDC_INVISIBLE_MODE_SYMBOL_STATIC)->EnableWindow(bImode); 
+	GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO)->EnableWindow(bImode); 
+	GetDlgItem(IDC_INVISIBLE_MODE_SELECT_COMBO)->EnableWindow(bImode); 
+	GetDlgItem(IDC_INVISIBLE_ONSTART)->EnableWindow(bImode); 
+
+	SetModified(); 
+} 
+
+void CPPgGeneral::OnCbnSelchangeKeymodcombo() 
+{ 
+	CString sKeyMod; 
+
+	((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->GetLBText(((CComboBox*)GetDlgItem(IDC_INVISIBLE_MODE_KEY_COMBO))->GetCurSel(), sKeyMod); 
+	m_iActualKeyModifier = 0; 
+	if (sKeyMod.Find(GetResString(IDS_CTRLKEY))!=-1) 
+		m_iActualKeyModifier |= MOD_CONTROL; 
+	if (sKeyMod.Find(GetResString(IDS_ALTKEY))!=-1) 
+		m_iActualKeyModifier |= MOD_ALT; 
+	if (sKeyMod.Find(GetResString(IDS_SHIFTKEY))!=-1) 
+		m_iActualKeyModifier |= MOD_SHIFT; 
+
+	SetModified(); 
+} 
+// eF-Mod end

@@ -117,6 +117,16 @@ BOOL (WINAPI *_TransparentBlt)(HDC, int, int, int, int, HDC, int, int, int, int,
 const static UINT UWM_ARE_YOU_EMULE = RegisterWindowMessage(EMULE_GUID);
 UINT _uMainThreadId = 0;
 
+// eF-Mod :: InvisibleMode
+// Allows "invisible mode" on multiple instances of eMule
+#ifdef _DEBUG
+#define EMULE_GUID_INVMODE				"EMULE-{4EADC6FC-516F-4b7c-9066-97D893649569}-DEBUG-INVISIBLEMODE"
+#else
+#define EMULE_GUID_INVMODE				"EMULE-{4EADC6FC-516F-4b7c-9066-97D893649569}-INVISIBLEMODE"
+#endif
+const static UINT UWM_RESTORE_WINDOW_IM=RegisterWindowMessage(_T(EMULE_GUID_INVMODE));
+// eF-Mod end
+
 
 ///////////////////////////////////////////////////////////////////////////
 // CemuleDlg Dialog
@@ -139,6 +149,7 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_MESSAGE(WM_COPYDATA, OnWMData)
 	ON_MESSAGE(WM_KICKIDLE, OnKickIdle)
 	ON_WM_SHOWWINDOW()
+	ON_MESSAGE(WM_HOTKEY, OnHotKey)	//[ionix] - Invisible Mode
 	ON_WM_DESTROY()
 	ON_WM_SETTINGCHANGE()
 
@@ -158,6 +169,9 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_NOTIFY_EX_RANGE(RBN_CHEVRONPUSHED, 0, 0xFFFF, OnChevronPushed)
 
 	ON_REGISTERED_MESSAGE(UWM_ARE_YOU_EMULE, OnAreYouEmule)
+	// eF-Mod :: InvisibleMode
+	ON_REGISTERED_MESSAGE(UWM_RESTORE_WINDOW_IM, OnRestoreWindowInvisibleMode)
+	// eF-Mod end
 	ON_BN_CLICKED(IDC_HOTMENU, OnBnClickedHotmenu)
 
 	///////////////////////////////////////////////////////////////////////////
@@ -228,6 +242,10 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	ready = false; 
 	m_bStartMinimizedChecked = false;
 	m_bStartMinimized = false;
+//>>> [WiZaRd] - StartUp InvisibleMode Enhancement  
+     m_bstartUpInvisibleChecked = false;  
+     m_bStartInvisible = false;   
+	//<<< [WiZaRd] - StartUp InvisibleMode Enhancement
 	MEMZERO(&m_wpFirstRestore, sizeof m_wpFirstRestore);
 	m_uUpDatarate = 0;
 	m_uDownDatarate = 0;
@@ -321,6 +339,9 @@ LRESULT CemuleDlg::OnAreYouEmule(WPARAM, LPARAM)
 
 BOOL CemuleDlg::OnInitDialog()
 {
+	// eF-Mod :: Invisible Mode
+	m_bStartInvisible = thePrefs.IsStartInvisible();
+	// eF-Mod end
   SetWindowLong(this->m_hWnd, GWL_USERDATA, MAGIC);    // [iONiX] - WiZaRd - Multiple Instances added by lama
 	//==> Toolbar [shadow2004]
 	m_co_ToolLeft.LoadImage(IDR_TOOLBAR_LEFT,_T("JPG"));
@@ -334,10 +355,12 @@ BOOL CemuleDlg::OnInitDialog()
 
 	// temporary disable the 'startup minimized' option, otherwise no window will be shown at all
 	if (thePrefs.IsFirstStart())
+	{
 		m_bStartMinimized = false;
-
+		m_bStartInvisible = false;//>>> [WiZaRd] - StartUp InvisibleMode Enhancement
+	}
 	// show splashscreen as early as possible to "entertain" user while starting emule up
-	if (thePrefs.UseSplashScreen() && !m_bStartMinimized)
+	if (thePrefs.UseSplashScreen() && !m_bStartMinimized && !thePrefs.IsStartInvisible())//>>> [WiZaRd] - StartUp InvisibleMode Enhancement
 		ShowSplash();
 
 	// Create global GUI objects
@@ -764,6 +787,10 @@ BOOL CemuleDlg::OnInitDialog()
 	
 	}
 
+	// eF-Mod :: InvisibleMode
+	if(thePrefs.GetInvisibleMode()) RegisterInvisibleHotKey();
+	IsWndVisible = true;
+	// eF-Mod end
 	VERIFY( m_pDropTarget->Register(this) );
 
 	// initalize PeerCache
@@ -955,6 +982,14 @@ void CemuleDlg::PostStartupMinimized()
 				OnCancel();
 		}
 	}
+// eF-Mod :: InvisibleMode
+     if(!m_bstartUpInvisibleChecked)  
+     {  
+          m_bstartUpInvisibleChecked = true;  
+          if(m_bStartInvisible)  
+               HideWindow();  
+     }  
+	 // eF-Mod end 
 }
 
 void CemuleDlg::OnPaint()
@@ -1383,8 +1418,17 @@ void CemuleDlg::OnCancel()
 	{
 		if (*thePrefs.GetMinTrayPTR())
 		{
+/// eF-Mod :: InvisibleMode
+		if (!thePrefs.GetInvisibleMode())  
+		{  
+		// eF-Mod end
 			TrayShow();
 			ShowWindow(SW_HIDE);
+// eF-Mod :: InvisibleMode
+		}  
+		else  
+			ShowWindow(SW_HIDE);  
+		// eF-Mod end
 		}
 		else
 		{
@@ -1801,6 +1845,9 @@ void CemuleDlg::OnClose()
 
 	// explicitly delete all listview items which may hold ptrs to objects which will get deleted
 	// by the dtors (some lines below) to avoid potential problems during application shutdown.
+	// eF-Mod :: InvisibleMode
+	if(thePrefs.GetInvisibleMode()) UnRegisterInvisibleHotKey(); 
+	// eF-Mod end
 	transferwnd->downloadlistctrl.DeleteAllItems();
 	chatwnd->chatselector.DeleteAllItems();
 	theApp.clientlist->DeleteAll();
@@ -2091,6 +2138,7 @@ void CemuleDlg::RestoreWindow()
 	}
 	else
 		CTrayDialog::RestoreWindow();
+	IsWndVisible = true; //>>> [WiZaRd] - StartUp InvisibleMode Enhancement
 }
 
 void CemuleDlg::UpdateTrayIcon(int iPercent)
@@ -2872,7 +2920,8 @@ LRESULT CemuleDlg::OnKickIdle(UINT nWhy, long lIdleCount)
 		}
 	}
 
-	if (m_bStartMinimized)
+	//if (m_bStartMinimized)
+		if (m_bStartMinimized || m_bStartInvisible) //>>> InvisibleMode StartUp Enhancement
 		PostStartupMinimized();
 
 	if (searchwnd && searchwnd->m_hWnd)
@@ -3494,8 +3543,7 @@ void CemuleDlg::OnBnClickedBtnPreferences()
 		iOpen = 0;
 
 	}	
-	
-}
+	}
 
 void CemuleDlg::OnBnClickedBtnTools()
 {
@@ -3503,3 +3551,118 @@ void CemuleDlg::OnBnClickedBtnTools()
 
 }
 //<== Toolbar [shadow2004]
+
+//eF-Mod Toggle Show Hide window
+BOOL CemuleDlg::RegisterInvisibleHotKey()
+{
+	if(m_hWnd && IsRunning()){
+		bool res = RegisterHotKey( this->m_hWnd, HOTKEY_INVISIBLEMODE_ID ,
+						   thePrefs.GetInvisibleModeHKKeyModifier(),
+						   thePrefs.GetInvisibleModeHKKey()) ? true : false;
+		return res;
+	} else
+		return false;
+}
+
+BOOL CemuleDlg::UnRegisterInvisibleHotKey()
+{
+	if(m_hWnd){
+		bool res = !(UnregisterHotKey(this->m_hWnd, HOTKEY_INVISIBLEMODE_ID));
+
+		// Allows "invisible mode" on multiple instances of eMule
+		// Only one app (eMule) can register the hotkey, if we unregister, we need
+		// to register the hotkey in other emule.
+		EnumWindows(AskEmulesForInvisibleMode, INVMODE_REGISTERHOTKEY);
+		return res;
+	} else
+		return false;
+}
+
+// Allows "invisible mode" on multiple instances of eMule
+// LOWORD(WPARAM) -> HotKey KeyModifier
+// HIWORD(WPARAM) -> HotKey VirtualKey
+// LPARAM		  -> int:	INVMODE_RESTOREWINDOW	-> Restores the window
+//							INVMODE_REGISTERHOTKEY	-> Registers the hotkey
+LRESULT CemuleDlg::OnRestoreWindowInvisibleMode(WPARAM wParam, LPARAM lParam)
+{
+	if (thePrefs.GetInvisibleMode() &&
+		(UINT)LOWORD(wParam) == thePrefs.GetInvisibleModeHKKeyModifier() &&
+		(char)HIWORD(wParam) == thePrefs.GetInvisibleModeHKKey()) {
+			switch(lParam){
+				case INVMODE_RESTOREWINDOW:
+					//MORPH - Changed by [ionix], Toggle Show Hide window
+					/*
+					RestoreWindow();
+					*/
+					ToggleShow();
+					break;
+				case INVMODE_REGISTERHOTKEY:
+					RegisterInvisibleHotKey();
+					break;
+				//MORPH START - Toggle Show Hide window
+				case INVMODE_HIDEWINDOW:
+					ToggleHide();
+				//MORPH END   - Toggle Show Hide window
+			
+			}
+			return UWM_RESTORE_WINDOW_IM;
+	} else
+		return false;
+} 
+
+// Allows "invisible mode" on multiple instances of eMule
+BOOL CALLBACK CemuleDlg::AskEmulesForInvisibleMode(HWND hWnd, LPARAM lParam){
+	DWORD dwMsgResult;
+	WPARAM msgwParam;
+
+	msgwParam=MAKEWPARAM(thePrefs.GetInvisibleModeHKKeyModifier(),
+				thePrefs.GetInvisibleModeHKKey());
+
+	LRESULT res = ::SendMessageTimeout(hWnd,UWM_RESTORE_WINDOW_IM, msgwParam, lParam,
+				SMTO_BLOCK |SMTO_ABORTIFHUNG,10000,&dwMsgResult);
+	
+	return res; 
+} 
+
+void CemuleDlg::HideWindow()  
+{ 
+     HideTray(); 
+     IsWndVisible = false; 
+}
+LRESULT CemuleDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
+{
+	//eF-Mod Toggle Show Hide window
+	/*
+	if(wParam == HOTKEY_INVISIBLEMODE_ID) RestoreWindow();
+	// Allows "invisible mode" on multiple instances of eMule
+	// Restore the rest of hidden emules
+	EnumWindows(AskEmulesForInvisibleMode, INVMODE_RESTOREWINDOW);
+	*/
+	if(wParam == HOTKEY_INVISIBLEMODE_ID)
+		if(b_HideApp = !b_HideApp)
+		{
+			EnumWindows(AskEmulesForInvisibleMode, INVMODE_HIDEWINDOW);
+		}
+		else
+		{
+			EnumWindows(AskEmulesForInvisibleMode, INVMODE_RESTOREWINDOW);
+		}
+	//eF-Mod Toggle Show Hide window
+	return 0;
+}
+void CemuleDlg::ToggleHide()
+{
+	b_HideApp = true;
+	b_TrayWasVisible = TrayIsVisible() ? true : false;
+	TrayHide();
+	ShowWindow(SW_HIDE);
+}
+void CemuleDlg::ToggleShow()
+{
+	b_HideApp = false;
+	if(b_TrayWasVisible)
+		TrayShow();
+	else
+		ShowWindow(SW_SHOW);
+}
+// eF-Mod end

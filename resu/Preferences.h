@@ -220,6 +220,14 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
     static uint32  UpDataratePerClient;
     //end [sivka: -Upload Datarate Per Client-]
 
+	// eF-Mod :: InvisibleMode
+    static bool		m_bInvisibleMode;         
+    static bool		m_bStartInvisible; //>>> [WiZaRd] - StartUp InvisibleMode Enhancement
+    static UINT		m_iInvisibleModeHotKeyModifier; 
+    static char		m_cInvisibleModeHotKey; 
+	// eF-Mod end
+
+
 	// -khaos--+++> Struct Members for Storing Statistics
 
 	// Saved stats for cumulative downline overhead...
@@ -1093,6 +1101,16 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Upload Datarate Per Client
 	static int GetUpDataratePerClient() {return UpDataratePerClient;}
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Upload Datarate Per Client
+
+	// eF-Mod :: InvisibleMode
+    static	bool GetInvisibleMode()								{ return m_bInvisibleMode; } 
+	static	bool IsStartInvisible()								{ return (m_bInvisibleMode && m_bStartInvisible);}
+    static	UINT GetInvisibleModeHKKeyModifier()				{ return m_iInvisibleModeHotKeyModifier; } 
+    static	char GetInvisibleModeHKKey()						{ return m_cInvisibleModeHotKey; } 
+    static	void SetInvisibleMode(bool on, UINT keymodifier, char key); 
+	// eF-Mod end
+
+
 	static	uint16	GetMaxDownload();
 	static	uint64	GetMaxDownloadInBytesPerSec(bool dynamic = false);
 	static	uint16	GetMaxConnections()			{return maxconnections;}

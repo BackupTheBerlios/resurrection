@@ -22,7 +22,6 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();
 	virtual BOOL OnSetActive();
-	//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam); removed help [lama]
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
@@ -32,6 +31,15 @@ protected:
 	afx_msg void OnLangChange();
 	afx_msg void OnBnClickedCheck4Update();
 	afx_msg void OnCbnCloseupLangs();
-	//afx_msg void OnHelp(); removed help [lama]
-	//afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo); removed help [lama]
+	// eF-Mod :: InvisibleMode
+
+	UINT    m_iActualKeyModifier; 
+
+	afx_msg void OnBoxesChange() {SetBoxes();SetModified();}//deltahotel
+    afx_msg void OnCbnSelchangeKeymodcombo(); 
+
+private: 
+    void SetBoxes(); 
+	// eF-Mod end
+	
 };
