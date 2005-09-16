@@ -2,6 +2,8 @@ Changelog ReSuRReCTioN 1.1
 
 merged to Ackronic 3.0 Codebase
 
+half updated to Ackronic 3.1 - (only added invisible Mode) 
+
 the following code I changed from Ackronic one to my from Resurrection 1.0 
 
 Changed: Optimizer 
@@ -27,6 +29,7 @@ Removed: Selective Chunk Sharing
 Removed: Allow Bandwidth Settings
 Removed: Low Id Notifier
 Removed: Next EMF Slotmanager
+Removed: SLS
 
 Ok and last but not least the things I added: 
 
@@ -38,7 +41,7 @@ And least lol the fixed things:
 Fixed: TrayAnzeige (CB) 
 Fixed: DL-Feedback
 Fixed: AntiLeechclass (updated) 
-
+Fixed: Ul - Colors
 
 Now I have many Peoples to say thanx..... ok thanx at all - ;-) and bye - loool -  no I will mention all here because without several people 
 ReSuRReCTioN were not what is is..... 
