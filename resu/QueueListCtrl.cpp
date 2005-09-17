@@ -81,15 +81,14 @@ void CQueueListCtrl::Init()
 	InsertColumn(8,GetResString(IDS_BANNED),LVCFMT_LEFT,60,8);
 	InsertColumn(9,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,9);
 	InsertColumn(10,GetResString(IDS_SOFTWARE_LABEL),LVCFMT_LEFT,100,10); //Spe64
-	InsertColumn(11,GetResString(IDS_MODVERSION_LABEL),LVCFMT_LEFT,100,11); //Spe64
 		//Telp Start push small file
-	InsertColumn(12,_T("Small"),LVCFMT_LEFT,40,12);
+	InsertColumn(11,_T("Small"),LVCFMT_LEFT,40,12);
 	//Telp End push small file
 	//Telp Start push rare file
-	InsertColumn(13,_T("Rare"),LVCFMT_LEFT,40,13);
+	InsertColumn(12,_T("Rare"),LVCFMT_LEFT,40,13);
 	//Telp End push rare file
 	//KTS+ webcache
-	InsertColumn(14, _T("Webcache capable") ,LVCFMT_LEFT, 100,14); //JP Webcache column
+	InsertColumn(13, _T("Webcache capable") ,LVCFMT_LEFT, 100,14); //JP Webcache column
 	//KTS- webcache
 	SetAllIcons();
 	Localize();
@@ -196,20 +195,20 @@ void CQueueListCtrl::Localize()
 //Telp Start push small file
 		strRes = _T("Small");
 		hdi.pszText = strRes.GetBuffer();
-		pHeaderCtrl->SetItem(12, &hdi);
+		pHeaderCtrl->SetItem(11, &hdi);
 		strRes.ReleaseBuffer();
 		//Telp End push small file
 
 		//Telp Start push rare file
 		strRes = _T("Rare");
 		hdi.pszText = strRes.GetBuffer();
-		pHeaderCtrl->SetItem(13, &hdi);
+		pHeaderCtrl->SetItem(12, &hdi);
 		strRes.ReleaseBuffer();
 		//Telp End push rare file
 	
         strRes = _T("Webcache capable");
 		hdi.pszText = strRes.GetBuffer();
-		pHeaderCtrl->SetItem(14, &hdi);
+		pHeaderCtrl->SetItem(13, &hdi);
 		strRes.ReleaseBuffer();	
 	}
 }
@@ -500,24 +499,20 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					break;
 				case 10:
-					Sbuffer = client->GetClientSoftVer();
+					Sbuffer = client->DbgGetFullClientSoftVer();
 					break;
-				case 11:
-					Sbuffer = client->GetClientModVer();
-					break;
-
 				//Telp Start push small file
-                case 12:
+                case 11:
 					Sbuffer.Format(_T("%.1f"),client->GetSmallFilePushRatio());
 					break;
 				//Telp End push small file
 				//Telp Start push rare file
-				case 13:
+				case 12:
 	                Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
 					break;
 				//Telp End push rare file
 	//KTS+ webcache
-					case 14: {
+					case 13: {
 						if (client->SupportsWebCache())
 						{
 							Sbuffer = client->GetWebCacheName();
@@ -805,57 +800,40 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		case 109: 
 			iResult=item2->GetUpPartCount() - item1->GetUpPartCount();
 			break;
-//Spe64+ modversion
         case 10:
 		case 110: 
-		    if(item1->GetClientSoftVer() && item2->GetClientSoftVer()) {
-			    iResult = _tcsicmp(item1->GetClientSoftVer(), item2->GetClientSoftVer());
+			if(item1->DbgGetFullClientSoftVer() && item2->DbgGetFullClientSoftVer()) {
+				iResult = _tcsicmp(item1->DbgGetFullClientSoftVer(), item2->DbgGetFullClientSoftVer());
 
                 if(lParamSort == 110) {
                     iResult = -iResult;
                 }
-		    } else if(item1->GetClientSoftVer())
+			} else if(item1->DbgGetFullClientSoftVer())
 			    iResult =  1;
 		    else
 			    iResult =  -1;
 
             break;
-
-    case 11:
-		case 111: 
-		    if(item1->GetClientModVer() && item2->GetClientModVer()) {
-			    iResult = _tcsicmp(item1->GetClientModVer(), item2->GetClientModVer());
-					if(lParamSort == 111) {
-							iResult = -iResult;
-					}
-		    } else if(item1->GetClientSoftVer())
-			    iResult =  1;
-		    else
-			    iResult =  -1;
-
-        break;
-
-//Spe64-
-//Telp Start push small file
-		case 12: 
+    //Telp Start push small file
+		case 11: 
 			return (int)(item1->GetSmallFilePushRatio()*100 - item2->GetSmallFilePushRatio()*100);
-		case 112: 
+		case 111: 
 			return (int)(item2->GetSmallFilePushRatio()*100 - item1->GetSmallFilePushRatio()*100);
 		//Telp End push small file
 		//Telp Start push rare file
-		case 13: 
+		case 12: 
 			return (int)(item1->GetRareFilePushRatio()*100 - item2->GetRareFilePushRatio()*100);
-		case 113: 
+		case 112: 
 			return (int)(item2->GetRareFilePushRatio()*100 - item1->GetRareFilePushRatio()*100);
 //Telp End push rare file
 	//KTS+ webcache
 		//JP Webcache START 
-		case 14:
+		case 13:
 			if (item1->SupportsWebCache() && item2->SupportsWebCache() )
 				return CompareLocaleStringNoCase(item1->GetWebCacheName(),item2->GetWebCacheName());
 			else
 				return item1->SupportsWebCache() - item2->SupportsWebCache();
-		case 114:
+		case 113:
 			if (item2->SupportsWebCache() && item1->SupportsWebCache() )
 				return CompareLocaleStringNoCase(item2->GetWebCacheName(),item1->GetWebCacheName());
 			else

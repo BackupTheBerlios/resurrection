@@ -82,11 +82,9 @@ void CUploadListCtrl::Init()
 	InsertColumn(5,GetResString(IDS_UPLOADTIME),LVCFMT_LEFT,60,5);
 	InsertColumn(6,GetResString(IDS_STATUS),LVCFMT_LEFT,110,6);
 	InsertColumn(7,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,7);
-//Spe64 insert column	
-InsertColumn(8,GetResString(IDS_UPSLOTNUMBER),LVCFMT_LEFT,100,8);
+    InsertColumn(8,GetResString(IDS_UPSLOTNUMBER),LVCFMT_LEFT,100,8);
 	InsertColumn(9,GetResString(IDS_SOFTWARE_LABEL),LVCFMT_LEFT,100,9);
-	InsertColumn(10,GetResString(IDS_MODVERSION_LABEL),LVCFMT_LEFT,100,10);
-InsertColumn(11,_T("RQR/DL"),LVCFMT_LEFT,60,10);	// bobo RQR DL
+    InsertColumn(10,_T("RQR/DL"),LVCFMT_LEFT,60,10);	// bobo RQR DL
 	SetAllIcons();
 	Localize();
 	LoadSettings();
@@ -455,14 +453,11 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer.Format(_T("%i"), client->GetSlotNumber());
 					break;
 				case 9:
-					Sbuffer = client->GetClientSoftVer();
-					break;
-				case 10:
-					Sbuffer = client->GetClientModVer();
+					Sbuffer = client->DbgGetFullClientSoftVer();
 					break;
 					// >>> bobo RQR DL
 
-				case 11: 
+				case 10: 
 					if (client->GetDownloadDatarate() > 0)
 						Sbuffer.Format(_T("%.2f KB/s"),(float)client->GetDownloadDatarate()/1024);
 					else if (client->GetRemoteQueueRank()) 
@@ -723,36 +718,22 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 
         case 9:
 		case 109: 
-			if(item1->GetClientSoftVer() && item2->GetClientSoftVer()) {
-				iResult = _tcsicmp(item1->GetClientSoftVer(), item2->GetClientSoftVer());
+			if(item1->DbgGetFullClientSoftVer() && item2->DbgGetFullClientSoftVer()) {
+				iResult = _tcsicmp(item1->DbgGetFullClientSoftVer(), item2->DbgGetFullClientSoftVer());
 				if(lParamSort == 109) {
 						iResult = -iResult;
 				}
-			} else if(item1->GetClientSoftVer())
+			} else if(item1->DbgGetFullClientSoftVer())
 				iResult =  1;
 			else
 				iResult =  -1;
 
 			break;
 
-		case 10:
-		case 110: 
-		  if(item1->GetClientModVer() && item2->GetClientModVer()) {
-			  iResult = _tcsicmp(item1->GetClientModVer(), item2->GetClientModVer());
-				if(lParamSort == 110) {
-					iResult = -iResult;
-				}
-		  } else if(item1->GetClientSoftVer())
-			  iResult =  1;
-		  else
-			  iResult =  -1;
-			break;
-
-//Spe64-
 		// >>> bobo RQR DL
-		case 11: 
+		case 10: 
 			return item1->GetDownloadDatarate() - item2->GetRemoteQueueRank(); 
-		case 111: 
+		case 110: 
 			return item2->GetRemoteQueueRank() - item1->GetDownloadDatarate();
 		// <<< bobo RQR DL
 		default:

@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#define MOD_VERSION _T("ReSuRReCTioN 1.1 Beta 1e") //[lama] ModVersion
+#define MOD_VERSION _T("ReSuRReCTioN 1.1 Beta 1f") //[lama] ModVersion
 // MOD Note: Do not change this part - Merkur
 #define	EMULE_PROTOCOL			0x01
 // MOD Note: end
