@@ -92,7 +92,6 @@ CDownloadListCtrl::CDownloadListCtrl()
 CDownloadListCtrl::~CDownloadListCtrl(){
 	if (m_PrioMenu)	VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_SourcesMenu)	VERIFY( m_SourcesMenu.DestroyMenu() );
-    if (m_WSMenu) VERIFY( m_WSMenu.DestroyMenu() ); //[ionix] Hawkstar DL-Feedback
 	if (m_FileMenu)	VERIFY( m_FileMenu.DestroyMenu() );
 		while (m_ListItems.empty() == false) {
 		delete m_ListItems.begin()->second; // second = CtrlItem_Struct*
@@ -1513,9 +1512,8 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 			m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
-
-			m_FileMenu.EnableMenuItem((UINT_PTR)m_WSMenu.m_hMenu, (iSelectedItems > 0) ? MF_ENABLED : MF_GRAYED); //[ionix] Hawkstar DL-Feedback
-
+            m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
 			CTitleMenu WebMenu;
 			WebMenu.CreateMenu();
 			WebMenu.AddMenuTitle(NULL, true);
@@ -1599,13 +1597,16 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_FileMenu.EnableMenuItem(MP_TRY_TO_GET_PREVIEW_PARTS, MF_GRAYED);
 			m_FileMenu.CheckMenuItem(MP_TRY_TO_GET_PREVIEW_PARTS, MF_UNCHECKED);
         }
+        //MORPH START - Added by SiRoB, copy feedback feature
+		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, MF_GRAYED);
+		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, MF_GRAYED);
+		//MORPH END   - Added by SiRoB, copy feedback feature
 		m_FileMenu.EnableMenuItem(MP_PREVIEW, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_METINFO, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_GRAYED); // Sivka: AutoHL added by lama
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
-		m_FileMenu.EnableMenuItem((UINT_PTR)m_WSMenu.m_hMenu, MF_GRAYED); //[ionix] Hawkstar DL-Feedback
-                m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, MF_GRAYED);
+        m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
 		m_FileMenu.SetDefaultItem((UINT)-1);
 		if (m_SourcesMenu)
@@ -1858,152 +1859,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					}
 					SetRedraw(true);
 					break;
- //[ionix] Hawkstar DL-Feedback 
- 				case MP_COPYFEEDBACK:
-				{
-					CString feed;
-
-					while (!selectedList.IsEmpty())
-					{
-						CPartFile* file = selectedList.RemoveHead();
-					
-						feed.AppendFormat(_T("[COLOR=blue]DL-Feedback from[/COLOR][COLOR=green] %s \r\n"),thePrefs.GetUserNick()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]File-Name :[/COLOR][COLOR=green] %s \r\n"),file->GetFileName()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]File-Typ :[/COLOR][COLOR=green] %s \r\n"),file->GetFileType()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]File-Size :[/COLOR][COLOR=green] %i MB\r\n"), (file->GetFileSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Download :[/COLOR][COLOR=green] %i MB\r\n"), (file->GetCompletedSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Upload :[/COLOR][COLOR=green] %s \r\n"),CastItoXBytes(file->statistic.GetAllTimeTransferred())); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Sources :[/COLOR][COLOR=green] %i \r\n"),file->GetSourceCount()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Sources (complete) :[/COLOR][COLOR=green] %i \r\n"),file->m_nCompleteSourcesCount); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR]")); //edited by [ionix]
-
-						feed.Append(_T("\r\n\n"));
-					}
-					theApp.CopyTextToClipboard(feed);
-					break;
-				}
-                //[ionix] Hawkstar DL-Feedback 
-                //[ionix] Hawkstar DL-Feedback 
- 				case MP_COPYFEEDBACK2:
-				{
-					CString feed;
-
-					while (!selectedList.IsEmpty())
-					{
-						CPartFile* file = selectedList.RemoveHead();
-
-						feed.AppendFormat(_T("[COLOR=purple]DL-Feedback from[/COLOR][COLOR=red] %s \r\n"),thePrefs.GetUserNick()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]File-Name :[/COLOR][COLOR=red] %s \r\n"),file->GetFileName()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]File-Typ :[/COLOR][COLOR=red] %s \r\n"),file->GetFileType()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]File-Size :[/COLOR][COLOR=red] %i MB\r\n"), (file->GetFileSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Download :[/COLOR][COLOR=red] %i MB\r\n"), (file->GetCompletedSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Upload :[/COLOR][COLOR=red] %s \r\n"),CastItoXBytes(file->statistic.GetAllTimeTransferred())); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Sources :[/COLOR][COLOR=red] %i \r\n"),file->GetSourceCount()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Sources (complete) :[/COLOR][COLOR=red] %i \r\n"),file->m_nCompleteSourcesCount); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR]")); //edited by [ionix]
-
-						feed.Append(_T("\r\n\n"));
-					}
-					theApp.CopyTextToClipboard(feed);
-					break;
-				}
-                //[ionix] Hawkstar DL-Feedback 
-                //[ionix] Hawkstar DL-Feedback 
- 				case MP_COPYFEEDBACK3:
-				{
-					CString feed;
-
-					while (!selectedList.IsEmpty())
-					{
-						CPartFile* file = selectedList.RemoveHead();
-
-						feed.AppendFormat(_T("DL-Feedback from %s \r\n"),thePrefs.GetUserNick()); //edited by [ionix]
-						feed.AppendFormat(_T("File-Name : %s \r\n"),file->GetFileName()); //edited by [ionix]
-						feed.AppendFormat(_T("File-Typ : %s \r\n"),file->GetFileType()); //edited by [ionix]
-						feed.AppendFormat(_T("File-Size : %i MB\r\n"), (file->GetFileSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("Download : %i MB\r\n"), (file->GetCompletedSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("Upload : %s \r\n"),CastItoXBytes(file->statistic.GetAllTimeTransferred())); //edited by [ionix]
-						feed.AppendFormat(_T("Sources : %i \r\n"),file->GetSourceCount()); //edited by [ionix]
-						feed.AppendFormat(_T("Sources (complete) : %i \r\n"),file->m_nCompleteSourcesCount); //edited by [ionix]
-
-						feed.Append(_T("\r\n\n"));
-					}
-                    theApp.CopyTextToClipboard(feed);
-					break;
-				}
-                //[ionix] Hawkstar DL-Feedback 
-                //[ionix] Hawkstar DL-Feedback 
- 				case MP_COPYFEEDBACK4:
-				{
-					CString feed;
-
-					while (!selectedList.IsEmpty())
-					{
-						CPartFile* file = selectedList.RemoveHead();
-
-						feed.AppendFormat(_T("[COLOR=blue]DL-Feedback from[/COLOR][COLOR=green] %s \r\n"),thePrefs.GetUserNick()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]File-Name :[/COLOR][COLOR=green] %s \r\n"),file->GetFileName()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]File-Typ :[/COLOR][COLOR=green] %s \r\n"),file->GetFileType()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]File-Size :[/COLOR][COLOR=green] %i MB\r\n"), (file->GetFileSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Download :[/COLOR][COLOR=green] %i MB\r\n"), (file->GetCompletedSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Sources :[/COLOR][COLOR=green] %i \r\n"),file->GetSourceCount()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=blue]Sources (complete) :[/COLOR][COLOR=green] %i \r\n"),file->m_nCompleteSourcesCount); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR]")); //edited by [ionix]
-
-						feed.Append(_T("\r\n\n"));
-					}
-					theApp.CopyTextToClipboard(feed);
-					break;
-				}
-                //[ionix] Hawkstar DL-Feedback 
-                //[ionix] Hawkstar DL-Feedback 
- 				case MP_COPYFEEDBACK5:
-				{
-					CString feed;
-
-					while (!selectedList.IsEmpty())
-					{
-						CPartFile* file = selectedList.RemoveHead();
-
-						feed.AppendFormat(_T("[COLOR=purple]DL-Feedback from[/COLOR][COLOR=red] %s \r\n"),thePrefs.GetUserNick()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]File-Name :[/COLOR][COLOR=red] %s \r\n"),file->GetFileName()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]File-Typ :[/COLOR][COLOR=red] %s \r\n"),file->GetFileType()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]File-Size :[/COLOR][COLOR=red] %i MB\r\n"), (file->GetFileSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Download :[/COLOR][COLOR=red] %i MB\r\n"), (file->GetCompletedSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Sources :[/COLOR][COLOR=red] %i \r\n"),file->GetSourceCount()); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR][COLOR=purple]Sources (complete) :[/COLOR][COLOR=red] %i \r\n"),file->m_nCompleteSourcesCount); //edited by [ionix]
-						feed.AppendFormat(_T("[/COLOR]")); //edited by [ionix]
-
-						feed.Append(_T("\r\n\n"));
-					}
-					theApp.CopyTextToClipboard(feed);
-					break;
-				}
-                //[ionix] Hawkstar DL-Feedback 
-                //[ionix] Hawkstar DL-Feedback 
- 				case MP_COPYFEEDBACK6:
-				{
-					CString feed;
-
-					while (!selectedList.IsEmpty())
-					{
-						CPartFile* file = selectedList.RemoveHead();
-
-						feed.AppendFormat(_T("DL-Feedback from %s \r\n"),thePrefs.GetUserNick()); //edited by [ionix]
-						feed.AppendFormat(_T("File-Name : %s \r\n"),file->GetFileName()); //edited by [ionix]
-						feed.AppendFormat(_T("File-Typ : %s \r\n"),file->GetFileType()); //edited by [ionix]
-						feed.AppendFormat(_T("File-Size : %i MB\r\n"), (file->GetFileSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("Download : %i MB\r\n"), (file->GetCompletedSize()/1048576)); //edited by [ionix]
-						feed.AppendFormat(_T("Sources : %i \r\n"),file->GetSourceCount()); //edited by [ionix]
-						feed.AppendFormat(_T("Sources (complete) : %i \r\n"),file->m_nCompleteSourcesCount); //edited by [ionix]
-
-						feed.Append(_T("\r\n\n"));
-					}
-                    theApp.CopyTextToClipboard(feed);
-					break;
-				}
-                //[ionix] Hawkstar DL-Feedback 
-				case MP_STOP:
+ 				case MP_STOP:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
 						CPartFile *partfile = selectedList.GetHead();
@@ -2116,6 +1972,39 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					as.DoModal();
 					break;
 				}
+//MORPH START - Added by IceCream, copy feedback feature
+ 				case MP_COPYFEEDBACK:
+				{
+					CString feed;
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
+					feed.Append(_T(" \r\n"));
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{			
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback());
+						feed.Append(_T("\r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+				case MP_COPYFEEDBACK_US:
+				{
+					CString feed;
+					feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(), MOD_VERSION);
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback(true));
+						feed.Append(_T("\r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+				//MORPH END - Added by IceCream, copy feedback feature
   //Sivka (AutoHL) added by lama
 				case MP_SIVKA_FILE_SETTINGS:
 					if(selectedCount == 1)
@@ -2635,8 +2524,7 @@ void CDownloadListCtrl::CreateMenues(){
 	if (m_DropMenu) 
 		VERIFY( m_DropMenu.DestroyMenu() );
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-        if (m_WSMenu)       VERIFY( m_WSMenu.DestroyMenu() ); //[ionix] Hawkstar DL-Feedback
-	if (m_FileMenu)		VERIFY( m_FileMenu.DestroyMenu() );
+    if (m_FileMenu)		VERIFY( m_FileMenu.DestroyMenu() );
 
 
 	m_FileMenu.CreatePopupMenu();
@@ -2649,17 +2537,7 @@ void CDownloadListCtrl::CreateMenues(){
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));
-	   // [ionix] - Hawkstar DL-Feedback
-	m_WSMenu.CreateMenu();
-	m_WSMenu.AddMenuTitle(NULL, true);
-    m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK,_T("Foren (blue - green) with Upload"), _T("FILECOMMENTS"));
-    m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK4,_T("Foren (blue - green) without Upload"), _T("FILECOMMENTS"));
-    m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK2,_T("Foren (lila - red) with Upload"), _T("FILECOMMENTS"));
-    m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK5,_T("Foren (lila - red) without Upload"), _T("FILECOMMENTS"));
-    m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK3,_T("Foren (Pure Text) with Upload"), _T("FILECOMMENTS"));
-    m_WSMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK6,_T("Foren (Pure Text) without Upload"), _T("FILECOMMENTS"));
-    // [ionix] - Hawkstar DL-Feedback
-m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
+	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
 
 	// Add file commands
 	//
@@ -2707,7 +2585,12 @@ m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResSt
 		m_FileMenu.AppendMenu(MF_STRING, MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
-    m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_WSMenu.m_hMenu, _T("DL-Feedback"), _T("FILECOMMENTS")); //[ionix] Hawkstar DL-Feedback 
+	//MORPH START - Added by IceCream, copy feedback feature
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+	//MORPH END   - Added by IceCream, copy feedback feature
+
 }
 
 CString CDownloadListCtrl::getTextList()

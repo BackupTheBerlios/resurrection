@@ -155,7 +155,9 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
-
+//MORPH START - Added by SiRoB, copy feedback feature
+	CString GetFeedback(bool isUS = false);
+	//MORPH END   - Added by SiRoB, copy feedback feature
 protected:
 	//preview
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);

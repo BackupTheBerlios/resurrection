@@ -943,9 +943,6 @@
 				RelativePath="Sockets.h">
 			</File>
 			<File
-				RelativePath=".\SourceSaver.h">
-			</File>
-			<File
 				RelativePath="StatisticFile.h">
 			</File>
 			<File

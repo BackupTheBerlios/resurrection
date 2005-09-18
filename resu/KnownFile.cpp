@@ -2067,3 +2067,52 @@ return returncounter;
 }
 //JP webcache release END
 //KTS- webcache
+//MORPH START - Added by SiRoB, copy feedback feature
+CString CKnownFile::GetFeedback(bool isUS)
+{
+	CString feed;
+	if (isUS)
+	{
+		feed.AppendFormat(_T("File name: %s\r\n"),GetFileName());
+		feed.AppendFormat(_T("File type: %s\r\n"),GetFileType());
+		feed.AppendFormat(_T("File-Size: %i MB\r\n"),GetFileSize()/1048576);	
+		feed.AppendFormat(_T("Upload: %s \r\n"),CastItoXBytes(statistic.GetAllTimeTransferred())); //edited by [ionix]
+		feed.AppendFormat(_T("Requested: %i (%i)\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
+		feed.AppendFormat(_T("Accepted Requests: %i (%i)\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
+		if(IsPartFile()){
+			feed.AppendFormat(_T("Total sources: %i \r\n"),((CPartFile*)this)->GetSourceCount());
+			feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetValidSourcesCount());
+			feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+		}
+		feed.AppendFormat(_T("Complete sources: %i (%i)\r\n"),m_nCompleteSourcesCount, m_nCompleteSourcesCount);
+	}
+	else
+	{
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME), GetFileName());
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE), GetFileType());
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE), CastItoXBytes(GetFileSize(),false,false,3));
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_TRANSFERRED), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3),CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3));
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUESTED), statistic.GetRequests(), statistic.GetAllTimeRequests());
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED), statistic.GetAccepts() , statistic.GetAllTimeAccepts());
+		feed.Append(_T(" \r\n"));
+		if(IsPartFile()){
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL), ((CPartFile*)this)->GetSourceCount());
+			feed.Append(_T(" \r\n"));
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_AVAILABLE), ((CPartFile*)this)->GetValidSourcesCount());
+			feed.Append(_T(" \r\n"));
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+			feed.Append(_T(" \r\n"));
+		}
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE), m_nCompleteSourcesCount, m_nCompleteSourcesCount);
+		feed.Append(_T(" \r\n"));
+	}
+	return feed;
+}
+//MORPH END   - Added by SiRoB, copy feedback feature

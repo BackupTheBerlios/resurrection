@@ -116,7 +116,6 @@ protected:
 	CTitleMenu	m_PrioMenu;
 	CTitleMenu	m_FileMenu;
 	CMenu		m_SourcesMenu;
-	CTitleMenu	m_WSMenu; //[ionix] Hawkstar DL-Feedback
 	bool		m_bRemainSort;
 	typedef std::pair<void*, CtrlItem_Struct*> ListItemsPair;
 	typedef std::multimap<void*, CtrlItem_Struct*> ListItems;

@@ -4505,11 +4505,11 @@ BEGIN
     IDS_UPLOAD_COMPLETED    "Completing"
     IDS_UPLOAD_PREEMPTED    "Pre-empted by higher prio upload"
     IDS_LOG_WCEVENTS        "Log WebCache Events"
+    IDS_COPYFEEDBACK        "Copy feedback to clipboard"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_UPDATEFAKES         "Update"
     IDS_FAKECHECKUPERROR    "Error updating fake list list"
     IDS_UPDATEFAKECHECKONSTART "Update fake list on startup"
     IDS_CHECKFAKE           "Check fake"
@@ -4518,6 +4518,27 @@ BEGIN
     IDS_ANTI_CASE_2         "UL-DL >= Limit"
     IDS_ANTI_CASE_3         "UL-DL >= Limit till 1:1"
 END
+
+STRINGTABLE 
+BEGIN
+    IDS_FEEDBACK_TRANSFERRED "Transferred: %s (%s)"
+    IDS_FEEDBACK_REQUESTED  "Requested: %i (%i)"
+    IDS_FEEDBACK_ACCEPTED   "Accepted Requests: %i (%i)"
+    IDS_FEEDBACK_FROM       "Feedback from %s on [%s]"
+    IDS_FEEDBACK_FILENAME   "File name: %s"
+    IDS_FEEDBACK_FILETYPE   "File type: %s"
+    IDS_FEEDBACK_FILESIZE   "Size: %s"
+    IDS_FEEDBACK_DOWNLOADED "Downloaded: %s"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_FEEDBACK_TOTAL      "Total sources: %i"
+    IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
+    IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
+    IDS_FEEDBACK_COMPLETE   "Complete sources: %i (%i)"
+    IDS_COPYFEEDBACK_US     "Copy feedback to clipboard (US)"
+ END
 
 STRINGTABLE 
 BEGIN

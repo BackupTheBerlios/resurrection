@@ -8,7 +8,7 @@
 * Redistribution is appreciated.
 *
 * $Workfile:$
-* $Revision: 1.5 $
+* $Revision: 1.6 $
 * $Modtime:$
 * $Author: nosfelama $
 *

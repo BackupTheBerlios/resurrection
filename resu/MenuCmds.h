@@ -17,7 +17,10 @@
 #define MP_REMOVEFRIEND			10105
 #define MP_SHOWLIST				10106
 #define MP_FRIENDSLOT			10107
-
+//MORPH START - Added by IceCream, copy feedback feature
+#define	MP_COPYFEEDBACK			10197
+#define MP_COPYFEEDBACK_US		10198
+//MORPH END   - Added by IceCream, copy feedback feature
 #define MP_CANCEL				10201
 #define MP_STOP					10202
 #define MP_PAUSE				10203
@@ -180,14 +183,6 @@
 #define Irc_Ban					10247
 #define Irc_KB					10248
 #define Irc_Slap				10249
-//[ionix] Hawkstar DL-Feedback
-#define	MP_COPYFEEDBACK			12196
-#define	MP_COPYFEEDBACK2		12195
-#define	MP_COPYFEEDBACK3		12194
-#define	MP_COPYFEEDBACK4		12193
-#define	MP_COPYFEEDBACK5		12192
-#define	MP_COPYFEEDBACK6		12191
-//[ionix] Hawkstar DL-Feedback
 
 //Note: reserve at least 50 ID's (Irc_OpCommands-Irc_OpCommands+49).
 #define Irc_OpCommands			10250
