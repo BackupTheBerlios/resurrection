@@ -2277,6 +2277,7 @@
 #define IDS_FEEDBACK_NONEEDPART         4786
 #define IDS_FEEDBACK_COMPLETE           4787
 #define IDS_COPYFEEDBACK_US             4788
+#define IDS_FEEDBACK_DOWNLOADING        4789
 #define IDS_FAKECHECKUPERROR            4791
 #define IDS_UPDATEFAKECHECKONSTART      4793
 #define IDS_CHECKFAKE                   4795
@@ -2459,6 +2460,7 @@
 #define IDS_EASTSHARE_CREDIT            60017
 #define IDS_CREDITS_NONE                60018
 #define IDS_FINE_CREDIT                 60019
+#define IDS_UPDATEFAKES                 60020
 #define IDS_URL_FOR_UPDATING            60030
 #define IDS_LOG_FC_ERR1                 60031
 #define IDS_LOG_FC_ERR2                 60032
@@ -2496,6 +2498,11 @@
 #define IDS_DROPS2                      60077
 #define IDS_DROPS3                      60078
 #define IDS_DROPS4                     60079
+#define IDS_DISPLAYFUNNYNICK            60080
+#define IDS_FN_TAG                      60081
+#define IDS_FN_TAG_NO			60082
+#define IDS_FN_TAG_CUSTOM		60083
+#define IDS_FN_TAG_CUSTOMTEXT		60084
 
 // Next default values for new objects
 // 

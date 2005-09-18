@@ -298,6 +298,9 @@
 				RelativePath="FriendList.cpp">
 			</File>
 			<File
+				RelativePath=".\FunnyNick.cpp">
+			</File>
+			<File
 				RelativePath="GZipFile.cpp">
 			</File>
 			<File
@@ -788,6 +791,9 @@
 			</File>
 			<File
 				RelativePath="FriendList.h">
+			</File>
+			<File
+				RelativePath=".\FunnyNick.h">
 			</File>
 			<File
 				RelativePath="GZipFile.h">

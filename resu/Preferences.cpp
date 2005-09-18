@@ -509,6 +509,7 @@ int		CPreferences::m_iDynUpGoingDownDivider;
 int		CPreferences::m_iDynUpNumberOfPings;
 int		CPreferences::m_iDynUpPingToleranceMilliseconds;
 bool	CPreferences::m_bDynUpUseMillisecondPingTolerance;
+bool	CPreferences::m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
 
 // ZZ:DownloadManager -->
 bool    CPreferences::m_bA4AFSaveCpu;
@@ -649,8 +650,11 @@ webcacheReleaseAllowed = true; //jp webcache release
 m_bHighIdPossible = false; // JP detect fake HighID (from netfinity)
 //JP set standard values for stuff that doesn't need to be saved. This should probably be somewhere else END
 //KTS- webcache
-
 }
+// ==> FunnyNick Tag - Stulle
+uint8	CPreferences::FnTagMode;
+TCHAR	CPreferences::m_sFnCustomTag [256];
+// <== FunnyNick Tag - Stulle
 
 CPreferences::~CPreferences()
 {
@@ -2149,7 +2153,11 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 	ini.WriteBool(_T("UseSivkaBan"), m_bUseSivkaBan,_T("eMule"));
 	ini.WriteBool(_T("LogSivkaBan"), m_bLogSivkaBan,_T("eMule"));
 //<<< Sivka - Aggressive Client Handling [WiZaRd]
-
+	ini.WriteBool(_T("DisplayFunnyNick"), m_bFunnyNick,_T("eMule"));//MORPH - Added by SiRoB, Optionnal funnynick display
+// ==> FunnyNick Tag - Stulle
+	ini.WriteInt(_T("FnTagMode"), FnTagMode,_T("StulleMule"));
+	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag,_T("StulleMule"));
+	// <== FunnyNick Tag - Stulle
 	uint32 temp = ini.GetInt(_T("ReAskFileSRC"), FILEREASKTIME); //29 mins
 	uReAskFileSRC = (temp >= FILEREASKTIME && temp <= 3300000) ? temp : FILEREASKTIME;
 	ini.WriteInt(_T("ReAskFileSRC"), uReAskFileSRC); // [Maella/sivka: -ReAsk SRCs after IP Change-]
@@ -2799,6 +2807,7 @@ _stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("h
 	//m_IP2CountryVersion=ini.GetInt(_T("IP2CountryVersion"),0); 
 	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
     //Commander - Added: IP2Country Auto-updating - End
+	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);//MORPH - Added by SiRoB, Optionnal funnynick display
 	_stprintf(UpdateURLIP2Country,_T("%s"),ini.GetString(_T("UpdateURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip")));//Commander - Added: IP2Country auto-updating
 	_stprintf(UpdateVerURLIP2Country,_T("%s"),ini.GetString(_T("UpdateVerURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/latest")));//Commander - Added: IP2Country auto-updating
 m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
@@ -2947,6 +2956,10 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 //==> Chunk Selection Patch by Xman [lama]
 	m_iEnableCSP = ini.GetInt(_T("EnableCSP"), 1, _T("NextEMF")); // 0=original, 1=Xman
 //<== Chunk Selection Patch by Xman [lama]
+	// ==> FunnyNick Tag - Stulle
+	FnTagMode = ini.GetInt(_T("FnTagMode"), 2, _T("StulleMule"));
+	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
+	// <== FunnyNick Tag - Stulle
 	LoadCats();
 	SetLanguage();
 }

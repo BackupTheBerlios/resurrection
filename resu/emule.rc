@@ -2319,6 +2319,7 @@ LSD_BUT_FULLQ           ICON                    "res\\LSD_BUT_FULLQ.ico"
 LSD_BUT_HIGH_QUEUE_SOURCES ICON                    "res\\LSD_BUT_HIGH_QUEUE_SOURCES.ico"
 LSD_BUT_NNS             ICON                    "res\\LSD_BUT_NNS.ico"
 LSD_BUT_TM              ICON                    "res\\LSD_BUT_TM.ico"
+FUNNYNICK               ICON                    "res\\FunnyNick.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4529,7 +4530,8 @@ BEGIN
     IDS_FEEDBACK_FILETYPE   "File type: %s"
     IDS_FEEDBACK_FILESIZE   "Size: %s"
     IDS_FEEDBACK_DOWNLOADED "Downloaded: %s"
-END
+	IDS_FEEDBACK_DOWNLOADING "Currently Downloading @: %s"// actual Download [lama]
+    END
 
 STRINGTABLE 
 BEGIN
@@ -4767,6 +4769,15 @@ BEGIN
     IDS_NICEHASH_STATIC     "Relax Time for Hashing"
     IDS_NICEHASH_RIGHT      "Less CPU-load"
     IDS_NICEHASH_LEFT       "Faster hashing"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DISPLAYFUNNYNICK    "Enable FunnyNick display"
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_FN_TAG_NO           "No Tag"
+    IDS_FN_TAG_CUSTOM       "Custom Tag"
+    IDS_FN_TAG_CUSTOMTEXT   "Set Cutom Tag:"
 END
 
 #endif    // Englisch (USA) resources

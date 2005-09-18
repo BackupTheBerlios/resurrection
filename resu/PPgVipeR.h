@@ -113,7 +113,11 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiEnableCSPNormal;
 	HTREEITEM m_htiEnableCSPXman;
 //<== Chunk Selection Patch by Xman [lama]
-
+// [ionix] - FunnyNick
+	bool m_bFunnyNickEnabled;
+	int m_iFunnyNickTag;
+	CString m_strFunnyNickTagCustom;
+	// [ionix] - FunnyNick
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	HTREEITEM m_htiDropSources;
 	HTREEITEM m_htiDropSourcesNNS;
@@ -134,7 +138,16 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	int m_bIP2CountryShowFlag;
 	HTREEITEM m_htiIP2CountryShowFlag;
 	// IP-to-Country -
-
+// [ionix] - FunnyNick
+	HTREEITEM m_htiFunnyNick;
+	HTREEITEM m_htiFunnyNickEnabled;
+	HTREEITEM m_htiFunnyNickTag;
+	HTREEITEM m_htiFunnyNickTag_0;
+	HTREEITEM m_htiFunnyNickTag_1;
+	HTREEITEM m_htiFunnyNickTag_2;
+	HTREEITEM m_htiFunnyNickTag_3;
+	HTREEITEM m_htiFunnyNickTagCustom;
+	// [ionix] - FunnyNick
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();

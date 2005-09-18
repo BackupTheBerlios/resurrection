@@ -582,6 +582,7 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	static	CSize	m_sizToolbarIconSize;
 
 	static	bool	m_bWinaTransToolbar;
+	static bool	m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
 
 	//preview
 	static	bool	m_bPreviewEnabled;
@@ -680,7 +681,10 @@ static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat
 	// files
 	static bool		m_bRememberCancelledFiles;
 	static bool		m_bRememberDownloadedFiles;
-
+	// ==> FunnyNick Tag - Stulle
+	static uint8	FnTagMode;
+	static TCHAR	m_sFnCustomTag [256];
+	// <== FunnyNick Tag - Stulle
 	//emil notifier
 	static bool		m_bNotifierSendMail;
 	static CString	m_strNotifierMailServer;
@@ -1471,7 +1475,13 @@ static	uint16	GetMaxSourcePerFileSoft();
 
 	// Firewall settings
 	static  bool	IsOpenPortsOnStartupEnabled()		{return m_bOpenPortsOnStartUp; }
-	
+		static	bool	DisplayFunnyNick()					{return m_bFunnyNick;}//MORPH - Added by SiRoB, Optionnal funnynick display
+// ==> FunnyNick Tag - Stulle
+	static	uint8	GetFnTag()	{return FnTagMode;}
+	static	CString GetFnCustomTag ()						{ return m_sFnCustomTag; }
+	static	void	SetFnCustomTag (CString _CustTag)	{ _stprintf(m_sFnCustomTag,_T("%s"),_CustTag); }
+	// <== FunnyNick Tag - Stulle
+
 	//AICH Hash
 	static	bool	IsTrustingEveryHash()				{return m_bTrustEveryHash;} // this is a debug option
 	// Credit System

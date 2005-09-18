@@ -67,6 +67,7 @@
 //KRQ+ webcache
 #include "WebCache/WebCacheSocket.h" 
 //KTS- webcache
+#include "FunnyNick.h" // [ionix] - MORPH: xrmb FunnyNick
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -760,6 +761,25 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	// [ionix] - WiZaRd - Anti Mod Faker Version
 //<<< WiZaRd 4 [ionix] - Bad User Banning
 	
+	//>>> [ionix] - MORPH: xrmb FunnyNick
+	if (!IsBanned() && thePrefs.DisplayFunnyNick()){ //[ionix] - MORPH: Keep Leecher name
+			if (!m_pszUsername)
+				m_pszUsername=funnyNick.gimmeFunnyNick(m_achUserHash);
+			else if((_tcsnicmp(m_pszUsername, _T("http://emule"),12)==0)
+				||(_tcsnicmp(m_pszUsername, _T("http://www.emule"),16)==0)
+				||(_tcsnicmp(m_pszUsername, _T("www.emule"),9)==0)
+				||(_tcsnicmp(m_pszUsername, _T("www.shareaza"),12)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule v"),7)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule Plus"),10)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule OX"),8)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule Plus"),10)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule0"),6)==0)
+				||(_tcsicmp(m_pszUsername, _T(""))==0)) {
+				free(m_pszUsername);
+				m_pszUsername=funnyNick.gimmeFunnyNick(m_achUserHash);
+			}
+		}
+	//<<< [ionix] - MORPH: xrmb FunnyNick
 	return bIsMule;
 }
 
@@ -935,7 +955,7 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 				else if (temptag.IsInt())
 					m_strModVersion.Format(_T("ModID=%u"), temptag.GetInt());
 				else
-					m_strModVersion = _T("ModID=<Unknwon>");
+                         m_strModVersion = _T("ModID=<Unknown>"); 
 				if (bDbgInfo)
 					m_strMuleInfo.AppendFormat(_T("\n  ModID=%s"), m_strModVersion);
 				CheckForGPLEvilDoer();
@@ -1906,6 +1926,25 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 	}
 	if( pszNewName )
 		m_pszUsername = _tcsdup(pszNewName);
+	//>>> [ionix] - MORPH: xrmb FunnyNick
+	if (!IsBanned() && thePrefs.DisplayFunnyNick()) {//[ionix] - MORPH: Keep Leecher name
+			if (!m_pszUsername)
+				m_pszUsername=funnyNick.gimmeFunnyNick(m_achUserHash);
+			else if((_tcsnicmp(m_pszUsername, _T("http://emule"),12)==0)
+				||(_tcsnicmp(m_pszUsername, _T("http://www.emule"),16)==0)
+				||(_tcsnicmp(m_pszUsername, _T("www.emule"),9)==0)
+				||(_tcsnicmp(m_pszUsername, _T("www.shareaza"),12)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule v"),7)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule Plus"),10)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule OX"),8)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule Plus"),10)==0)
+				||(_tcsnicmp(m_pszUsername, _T("eMule0"),6)==0)
+				||(_tcsicmp(m_pszUsername, _T(""))==0)) {
+					free(m_pszUsername);
+					m_pszUsername=funnyNick.gimmeFunnyNick(m_achUserHash);
+			}
+		}
+	//<<< [ionix] - MORPH: xrmb FunnyNick
 }
 
 void CUpDownClient::RequestSharedFileList()

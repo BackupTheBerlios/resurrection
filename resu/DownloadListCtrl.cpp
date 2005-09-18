@@ -198,6 +198,7 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("Server")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); // [ionix] - Show iONiX icon on client detect 14
 	m_ImageList.Add(CTempIconLoader(_T("Rating_NotRated")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Fake")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Poor")));

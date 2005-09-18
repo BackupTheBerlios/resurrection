@@ -101,6 +101,16 @@ m_htiClientPerc = NULL;
 	m_htiDropSourcesHQR = NULL;
     m_htiHqrBox = NULL;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+	// [ionix] - FunnyNick
+	m_htiFunnyNick = NULL;
+	m_htiFunnyNickEnabled = NULL;
+	m_htiFunnyNickTag = NULL;
+	m_htiFunnyNickTag_0 = NULL;
+	m_htiFunnyNickTag_1 = NULL;
+	m_htiFunnyNickTag_2 = NULL;
+	m_htiFunnyNickTag_3 = NULL;
+	m_htiFunnyNickTagCustom = NULL;
+	// [ionix] - FunnyNick
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -119,6 +129,7 @@ void CPPgVipeR::DoDataExchange(CDataExchange* pDX)
 //Telp+ Menu VipeR
 		int iImgAddTweaks = 8;
 //Telp- Menu VipeR
+		int iImgFunnyNick = 8; // [ionix] - FunnyNick
 //==> Chunk Selection Patch by Xman [lama]
 		int iImgCSP = 8;
 //<== Chunk Selection Patch by Xman [lama]
@@ -146,6 +157,7 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 			// <--- Morph: PowerShare
  //<<-- ADDED STORMIT -  Morph: PowerShared //
 					iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
+			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));// [ionix] - FunnyNick
 
 //Telp+ Menu VipeR
 		m_AdditionalVipeR = m_ctrlTreeOptions.InsertGroup(_T("Misc Functions "), iImgAddTweaks, TVI_ROOT);
@@ -215,7 +227,19 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 //Telp Start push rare file
        		 m_htiEnablePushRareFile = m_ctrlTreeOptions.InsertCheckBox(_T("Push Rare Files"),m_htiSFM, m_bEnablePushRareFile); //Hawkstar, push rare file
 //Telp End push rare file
-
+// [ionix] - Funny Nick
+		m_htiFunnyNick = m_ctrlTreeOptions.InsertGroup(_T("FunnyNick"), iImgFunnyNick, TVI_ROOT);
+		m_htiFunnyNickEnabled = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DISPLAYFUNNYNICK), m_htiFunnyNick);
+		m_htiFunnyNickTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, m_htiFunnyNickEnabled);
+		m_htiFunnyNickTag_0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FN_TAG_NO), m_htiFunnyNickTag, m_iFunnyNickTag == 0);
+		m_htiFunnyNickTag_1 = m_ctrlTreeOptions.InsertRadioButton(_T("[FN]"), m_htiFunnyNickTag, m_iFunnyNickTag == 1);
+		m_htiFunnyNickTag_2 = m_ctrlTreeOptions.InsertRadioButton(_T("[FunnyNick]"), m_htiFunnyNickTag, m_iFunnyNickTag == 2);
+		m_htiFunnyNickTag_3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FN_TAG_CUSTOM), m_htiFunnyNickTag, m_iFunnyNickTag == 3);
+		m_htiFunnyNickTagCustom = m_ctrlTreeOptions.InsertItem(GetResString(IDS_FN_TAG_CUSTOMTEXT),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiFunnyNickTag_3);
+		m_ctrlTreeOptions.AddEditBox(m_htiFunnyNickTagCustom, RUNTIME_CLASS(CTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiFunnyNick, TVE_EXPAND);
+		m_ctrlTreeOptions.Expand(m_htiFunnyNickTag, TVE_EXPAND);
+		// [ionix] - Funny Nick
 		// Creditsystem  
 		m_htiCreditSystem = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CREDIT_SYSTEM), iImgCS, TVI_ROOT);
 		m_ctrlTreeOptions.SetItemState(m_htiCreditSystem, TVIS_BOLD, TVIS_BOLD);
@@ -251,7 +275,12 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 //Telp Start push rare file
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiEnablePushRareFile, m_bEnablePushRareFile); //eMulefan83 push rare file
 //Telp End push rare file
-
+	// [ionix] - FunnyNick
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiFunnyNickEnabled, m_bFunnyNickEnabled);
+	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiFunnyNickTag, (int &)m_iFunnyNickTag);
+	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiFunnyNickTagCustom, m_strFunnyNickTagCustom);
+	DDV_MaxChars(pDX,m_strFunnyNickTagCustom, 50);
+	// [ionix] - FunnyNick
 DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystem
  // ==> Anti Uploader Ban - Stulle
 	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
@@ -312,7 +341,11 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 //==> Chunk Selection Patch by Xman [lama]
 	m_iEnableCSP	= thePrefs.m_iEnableCSP;
 //<== Chunk Selection Patch by Xman [lama]
-	
+		// [ionix] - FunnyNick
+	m_bFunnyNickEnabled = thePrefs.DisplayFunnyNick();
+	m_iFunnyNickTag = thePrefs.GetFnTag();
+	m_strFunnyNickTagCustom = thePrefs.GetFnCustomTag();
+	// [ionix] - FunnyNick
 	CPropertyPage::OnInitDialog();
 	//LoadSettings();
 	InitWindowStyles(this);
@@ -371,7 +404,13 @@ void CPPgVipeR::Localize(void)
 		if (m_htiEnableCSPNormal) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPNormal, GetResString(IDS_CSP_NORMAL));		
 		if (m_htiEnableCSPXman) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPXman, GetResString(IDS_CSP_XMAN));		
 //<== Chunk Selection Patch by Xman [lama]
-
+	//>>> [ionix] - FunnyNick
+		if (m_htiFunnyNickEnabled) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickEnabled, GetResString(IDS_DISPLAYFUNNYNICK));
+		if (m_htiFunnyNickTag) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag, GetResString(IDS_FN_TAG));
+		if (m_htiFunnyNickTag_0) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag_0, GetResString(IDS_FN_TAG_NO));
+		if (m_htiFunnyNickTag_3) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag_3, GetResString(IDS_FN_TAG_CUSTOM));
+		if (m_htiFunnyNickTagCustom) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTagCustom, GetResString(IDS_FN_TAG_CUSTOMTEXT));
+		//<<< [ionix] - FunnyNick
 }
 }
 
@@ -435,7 +474,12 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 //Telp Start push rare file
     thePrefs.enablePushRareFile = m_bEnablePushRareFile; 
 //Telp End push rare file
-	
+		// [ionix] - FunnyNick
+	thePrefs.m_bFunnyNick = m_bFunnyNickEnabled;
+	thePrefs.FnTagMode = m_iFunnyNickTag;
+	thePrefs.SetFnCustomTag(m_strFunnyNickTagCustom);
+	// [ionix] - FunnyNick
+
 	return CPropertyPage::OnApply();
 }
 
@@ -493,6 +537,16 @@ void CPPgVipeR::OnDestroy()
 	m_htiIP2CountryName_LONG = NULL;
 	m_htiIP2CountryShowFlag = NULL;
 	// IP-to-Country -
+	// [ionix] - FunnyNick
+	m_htiFunnyNick;
+	m_htiFunnyNickEnabled = NULL;
+	m_htiFunnyNickTag = NULL;
+	m_htiFunnyNickTag_0 = NULL;
+	m_htiFunnyNickTag_1 = NULL;
+	m_htiFunnyNickTag_2 = NULL;
+	m_htiFunnyNickTag_3 = NULL;
+	m_htiFunnyNickTagCustom = NULL;
+	// [ionix] - FunnyNick
 
 	CPropertyPage::OnDestroy();
 }

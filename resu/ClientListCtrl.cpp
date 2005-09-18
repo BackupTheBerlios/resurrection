@@ -105,6 +105,7 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("Server")));
 	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
+	imagelist.Add(CTempIconLoader(_T("IONIX"))); // [ionix] - Show iONiX icon on client detect
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }
 

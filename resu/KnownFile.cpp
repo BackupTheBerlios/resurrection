@@ -2080,6 +2080,7 @@ CString CKnownFile::GetFeedback(bool isUS)
 		feed.AppendFormat(_T("Requested: %i (%i)\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
 		feed.AppendFormat(_T("Accepted Requests: %i (%i)\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
 		if(IsPartFile()){
+			feed.AppendFormat(_T("Currently Downloading @: %i \r\n"), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));//actual Download [lama]
 			feed.AppendFormat(_T("Total sources: %i \r\n"),((CPartFile*)this)->GetSourceCount());
 			feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetValidSourcesCount());
 			feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
@@ -2103,6 +2104,8 @@ CString CKnownFile::GetFeedback(bool isUS)
 		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED), statistic.GetAccepts() , statistic.GetAllTimeAccepts());
 		feed.Append(_T(" \r\n"));
 		if(IsPartFile()){
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADING), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));// actual download [lama]
+			feed.Append(_T(" \r\n"));
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL), ((CPartFile*)this)->GetSourceCount());
 			feed.Append(_T(" \r\n"));
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_AVAILABLE), ((CPartFile*)this)->GetValidSourcesCount());

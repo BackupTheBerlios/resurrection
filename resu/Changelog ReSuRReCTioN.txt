@@ -13,6 +13,8 @@ Changed: IP2Country
 Changed: Diif-QR
 Changed: Client%
 Changed: DL and UL in color
+Changed: Modversion (thanx at Spe64 for help) 
+Changed Feedback - (removed ionix and added Morph one - added currend dl speed to feed)  
 
 the following I removed from Ackronic Base or my old Resurrection 1.0
 
@@ -35,6 +37,7 @@ Ok and last but not least the things I added:
 
 Added: Webcache
 Added: Powershare [WiZaRd] (big thanx for this code)
+Added: Funny Nicks 
 
 And least lol the fixed things: 
 
