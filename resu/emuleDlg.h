@@ -302,9 +302,6 @@ protected:
 //<== Toolbar [shadow2004]
 // eF-Mod :: InvisibleMode
 
-	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
-	HICON	m_icoSysTrayMessage;
-	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
 public:
 	BOOL	RegisterInvisibleHotKey();
 	BOOL	UnRegisterInvisibleHotKey();
@@ -320,7 +317,9 @@ private:
 	void	ToggleHide();
 	bool	b_TrayWasVisible;
 	bool	b_HideApp;
-
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+	HICON	m_icoSysTrayMessage;
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
 public:  
      BOOL     IsWndVisible;   
 private:  
@@ -328,7 +327,6 @@ private:
      bool     m_bStartInvisible;   
      void     HideWindow();   
 	 // eF-Mod end
-
 };
 
 

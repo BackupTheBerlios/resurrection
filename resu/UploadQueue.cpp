@@ -1085,6 +1085,11 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
                 theApp.emuledlg->transferwnd->UpdateListCount(CTransferWnd::wnd2Uploading, -1);
 			}
 
+			//Commander - Moved: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+			// Update every second
+			theApp.emuledlg->ShowTransferRate();
+			//Commander - Moved: Blinking Tray Icon On Message Recieve [emulEspaña] - End
+
 			statsave++;
 			// 60 seconds
 			if (statsave>=60) {

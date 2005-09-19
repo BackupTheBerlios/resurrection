@@ -274,6 +274,9 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	m_pSystrayDlg = NULL;
 	m_pMiniMule = NULL;
 	m_uLastSysTrayIconCookie = SYS_TRAY_ICON_COOKIE_FORCE_UPDATE;
+ //Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+	m_icoSysTrayMessage = NULL;
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
 }
 
 CemuleDlg::~CemuleDlg()
@@ -297,6 +300,9 @@ CemuleDlg::~CemuleDlg()
 	if (m_icoSysTrayLowID) VERIFY( ::DestroyIcon(m_icoSysTrayLowID) );
 	if (usericon) VERIFY( ::DestroyIcon(usericon) );
 
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+	if (m_icoSysTrayMessage) VERIFY( ::DestroyIcon(m_icoSysTrayMessage) );
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
 	// already destroyed by windows?
 	//VERIFY( m_menuUploadCtrl.DestroyMenu() );
 	//VERIFY( m_menuDownloadCtrl.DestroyMenu() );
@@ -2153,11 +2159,22 @@ void CemuleDlg::UpdateTrayIcon(int iPercent)
 		uSysTrayIconCookie += 100;
 	
 	// dont update if the same icon as displayed would be generated
+	//MORPH START - Changed by SiRoB, Blinking Tray Icon On Message Recieve
+	/*
 	if (m_uLastSysTrayIconCookie == uSysTrayIconCookie)
 		return;
+	*/
+	static bool messageIcon = false;
+	if ( m_uLastSysTrayIconCookie == uSysTrayIconCookie && m_iMsgIcon == 0 && messageIcon)
+		return;
+	//MORPH START - Changed by SiRoB, Blinking Tray Icon On Message Recieve
+
 	m_uLastSysTrayIconCookie = uSysTrayIconCookie;
 
 	// prepare it up
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+	if(m_iMsgIcon == 0 || !messageIcon){
+		//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
 	if (theApp.IsConnected()) {
 		if (theApp.IsFirewalled())
 			m_TrayIcon.Init(m_icoSysTrayLowID, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
@@ -2166,6 +2183,12 @@ void CemuleDlg::UpdateTrayIcon(int iPercent)
 	}
 	else
 		m_TrayIcon.Init(m_icoSysTrayDisconnected, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - Start
+	}
+	else
+		m_TrayIcon.Init(m_icoSysTrayMessage,100,1,1,16,16,thePrefs.GetStatsColor(11));
+	messageIcon = !messageIcon;
+	//Commander - Added: Blinking Tray Icon On Message Recieve [emulEspaña] - End
 
 	// load our limit and color info
 	static const int aiLimits[1] = { 100 }; // set the limits of where the bar color changes (low-high)
