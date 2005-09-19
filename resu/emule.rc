@@ -4778,6 +4778,8 @@ BEGIN
     IDS_FN_TAG_NO           "No Tag"
     IDS_FN_TAG_CUSTOM       "Custom Tag"
     IDS_FN_TAG_CUSTOMTEXT   "Set Cutom Tag:"
+IDS_HASHING_PROGRESS    "Hash: %d%% - %s"
+    IDS_HASHING_FINISHED    "Hashing Finished"
 END
 
 #endif    // Englisch (USA) resources

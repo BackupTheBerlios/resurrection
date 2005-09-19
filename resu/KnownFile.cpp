@@ -48,6 +48,7 @@
 #include "emuledlg.h"
 #include "SharedFilesWnd.h"
 #include "UploadQueue.h"
+#include "MuleStatusBarCtrl.h" //>>> WiZaRd::Hashing Progress [O²]
 
 // id3lib
 #include <id3/tag.h>
@@ -493,6 +494,14 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	uint32 togo = m_nFileSize;
 	for (uint16 hashcount = 0; togo >= PARTSIZE; )
 	{
+//>>> WiZaRd::Hashing Progress [O²]
+		if (theApp.emuledlg->statusbar->m_hWnd) 
+		{
+			CString percent;
+			percent.Format(GetResString(IDS_HASHING_PROGRESS), ((hashcount+1)*100/GetPartCount()), in_filename);
+			theApp.emuledlg->statusbar->SetText(percent , 0, 0);
+		}
+//<<< WiZaRd::Hashing Progress [O²]
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
 
@@ -589,6 +598,11 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 
 	UpdatePartsInfo();
 
+//>>> Hashing Progress [O²]
+	if (theApp.emuledlg->statusbar->m_hWnd) 
+		theApp.emuledlg->statusbar->SetText(GetResString(IDS_HASHING_FINISHED), 0, 0);
+	AddLogLine(false, CString(GetFilePath()) + _T(" - ") + GetResString(IDS_HASHING_FINISHED));
+//<<< Hashing Progress [O²]
 	return true;	
 }
 
@@ -608,6 +622,14 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	uint32 togo = m_nFileSize;
 	for (uint16 hashcount = 0; togo >= PARTSIZE; )
 	{
+//>>> WiZaRd::Hashing Progress [O²]
+		if (theApp.emuledlg->statusbar->m_hWnd) 
+		{
+			CString percent;
+			percent.Format(GetResString(IDS_HASHING_PROGRESS), ((hashcount+1)*100/GetPartCount()), GetFileName());
+			theApp.emuledlg->statusbar->SetText(percent , 0, 0);
+		}
+//<<< WiZaRd::Hashing Progress [O²]
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
 		if (!CreateHash(file, PARTSIZE, NULL, pBlockAICHHashTree)) {
@@ -642,6 +664,10 @@ bool CKnownFile::CreateAICHHashSetOnly()
 		m_pAICHHashSet->SetStatus(AICH_HASHSETCOMPLETE);
 		if (!m_pAICHHashSet->SaveHashSet())
 			LogError(LOG_STATUSBAR, GetResString(IDS_SAVEACFAILED));
+//>>> Hashing Progress [O²]r
+		else if (theApp.emuledlg->statusbar->m_hWnd) 
+			theApp.emuledlg->statusbar->SetText(GetResString(IDS_HASHING_FINISHED), 0, 0);
+//<<< Hashing Progress [O²]
 	}
 	else{
 		// now something went pretty wrong

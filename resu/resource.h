@@ -2503,6 +2503,8 @@
 #define IDS_FN_TAG_NO			60082
 #define IDS_FN_TAG_CUSTOM		60083
 #define IDS_FN_TAG_CUSTOMTEXT		60084
+#define IDS_HASHING_PROGRESS		60085
+#define IDS_HASHING_FINISHED		60086
 
 // Next default values for new objects
 // 
