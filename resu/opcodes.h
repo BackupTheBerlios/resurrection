@@ -16,6 +16,8 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #define MOD_VERSION _T("ReSuRReCTioN 1.1 Beta 1g") //[lama] ModVersion
+#define MOD_ID				_T("RedSmurf") // Mondgott :: Show RedSmurfIconOnClientDetect
+
 // MOD Note: Do not change this part - Merkur
 #define	EMULE_PROTOCOL			0x01
 // MOD Note: end

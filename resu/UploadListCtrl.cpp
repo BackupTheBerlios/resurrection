@@ -125,6 +125,9 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
+	// Mondgott :: Show RedSmurfIconOnClientDetect
+	imagelist.Add(CTempIconLoader(_T("RedSmurf"))); //15
+    // Mondgott :: Show RedSmurfIconOnClientDetect
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }
 
@@ -310,11 +313,6 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	cur_rec.right = cur_rec.left - 8;
 	cur_rec.left += 4;
 	CString Sbuffer;
-
-	// <CB MOd : CreditSystem>
-	float clientrating = 0;
-	// </CB MOd : CreditSystem>
-
 	for (int iCurrent = 0; iCurrent < iCount; iCurrent++)
 	{
 		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
@@ -325,65 +323,50 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			{
 				case 0:{
 					uint8 image;
-
-					// <CB Mod : CreditSystem>
-					clientrating = client->credits->GetScoreRatio(client->GetIP());
-					// </CB Mod : CreditSystem>
-
 					if (client->IsFriend())
 						image = 4;
+					    // Mondgott :: Show RedSmurfIconOnClientDetect
+					    else if (client->GetRedSmurfClient())
+						        image = 15;
+					    // Mondgott :: Show RedSmurfIconOnClientDetect
 					else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 8;
 						else
 							image = 7;
 					}
 					else if (client->GetClientSoft() == SO_MLDONKEY){
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 6;
 						else
 							image = 5;
 					}
 					else if (client->GetClientSoft() == SO_SHAREAZA){
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 10;
 						else
 							image = 9;
 					}
 					else if (client->GetClientSoft() == SO_AMULE){
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 12;
 						else
 							image = 11;
 					}
 					else if (client->GetClientSoft() == SO_LPHANT){
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 14;
 						else
 							image = 13;
 					}
 					else if (client->ExtProtocolAvailable()){
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 3;
 						else
 							image = 1;
 					}
 					else{
-						// <CB Mod : CreditSystem>
-						if ( clientrating > 1)
-						// </CB Mod : CreditSystem>
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
 							image = 2;
 						else
 							image = 0;

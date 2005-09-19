@@ -4506,7 +4506,6 @@ BEGIN
     IDS_UPLOAD_COMPLETED    "Completing"
     IDS_UPLOAD_PREEMPTED    "Pre-empted by higher prio upload"
     IDS_LOG_WCEVENTS        "Log WebCache Events"
-    IDS_COPYFEEDBACK        "Copy feedback to clipboard"
 END
 
 STRINGTABLE 
@@ -4522,25 +4521,9 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FEEDBACK_TRANSFERRED "Transferred: %s (%s)"
-    IDS_FEEDBACK_REQUESTED  "Requested: %i (%i)"
-    IDS_FEEDBACK_ACCEPTED   "Accepted Requests: %i (%i)"
-    IDS_FEEDBACK_FROM       "Feedback from %s on [%s]"
-    IDS_FEEDBACK_FILENAME   "File name: %s"
-    IDS_FEEDBACK_FILETYPE   "File type: %s"
-    IDS_FEEDBACK_FILESIZE   "Size: %s"
-    IDS_FEEDBACK_DOWNLOADED "Downloaded: %s"
-	IDS_FEEDBACK_DOWNLOADING "Currently Downloading @: %s"// actual Download [lama]
+IDS_FEEDBACK_DOWNLOADING "Currently Downloading @: %s"// actual Download [lama]
     END
 
-STRINGTABLE 
-BEGIN
-    IDS_FEEDBACK_TOTAL      "Total sources: %i"
-    IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
-    IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
-    IDS_FEEDBACK_COMPLETE   "Complete sources: %i (%i)"
-    IDS_COPYFEEDBACK_US     "Copy feedback to clipboard (US)"
- END
 
 STRINGTABLE 
 BEGIN
@@ -4692,6 +4675,7 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_FEEDBACK_CREATE     "Created at: %s"
     IDS_UM                  "Upload Management"
     IDS_SPREADBAR           "Spreadbar"
     IDS_SPREADBAR_DEFAULT_CHECKBOX "Enable SpreadBar by default"
@@ -4699,6 +4683,21 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_FEEDBACK_FROM       "Feedback from %s on eMule %s [%s]"
+    IDS_FEEDBACK_FILENAME   "File name: %s"
+    IDS_FEEDBACK_FILETYPE   "File type: %s"
+    IDS_FEEDBACK_FILESIZE   "Size: %i MB"
+    IDS_FEEDBACK_DOWNLOADED "Downloaded: %i KB = %i MB = %.1f%%"
+    IDS_FEEDBACK_TOTAL      "Total sources: %i"
+    IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
+    IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
+    IDS_FEEDBACK_COMPLETE   "Estimated complete sources: %i"
+    IDS_COPYFEEDBACK        "Copy feedback to clipboard"
+    IDS_COPYFEEDBACK_DE     "Kopiere Bericht in Zwischenablage (DE)"
+    IDS_FEEDBACK_UPLOADED_FULL "Uploaded All Sessions : %i MB"
+    IDS_FEEDBACK_UPLOADED_SESSION "Uploaded This Session : %i MB"
+    IDS_FEEDBACK_REQUEST_SESSION "Requests This Session: %i"
+    IDS_FEEDBACK_REQUEST_FULL "Requests All Sessions: %i"
     IDS_CREDIT_SYSTEM       "Creditsystem Options"
     IDS_OFFICIAL_CREDIT     "Official"
     IDS_LOVELACE_CREDIT     "Lovelace"
@@ -4708,8 +4707,11 @@ BEGIN
     IDS_SWAT_CREDIT         "Swat"
 END
 
+
 STRINGTABLE 
 BEGIN
+    IDS_FEEDBACK_ACCEPT_SESSION "Accepted Requests This Session: %i"
+    IDS_FEEDBACK_ACCEPT_FULL "Accepted Requests All Sessions: %i"
     IDS_REASKSRCAFTERIPCHANGE 
                             "ReAsk SRCs after IP Change (does not work with LowID!)"
 END

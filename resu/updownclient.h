@@ -947,5 +947,11 @@ private:
 public:
 	bool IsPowerShared() const;
 	//<<< PowerShare 
+// Mondgott :: Show RedSmurfIconOnClientDetect
+public: 
+	bool GetRedSmurfClient() const { return m_bRedSmurfClient;}
+protected:
+	bool		m_bRedSmurfClient;
+// Mondgott :: Show RedSmurfIconOnClientDetect
 };
 //#pragma pack()

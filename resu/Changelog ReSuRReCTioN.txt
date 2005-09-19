@@ -1,8 +1,11 @@
 Changelog ReSuRReCTioN 1.1
 
+
 merged to Ackronic 3.0 Codebase
 
+
 half updated to Ackronic 3.1 - (only added invisible Mode) 
+
 
 the following code I changed from Ackronic one to my from Resurrection 1.0 
 
@@ -15,6 +18,7 @@ Changed: Client%
 Changed: DL and UL in color
 Changed: Modversion (thanx at Spe64 for help) 
 Changed Feedback - (removed ionix and added Morph one - added currend dl speed to feed)  
+
 
 the following I removed from Ackronic Base or my old Resurrection 1.0
 
@@ -32,15 +36,22 @@ Removed: Allow Bandwidth Settings
 Removed: Low Id Notifier
 Removed: Next EMF Slotmanager
 Removed: SLS
+Removed: CB-Creditsystem
+
 
 Ok and last but not least the things I added: 
 
 Added: Webcache
-Added: Powershare [WiZaRd] (big thanx for this code)
-Added: Funny Nicks 
+Added: Powershare [WiZaRd] 
+Added: Funny Nicks [iONix][Stulle]
+Added: Hashing Progress [O²][WiZaRd]
+Added: Blinking Tray Icon On Message Recieve [emulEspaña]
+Added: show Date & Time in Feedback [Mondgott]
+Added: Show Loaded Filesize & Percent if File not complete in Share [Mondgott]
+Added: Show current downloadspeed in Feedback [lama]
+
 
 And least lol the fixed things: 
-
 Fixed: TrayAnzeige (CB) 
 Fixed: DL-Feedback
 Fixed: AntiLeechclass (updated) 
@@ -73,7 +84,7 @@ svenvath
 pontew8
 dd_77
 
-at this place its time to say a REAL Big THANX to the HOLE Team of DDoS - guys you are really great !!!!!!!!!!!!!!!!!! I hope you will test every of my next coming
+at this place its time to say a REAL Big THANX to the WHOLE Team of DDoS - guys you are really great !!!!!!!!!!!!!!!!!! I hope you will test every of my next coming
 betas like the last one....... 
 
 ok thats it - wish much fun and Good sessions to everybody.... 

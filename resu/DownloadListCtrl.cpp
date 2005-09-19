@@ -198,13 +198,13 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("Server")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
-	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); // [ionix] - Show iONiX icon on client detect 14
 	m_ImageList.Add(CTempIconLoader(_T("Rating_NotRated")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Fake")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Poor")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Fair")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Good")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Excellent")));
+	m_ImageList.Add(CTempIconLoader(_T("RedSmurf"))); // Mondgott :: Show RedSmurfIconOnClientDetect icon 20
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 //KTS+ webcache
 	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // 22// jp webcacheclient icon
@@ -795,6 +795,10 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				POINT point2= {cur_rec.left,cur_rec.top+1};
 				if (lpUpDownClient->IsFriend())
 					m_ImageList.Draw(dc, 6, point2, ILD_NORMAL | uOvlImg);
+				// Mondgott :: Show RedSmurfIconOnClientDetect 
+				else if (lpUpDownClient->GetRedSmurfClient())
+					m_ImageList.Draw(dc, 20, point2, ILD_NORMAL | uOvlImg);
+				// Mondgott :: Show RedSmurfIconOnClientDetect
 				else if (lpUpDownClient->GetClientSoft() == SO_EDONKEYHYBRID)
 					m_ImageList.Draw(dc, 9, point2, ILD_NORMAL | uOvlImg);
 				else if (lpUpDownClient->GetClientSoft() == SO_MLDONKEY)
@@ -1977,8 +1981,8 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
  				case MP_COPYFEEDBACK:
 				{
 					CString feed;
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
-					feed.Append(_T(" \r\n"));
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strCurVersionLong, MOD_VERSION);
+						feed.AppendFormat(_T(" \r\n"));
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
 					{			
@@ -1993,7 +1997,8 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				case MP_COPYFEEDBACK_US:
 				{
 					CString feed;
-					feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(), MOD_VERSION);
+						feed.AppendFormat(_T("Bericht von %s mit emule %s [%s]"),thePrefs.GetUserNick(), theApp.m_strCurVersionLong, MOD_VERSION);
+						feed.AppendFormat(_T(" \r\n"));
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
 					{
@@ -2006,7 +2011,8 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
 				//MORPH END - Added by IceCream, copy feedback feature
-  //Sivka (AutoHL) added by lama
+
+                                //Sivka (AutoHL)
 				case MP_SIVKA_FILE_SETTINGS:
 					if(selectedCount == 1)
 					{
@@ -2039,7 +2045,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						}
 					}
 					break;
-                                //Sivka (AutoHL) added by lama
+                                //Sivka (AutoHL)
 				default:
 					if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99){
 						theWebServices.RunURL(file, wParam);
@@ -2564,8 +2570,10 @@ void CDownloadListCtrl::CreateMenues(){
 	m_FileMenu.AppendMenu(MF_STRING, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_METINFO, GetResString(IDS_DL_INFO), _T("FILEINFO"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_VIEWFILECOMMENTS, GetResString(IDS_CMT_SHOWALL), _T("FILECOMMENTS"));
-    m_FileMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS), _T("RestoreWindow")); // (AutoHL) added by lama
-	m_FileMenu.AppendMenu(MF_SEPARATOR);
+        m_FileMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS), _T("RestoreWindow")); // (AutoHL) added by lama
+	m_FileMenu.AppendMenu(MF_STRING, MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_STRING, MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_DE), _T("COPY"));
+        m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_CLEARCOMPLETED, GetResString(IDS_DL_CLEAR), _T("CLEARCOMPLETE"));
 
 	// Add (extended user mode) 'Source Handling' sub menu
@@ -2586,12 +2594,6 @@ void CDownloadListCtrl::CreateMenues(){
 		m_FileMenu.AppendMenu(MF_STRING, MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
-	//MORPH START - Added by IceCream, copy feedback feature
-	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
-	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
-	m_FileMenu.AppendMenu(MF_SEPARATOR);
-	//MORPH END   - Added by IceCream, copy feedback feature
-
 }
 
 CString CDownloadListCtrl::getTextList()

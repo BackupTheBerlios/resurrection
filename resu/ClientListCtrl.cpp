@@ -105,7 +105,9 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("Server")));
 	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
-	imagelist.Add(CTempIconLoader(_T("IONIX"))); // [ionix] - Show iONiX icon on client detect
+   // Mondgott :: Show RedSmurfIconOnClientDetect
+	imagelist.Add(CTempIconLoader(_T("RedSmurf"))); //icon  9
+    // Mondgott :: Show RedSmurfIconOnClientDetect
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }
 
@@ -279,6 +281,10 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					uint8 image;
 					if (client->IsFriend())
 						image = 2;
+                            // Mondgott :: Show RedSmurfIconOnClientDetect
+					        else if (client->GetRedSmurfClient())
+					            image = 9;
+                            // Mondgott :: Show RedSmurfIconOnClientDetect
 					else if (client->GetClientSoft() == SO_EDONKEYHYBRID)
 						image = 4;
 					else if (client->GetClientSoft() == SO_MLDONKEY)

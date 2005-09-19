@@ -2099,36 +2099,70 @@ CString CKnownFile::GetFeedback(bool isUS)
 	CString feed;
 	if (isUS)
 	{
-		feed.AppendFormat(_T("File name: %s\r\n"),GetFileName());
-		feed.AppendFormat(_T("File type: %s\r\n"),GetFileType());
-		feed.AppendFormat(_T("File-Size: %i MB\r\n"),GetFileSize()/1048576);	
-		feed.AppendFormat(_T("Upload: %s \r\n"),CastItoXBytes(statistic.GetAllTimeTransferred())); //edited by [ionix]
-		feed.AppendFormat(_T("Requested: %i (%i)\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
-		feed.AppendFormat(_T("Accepted Requests: %i (%i)\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
+					//show Date & Time added by Mondgott
+					feed.AppendFormat(_T("Erstellt am : %s \r\n"),CTime::GetCurrentTime().Format(thePrefs.GetDateTimeFormat4Log()));
+					//show Date & Time added by Mondgott
+					feed.AppendFormat(_T("Dateiname : %s \r\n"),GetFileName());
+					feed.AppendFormat(_T("Dateityp : %s \r\n"),GetFileType());
+					feed.AppendFormat(_T("Dateigröße : %i MB \r\n"), (GetFileSize()/1048576));
+					//Added by Mondgott - Show Loaded Filesize & Percent if File not complete in Share
+					if(IsPartFile()){
+					feed.AppendFormat(_T("Bisher geladen : %i KB = %i MB = %.1f%% \r\n"), ((CPartFile*)this)->GetCompletedSize()/1024, ((CPartFile*)this)->GetCompletedSize()/1048576,((CPartFile*)this)->GetPercentCompleted()); //show loaded Percent added by Mondgott
+					}
+					//Added by Mondgott - Show Loaded Filesize & Percent if File not complete in Share
+					//Added by Magic - Show Uploaded too
+					feed.AppendFormat(_T("Gesamt hochgeladen : %i MB \r\n"), (statistic.GetAllTimeTransferred()/1048576));
+					feed.AppendFormat(_T("Session hochgeladen : %i MB \r\n"), (statistic.GetTransferred()/1048576)); 
+					//Added by Magic - Show Uploaded too
+					//Added by Magic - Requested & Accepted for sessions & all sessions
+					feed.AppendFormat(_T("Anfragen Session : %i \r\n"), (statistic.GetRequests())); 
+					feed.AppendFormat(_T("Anfragen gesamt : %i \r\n"), (statistic.GetAllTimeRequests())); 
+					feed.AppendFormat(_T("Akzeptierte Anfragen Session : %i \r\n"), (statistic.GetAccepts())); 
+					feed.AppendFormat(_T("Akzeptierte Anfragen gesamt : %i \r\n"), (statistic.GetAllTimeAccepts())); 
+					//Added by Magic - Requested & Accepted for sessions & all sessions
+					feed.AppendFormat(_T("Geschätzte volle Quellen : %i \r\n"), m_nCompleteSourcesCount);
 		if(IsPartFile()){
-			feed.AppendFormat(_T("Currently Downloading @: %i \r\n"), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));//actual Download [lama]
-			feed.AppendFormat(_T("Total sources: %i \r\n"),((CPartFile*)this)->GetSourceCount());
-			feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetValidSourcesCount());
-			feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+			        feed.AppendFormat(_T("Currently Downloading @: %i \r\n"), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));//actual Download [lama]
+					feed.AppendFormat(_T("Quellen gesamt: %i \r\n"),((CPartFile*)this)->GetSourceCount());
+					feed.AppendFormat(_T("Verfügbare Quellen : %i \r\n"),((CPartFile*)this)->GetValidSourcesCount());
+					feed.AppendFormat(_T("Quellen mit nicht benötigten Teilen : %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
 		}
-		feed.AppendFormat(_T("Complete sources: %i (%i)\r\n"),m_nCompleteSourcesCount, m_nCompleteSourcesCount);
+					feed.AppendFormat(_T("Komplette Quellen : %i (%i) \r\n"),m_nCompleteSourcesCount, m_nCompleteSourcesCount);
 	}
 	else
 	{
+					//show Date & Time added by Mondgott
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_CREATE),CTime::GetCurrentTime().Format(thePrefs.GetDateTimeFormat4Log()));
+					feed.AppendFormat(_T(" \r\n"));
+					//show Date & Time added by Mondgott
 		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME), GetFileName());
-		feed.Append(_T(" \r\n"));
+					feed.AppendFormat(_T(" \r\n"));
 		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE), GetFileType());
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE), CastItoXBytes(GetFileSize(),false,false,3));
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_TRANSFERRED), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3),CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3));
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUESTED), statistic.GetRequests(), statistic.GetAllTimeRequests());
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED), statistic.GetAccepts() , statistic.GetAllTimeAccepts());
-		feed.Append(_T(" \r\n"));
+					feed.AppendFormat(_T(" \r\n"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE), (GetFileSize()/1048576));
+					feed.AppendFormat(_T(" \r\n"));
+					//Added by Mondgott - Show Loaded Filesize & Percent if File not complete in Share
+					if(IsPartFile()){
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED), ((CPartFile*)this)->GetCompletedSize()/1024, ((CPartFile*)this)->GetCompletedSize()/1048576,((CPartFile*)this)->GetPercentCompleted()); //show loaded Percent added by Mondgott
+					feed.AppendFormat(_T(" \r\n"));
+					}
+					//Added by Mondgott - Show Loaded Filesize & Percent if File not complete in Share
+					//Added by Magic - Show Uploaded too
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_UPLOADED_FULL), (statistic.GetAllTimeTransferred()/1048576)); 
+					feed.AppendFormat(_T(" \r\n"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_UPLOADED_SESSION), (statistic.GetTransferred()/1048576)); 
+					feed.AppendFormat(_T(" \r\n"));
+					//Added by Magic - Show Uploaded too
+					//Added by Magic - Requested & Accepted for sessions & all sessions
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUEST_SESSION), (statistic.GetRequests())); 
+					feed.AppendFormat(_T(" \r\n"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUEST_FULL), (statistic.GetAllTimeRequests())); 
+					feed.AppendFormat(_T(" \r\n"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPT_SESSION), (statistic.GetAccepts())); 
+					feed.AppendFormat(_T(" \r\n"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPT_FULL), (statistic.GetAllTimeAccepts())); 
+					feed.AppendFormat(_T(" \r\n"));
+					//Added by Magic - Requested & Accepted for sessions & all sessions
 		if(IsPartFile()){
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADING), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));// actual download [lama]
 			feed.Append(_T(" \r\n"));

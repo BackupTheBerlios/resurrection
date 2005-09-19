@@ -115,6 +115,9 @@ void CDownloadClientsCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientAMulePlus")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhantPlus")));
+    // Mondgott :: Show RedSmurfIconOnClientDetect
+	m_ImageList.Add(CTempIconLoader(_T("RedSmurf"))); //icon 15
+    // Mondgott :: Show RedSmurfIconOnClientDetect
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }
 
@@ -258,11 +261,6 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	cur_rec.right = cur_rec.left - 8;
 	cur_rec.left += 4;
 	CString Sbuffer;	
-	
-	// <CB Mod : CreditSystem>
-	float clientrating = 0;
-	// </CB Mod : CreditSystem>
-
 	for(int iCurrent = 0; iCurrent < iCount; iCurrent++){
 		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
 		if( !IsColumnHidden(iColumn) ){
@@ -270,66 +268,52 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			switch(iColumn){
 				case 0:{
 					uint8 image;
-
-					// <CB Mod : CreditSystem>
-					clientrating = client->credits->GetScoreRatio(client->GetIP());
-					// </CB Mod : CreditSystem>
-
 					if (client->credits != NULL){
 						if (client->IsFriend())
 							image = 4;
+					// Mondgott :: Show RedSmurfIconOnClientDetect
+					else if (client->GetRedSmurfClient())
+						image = 15;
+					// Mondgott :: Show RedSmurfIconOnClientDetect
+
 						else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
-							// <CB Mod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if (client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 8;
 							else
 								image = 7;
 						}
 						else if (client->GetClientSoft() == SO_MLDONKEY){
-							// <CB Mod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if (client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 6;
 							else
 								image = 5;
 						}
 						else if (client->GetClientSoft() == SO_SHAREAZA){
-							// <CB Mod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 10;
 							else
 								image = 9;
 						}
 						else if (client->GetClientSoft() == SO_AMULE){
-							// <CB MOod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 12;
 							else
 								image = 11;
 						}
 						else if (client->GetClientSoft() == SO_LPHANT){
-							// <CB Mod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 14;
 							else
 								image = 13;
 						}
 						else if (client->ExtProtocolAvailable()){
-							// <CB Mod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 3;
 							else
 								image = 1;
 						}
 						else{
-							// <CB Mod : CreditSystem>
-							if ( clientrating > 1)
-							// </CB Mod : CreditSystem>
+							if (client->credits->GetScoreRatio(client->GetIP()) > 1)
 								image = 2;
 							else
 								image = 0;
@@ -575,33 +559,7 @@ int CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
 				iResult=-1;
 			break;
 		}
-		/*case 3:
-			iResult=CompareUnsigned(item2->GetDownloadDatarate(), item1->GetDownloadDatarate());
-			break;
-		case 103:
-			iResult=CompareUnsigned(item1->GetDownloadDatarate(), item2->GetDownloadDatarate());
-			break;
-		case 4:
-			iResult=CompareUnsigned(item2->GetPartCount(), item1->GetPartCount());
-			break;
-		case 104: 
-			iResult=CompareUnsigned(item1->GetPartCount(), item2->GetPartCount());
-			break;
-		case 5:
-			iResult=CompareUnsigned(item2->GetSessionDown(), item1->GetSessionDown());
-			break;
-		case 105:
-			iResult=CompareUnsigned(item1->GetSessionDown(), item2->GetSessionDown());
-			break;
-		case 6:
-			iResult=CompareUnsigned(item2->GetSessionUp(), item1->GetSessionUp());
-			break;
-		case 106:
-			iResult=CompareUnsigned(item1->GetSessionUp(), item2->GetSessionUp());
-			break;*/
-
-// Avi3k: sort fix
-case 3:
+		case 3:// Avi3k: sort fix
   iResult=CompareUnsigned(item1->GetDownloadDatarate(), item2->GetDownloadDatarate());
   break;
 case 103:
@@ -624,8 +582,7 @@ case 6:
   break;
 case 106:
   iResult=CompareUnsigned(item2->GetSessionUp(), item1->GetSessionUp());
-			break;
-// end Avi3k: sort fix 
+			break;// end Avi3k: sort fix
 		case 7: 
 			iResult=CompareUnsigned(item1->GetSourceFrom(), item2->GetSourceFrom());
 			break;

@@ -252,6 +252,9 @@ void CUpDownClient::Init()
 	SetLastBuddyPingPongTime();
 	m_fSentOutOfPartReqs = 0;
 	m_bCollectionUploadSlot = false;
+    // Mondgott :: Show RedSmurfIconOnClientDetect
+	m_bRedSmurfClient = false; 
+    // Mondgott :: Show RedSmurfIconOnClientDetect
         m_dwLastAskedTime = 0; // bobo [Maella/sivka: -ReAsk SRCs after IP Change-]
 	m_iDifferenceQueueRank = 0;	// bobo - qrverlauf  added by lama
  //KTS+ webcache
@@ -498,6 +501,9 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
                          m_strModVersion = _T("ModID=<Unknown>"); 
 				if (bDbgInfo)
 					m_strHelloInfo.AppendFormat(_T("\n  ModID=%s"), m_strModVersion);
+                    // Mondgott :: Show RedSmurfIconOnClientDetect
+					m_bRedSmurfClient = StrStrI(m_strModVersion, MOD_ID) != 0; 
+                    // Mondgott :: Show RedSmurfIconOnClientDetect
 				CheckForGPLEvilDoer();
 				break;
 			//KTS+ webcache
@@ -958,6 +964,9 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
                          m_strModVersion = _T("ModID=<Unknown>"); 
 				if (bDbgInfo)
 					m_strMuleInfo.AppendFormat(_T("\n  ModID=%s"), m_strModVersion);
+                    // Mondgott :: Show RedSmurfIconOnClientDetect
+					m_bRedSmurfClient = StrStrI(m_strModVersion, MOD_ID) != 0; 
+                    // Mondgott :: Show RedSmurfIconOnClientDetect
 				CheckForGPLEvilDoer();
 				break;
 			default:
