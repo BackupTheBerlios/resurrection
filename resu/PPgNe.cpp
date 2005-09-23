@@ -66,8 +66,6 @@ CPPgNe::CPPgNe()
 {
 	m_bInitializedTreeOpts = false;
  
-
-
 }
 
 CPPgNe::~CPPgNe()
@@ -143,7 +141,7 @@ void CPPgNe::Localize(void)
 		GetDlgItem(IDC_PPG_PHOENIX_QUICKSTART_CONN_PER_FIVE_STATIC)->SetWindowText(GetResString(IDS_PPG_PHOENIX_QUICKSTART_CONN_PER_FIVE_STATIC));
 		GetDlgItem(IDC_QUICKSTARTAFTERIPCHANGE)->SetWindowText(GetResString(IDS_QUICKSTARTAFTERIPCHANGE));
 		GetDlgItem(IDC_QUICK_START_MINUTES_STATIC)->SetWindowText(GetResString(IDS_QUICK_START_MINUTES_STATIC));
-GetDlgItem(IDC_AutoHL_Groupbox)->SetWindowText(GetResString(IDS_AutoHL_Groupbox));
+        GetDlgItem(IDC_AutoHL_Groupbox)->SetWindowText(GetResString(IDS_AutoHL_Groupbox));
 		GetDlgItem(IDC_AutoHL)->SetWindowText(GetResString(IDS_AutoHL));
 		GetDlgItem(IDC_MinAutoHL_static)->SetWindowText(GetResString(IDS_MinAutoHL_static));
 		GetDlgItem(IDC_MaxAutoHL_static)->SetWindowText(GetResString(IDS_MaxAutoHL_static));
@@ -151,11 +149,12 @@ GetDlgItem(IDC_AutoHL_Groupbox)->SetWindowText(GetResString(IDS_AutoHL_Groupbox)
 		GetDlgItem(IDC_AutoHLUpdate_static)->SetWindowText(GetResString(IDS_AutoHLUpdate_static));
 		GetDlgItem(IDC_AutoHLUpdate_static2)->SetWindowText(GetResString(IDS_AutoHLUpdate_static2));
 	    GetDlgItem(IDC_EnableDownloadInColor)->SetWindowText(GetResString(IDS_EnableDownloadInColor)); //Spe64
-	GetDlgItem(IDC_EnableDownloadInBold)->SetWindowText(GetResString(IDS_EnableDownloadInBold)); //Spe64
+	    GetDlgItem(IDC_EnableDownloadInBold)->SetWindowText(GetResString(IDS_EnableDownloadInBold)); //Spe64
 		GetDlgItem(IDC_UploadColor)->SetWindowText(GetResString(IDS_UploadColor));//lama
 
 		GetDlgItem(IDC_CHECK_SIVKABAN)->SetWindowText(GetResString(IDS_CHECK_SIVKABAN));//lama
 		GetDlgItem(IDC_CHECK_SIVKA_BANLOG)->SetWindowText(GetResString(IDS_CHECK_SIVKA_BANLOG));//lama
+		GetDlgItem(IDC_IsClientBanTime_static)->SetWindowText(GetResString(IDS_ISCLIENTBANTIME_STATIC));//lama
 
 	}
 }

@@ -501,6 +501,16 @@ void CUploadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	CTitleMenu ClientMenu;
 	ClientMenu.CreatePopupMenu();
 	ClientMenu.AddMenuTitle(GetResString(IDS_CLIENTS), true);
+	//KTS+ ShowUploadFlag
+	if(theApp.ip2country->ShowCountryFlag()){
+		ClientMenu.AppendMenu(MF_STRING,MP_SHOWUPLOADFLAG, _T("Show Upload Flag") );
+		if(thePrefs.ShowUploadFlag())
+			ClientMenu.CheckMenuItem(MP_SHOWUPLOADFLAG,MF_CHECKED);
+		else
+			ClientMenu.CheckMenuItem(MP_SHOWUPLOADFLAG,MF_UNCHECKED);
+	}
+	ClientMenu.AppendMenu(MF_SEPARATOR); 
+	//KTS- ShowUploadFlag
 	ClientMenu.AppendMenu(MF_STRING | (client ? MF_ENABLED : MF_GRAYED), MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));

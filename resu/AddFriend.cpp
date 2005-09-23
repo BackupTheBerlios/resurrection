@@ -153,7 +153,6 @@ void CAddFriend::OnAddBtn()
 		strUserName = strUserName.Left(thePrefs.GetMaxUserNickLength());
 
 		// why did we offer an edit control for entering the userhash but did not store it?
-		;
 
 		if (!theApp.friendlist->AddFriend(NULL, 0, ip, uPort, 0, strUserName, 0)){
 			AfxMessageBox(GetResString(IDS_WRN_FRIENDDUPLIPPORT));

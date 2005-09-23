@@ -48,6 +48,7 @@
 #include "IP2Country.h" 
 // IP-to-Country -
 #include "Clientlist.h"//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+#include "fakecheck.h" // [ionix] - Fakecheck
 
 
 #ifdef _DEBUG
@@ -140,6 +141,8 @@ void CDownloadListCtrl::Init()
 	//KTS+ webcache
 	InsertColumn(13, _T("Webcache capable") ,LVCFMT_LEFT, 100); //JP Webcache column
 	//KTS- webcache
+	InsertColumn(14,GetResString(IDS_CHECKFAKE),LVCFMT_LEFT, 220); // [ionix] - Fakecheck
+
 	SetAllIcons();
 	Localize();
 	LoadSettings();
@@ -284,8 +287,13 @@ void CDownloadListCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(12, &hdi);
 	strRes.ReleaseBuffer();
-
+   //fakecheck
+	strRes = GetResString(IDS_CHECKFAKE);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(14, &hdi);
+	strRes.ReleaseBuffer();
 	CreateMenues();
+    //fakecheck
 
 	ShowFilesCount();
 }
@@ -732,6 +740,21 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			break;
 		//JP Webcache END
 		//KTS- webcache
+	// [ionix] - WiZaRd - Fakecheck
+		case 14:
+               {  
+                    buffer = _T("No fake");  
+                    if(lpPartFile)  
+                    {  
+                              CString tmp = theApp.FakeCheck->IsFake((uchar*)lpPartFile->GetFileHash(), lpPartFile->GetFileSize()) ? _tcsdup(theApp.FakeCheck->GetLastHit()) : NULL;;  
+ 
+                              if(!tmp.IsEmpty())  
+                             buffer = tmp;  
+                    }                           
+                    dc->DrawText(buffer, buffer.GetLength() ,const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);  
+                         break; 
+               }
+		// [ionix] - WiZaRd - Fakecheck end
 		}
 	}
 }
@@ -816,25 +839,20 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				else
 					m_ImageList.Draw(dc, 7, point2, ILD_NORMAL | uOvlImg);
 				cur_rec.left += 20;
-// IP-to-Country +
+               // IP-to-Country +
 				if(theApp.ip2country->ShowCountryFlag() ){
 					POINT point3= {cur_rec.left,cur_rec.top+1};
 					theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, lpUpDownClient->GetCountryFlagIndex(), point3, CSize(18,16), CPoint(0,0), ILD_NORMAL);
 					cur_rec.left+=20;
 				}
-				// IP-to-Country -
-
-				if (!lpUpDownClient->GetUserName())
-					buffer = _T("?");
-				else
-					buffer = lpUpDownClient->GetUserName();
+				// IP-to-Country + 
+				buffer = lpUpDownClient->GetCountryName(); 
+				// IP-to-Country - 
+				if (!lpUpDownClient->GetUserName()) 
+					buffer.Append(_T("?")); 
+				else 
+					buffer.Append(lpUpDownClient->GetUserName()); 
 				dc->DrawText(buffer,buffer.GetLength(),&cur_rec, DLC_DT_TEXT);
-			// IP-to-Country +
-				CString tempStr2;
-				tempStr2.Format(_T("%s%s"), lpUpDownClient->GetCountryName(), buffer);
-				buffer = tempStr2;
-				// IP-to-Country -
-
 			}
 			break;
 
@@ -1981,7 +1999,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
  				case MP_COPYFEEDBACK:
 				{
 					CString feed;
-						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strCurVersionLong, MOD_VERSION);
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
 						feed.AppendFormat(_T(" \r\n"));
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
@@ -1997,7 +2015,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				case MP_COPYFEEDBACK_US:
 				{
 					CString feed;
-						feed.AppendFormat(_T("Bericht von %s mit emule %s [%s]"),thePrefs.GetUserNick(), theApp.m_strCurVersionLong, MOD_VERSION);
+						feed.AppendFormat(_T("Bericht von %s mit emule %s"),thePrefs.GetUserNick(), MOD_VERSION);
 						feed.AppendFormat(_T(" \r\n"));
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
@@ -2389,9 +2407,17 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 	//JP Webcache
 	case 13:
 		return file1->GetWebcacheSourceCount() - file2->GetWebcacheSourceCount();
-
+			break;
+// [ionix] - Fakecheck
+	case 14: {
+		CString file1_tmp = theApp.FakeCheck->IsFake((uchar*)file1->GetFileHash(), file1->GetFileSize()) ? _tcsdup(theApp.FakeCheck->GetLastHit()) : NULL;
+		CString file2_tmp = theApp.FakeCheck->IsFake((uchar*)file2->GetFileHash(), file2->GetFileSize()) ? _tcsdup(theApp.FakeCheck->GetLastHit()) : NULL;
+		comp=CompareOptLocaleStringNoCase(file1_tmp, file2_tmp);
+		break;
+		}   
 		default:
 			comp=0;
+			break;
 	}
 	return comp;
  }
@@ -2466,6 +2492,10 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 			return client1->SupportsWebCache() - client2->SupportsWebCache();
 	//JP Webcache END
 	//KTS- webcahce
+// [ionix] - Fakecheck
+	//case 14: //Why do we sort this?
+	//		return CompareOptLocaleStringNoCase(client1->GetFakeComment(), client2->GetFakeComment());
+	// [ionix] - Fakecheck end
 	default:
 		return 0;
 	}

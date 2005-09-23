@@ -253,8 +253,6 @@ void CChatSelector::ProcessMessage(CUpDownClient* sender, const CString& message
 		ci = StartSession(sender, false);
 		isNewChatWindow = true; 
 	}
-	//if (thePrefs.GetIRCAddTimestamp())
-	//	AddTimeStamp(ci); removed irc [lama]
 	ci->log->AppendKeyWord(sender->GetUserName(), RGB(50,200,250));
 	ci->log->AppendText(_T(": "));
 	ci->log->AppendText(message + _T("\n"));
@@ -295,8 +293,6 @@ bool CChatSelector::SendMessage(const CString& rstrMessage)
 	if (ci->client->GetChatState() == MS_CONNECTING)
 		return false;
 
-	//if (thePrefs.GetIRCAddTimestamp())
-	//	AddTimeStamp(ci); removed irc [lama]
 	if (ci->client->socket && ci->client->socket->IsConnected())
 	{
 		CSafeMemFile data;
@@ -314,7 +310,10 @@ bool CChatSelector::SendMessage(const CString& rstrMessage)
 		ci->log->AppendKeyWord(_T("*** ") + GetResString(IDS_CONNECTING), RGB(255,0,0));
 		ci->strMessagePending = rstrMessage;
 		ci->client->SetChatState(MS_CONNECTING);
-		ci->client->TryToConnect();
+		//==>Fix for closed  [WiZaRd]
+		ci->client->TryToConnect(true);
+		//ci->client->TryToConnect();
+		//<==Fix for closed [WiZaRd]
 	}
 	return true;
 }
@@ -331,12 +330,7 @@ void CChatSelector::ConnectingResult(CUpDownClient* sender, bool success)
 			ci->log->AppendKeyWord(_T(" ") + GetResString(IDS_FAILED) + _T("\n"), RGB(255,0,0));
 			ci->strMessagePending.Empty();
 		}
-		/*else{
-			if (thePrefs.GetIRCAddTimestamp())
-				AddTimeStamp(ci);
-			ci->log->AppendKeyWord(GetResString(IDS_CHATDISCONNECTED) + _T("\n"), RGB(255,0,0));
-		}removed irc [lama] */
-	}
+		}
 	else if (!ci->strMessagePending.IsEmpty()){
 		ci->log->AppendKeyWord(_T(" ok\n"), RGB(255,0,0));
 		
@@ -346,19 +340,13 @@ void CChatSelector::ConnectingResult(CUpDownClient* sender, bool success)
 		theStats.AddUpDataOverheadOther(packet->size);
 		ci->client->socket->SendPacket(packet, true, true);
 
-		//if (thePrefs.GetIRCAddTimestamp())
-		//	AddTimeStamp(ci); removed irc [lama]
 		ci->log->AppendKeyWord(thePrefs.GetUserNick(), RGB(1,180,20));
 		ci->log->AppendText(_T(": "));
 		ci->log->AppendText(ci->strMessagePending + _T("\n"));
 		
 		ci->strMessagePending.Empty();
 	}
-	/*else{
-		if (thePrefs.GetIRCAddTimestamp())
-			AddTimeStamp(ci);
-		ci->log->AppendKeyWord(_T("*** Connected\n"), RGB(255,0,0));
-	} removed irc [lama] */
+
 }
 
 void CChatSelector::DeleteAllItems()
@@ -688,8 +676,12 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 				EndSession(ci->client);
 			return TRUE;
 		}
-	}
+   //==>Fix for closed  [WiZaRd]
+		default:
 	return CClosableTabCtrl::OnCommand(wParam, lParam);
+		//<==Fix for closed [WiZaRd]
+	}
+	return TRUE;
 }
 
 void CChatSelector::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
@@ -708,9 +700,6 @@ void CChatSelector::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	menu.SetDefaultItem(MP_DETAIL);
 
 	GetCurrentChatItem();
-//	if (pFriend == NULL)
-//		menu.AppendMenu(MF_STRING, MP_ADDFRIEND, GetResString(IDS_IRC_ADDTOFRIENDLIST), _T("ADDFRIEND")); removed irc [lama]
-//	else
 		menu.AppendMenu(MF_STRING, MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	
 	m_ptCtxMenu = point;

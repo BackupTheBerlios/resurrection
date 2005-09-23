@@ -29,6 +29,7 @@
 //#include "HelpIDs.h" removed help [lama]
 #include "Log.h"
 #include "UserMsgs.h"
+#include ".\ppgtweaks.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,13 +51,13 @@ BEGIN_MESSAGE_MAP(CPPgTweaks, CPropertyPage)
 	ON_WM_DESTROY()
 	ON_MESSAGE(UM_TREEOPTSCTRL_NOTIFY, OnTreeOptsCtrlNotify)
 	ON_WM_HELPINFO()
+	ON_STN_CLICKED(IDC_WARNING, OnStnClickedWarning)
 END_MESSAGE_MAP()
 
 CPPgTweaks::CPPgTweaks()
 	: CPropertyPage(CPPgTweaks::IDD)
 	, m_ctrlTreeOptions(theApp.m_iDfltImageListColorFlags)
 {
-	m_iFileBufferSize = 0;
 	m_iQueueSize = 0;
 	m_iMaxConnPerFive = 0;
 	m_iMaxHalfOpen = 0;
@@ -156,7 +157,6 @@ CPPgTweaks::~CPPgTweaks()
 void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_FILEBUFFERSIZE, m_ctlFileBuffSize);
 	DDX_Control(pDX, IDC_QUEUESIZE, m_ctlQueueSize);
 	DDX_Control(pDX, IDC_EXT_OPTS, m_ctrlTreeOptions);
 		if (!m_bInitializedTreeOpts)
@@ -416,16 +416,6 @@ BOOL CPPgTweaks::OnInitDialog()
 	InitWindowStyles(this);
 	m_ctrlTreeOptions.SetItemHeight(m_ctrlTreeOptions.GetItemHeight() + 2);
 
-	m_iFileBufferSize = thePrefs.m_iFileBufferSize;
-	m_ctlFileBuffSize.SetRange(16, 8*1024+512, TRUE); //Spe64 Improved Buffer size Max
-	int iMin, iMax;
-	m_ctlFileBuffSize.GetRange(iMin, iMax);
-	m_ctlFileBuffSize.SetPos(m_iFileBufferSize/1024);
-	int iPage = 128;
-	for (int i = ((iMin+iPage-1)/iPage)*iPage; i < iMax; i += iPage)
-		m_ctlFileBuffSize.SetTic(i);
-	m_ctlFileBuffSize.SetPageSize(iPage);
-
 	m_iQueueSize = thePrefs.m_iQueueSize;
 	m_ctlQueueSize.SetRange(20, 100, TRUE);
 	m_ctlQueueSize.SetPos(m_iQueueSize/100);
@@ -504,7 +494,6 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.m_iCommitFiles = m_iCommitFiles;
 	thePrefs.m_iExtractMetaData = m_iExtractMetaData;
 	thePrefs.filterLANIPs = m_bFilterLANIPs;
-	thePrefs.m_iFileBufferSize = m_iFileBufferSize;
 	thePrefs.m_iQueueSize = m_iQueueSize;
 	if (thePrefs.m_bExtControls != m_bExtControls) {
 		thePrefs.m_bExtControls = m_bExtControls;
@@ -547,15 +536,7 @@ BOOL CPPgTweaks::OnApply()
 
 void CPPgTweaks::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
-	if (pScrollBar->GetSafeHwnd() == m_ctlFileBuffSize.m_hWnd)
-	{
-		m_iFileBufferSize = m_ctlFileBuffSize.GetPos() * 1024;
-        CString temp;
-		temp.Format(_T("%s: %s"), GetResString(IDS_FILEBUFFERSIZE), CastItoXBytes(m_iFileBufferSize, false, false));
-		GetDlgItem(IDC_FILEBUFFERSIZE_STATIC)->SetWindowText(temp);
-		SetModified(TRUE);
-	}
-	else if (pScrollBar->GetSafeHwnd() == m_ctlQueueSize.m_hWnd)
+	 if (pScrollBar->GetSafeHwnd() == m_ctlQueueSize.m_hWnd)
 	{
 		m_iQueueSize = ((CSliderCtrl*)pScrollBar)->GetPos() * 100;
 		CString temp;
@@ -624,8 +605,6 @@ void CPPgTweaks::Localize(void)
         if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU));
 
 		CString temp;
-		temp.Format(_T("%s: %s"), GetResString(IDS_FILEBUFFERSIZE), CastItoXBytes(m_iFileBufferSize, false, false));
-		GetDlgItem(IDC_FILEBUFFERSIZE_STATIC)->SetWindowText(temp);
 		temp.Format(_T("%s: %s"), GetResString(IDS_QUEUESIZE), GetFormatedUInt(m_iQueueSize));
 		GetDlgItem(IDC_QUEUESIZE_STATIC)->SetWindowText(temp);
 			
@@ -744,3 +723,7 @@ BOOL CPPgTweaks::OnHelpInfo(HELPINFO* pHelpInfo)
 	return TRUE;
 }
 removed help [lama]*/
+void CPPgTweaks::OnStnClickedWarning()
+{
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+}

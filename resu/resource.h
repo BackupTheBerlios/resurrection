@@ -2264,6 +2264,8 @@
 #define IDC_NICEHASH_LEFT               2963
 #define IDC_NICEHASH_RIGHT              2964
 #define IDC_DONTREMOVESTATICSERVER      2964
+#define IDC_COUNTRYFLAG2                2983
+#define IDC_COUNTRYFLAG                 2988
 #define IDS_RESET                       3001
 #define IDC_STATIC_ADDRESS              3001
 #define IDC_STATIC_CONTROLS             3002
@@ -2298,6 +2300,7 @@
 #define IDC_QUICKSTARTAFTERIPCHANGE     3462
 #define IDD_PPG_MSpe3                   3617
 #define IDS_FEEDBACK_DOWNLOADING        4789
+#define IDS_FEEDBACK_DOWNLOADING_DE     4790
 #define IDS_FAKECHECKUPERROR            4791
 #define IDS_UPDATEFAKECHECKONSTART      4793
 #define IDS_CHECKFAKE                   4795
@@ -2525,7 +2528,10 @@
 #define IDS_FN_TAG_CUSTOMTEXT		60084
 #define IDS_HASHING_PROGRESS		60085
 #define IDS_HASHING_FINISHED		60086
-
+#define IDC_FRIENDS_COUNTRY             60088
+#define IDC_FRIENDS_COUNTRY_EDIT      60089
+#define IDB_BITMAP_LAMA               60090
+#define IDS_ISCLIENTBANTIME_STATIC    60091
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

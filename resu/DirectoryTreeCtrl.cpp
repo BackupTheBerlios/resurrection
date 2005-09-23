@@ -531,6 +531,13 @@ void CDirectoryTreeCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	// create the menu
 	CTitleMenu SharedMenu;
 	SharedMenu.CreatePopupMenu();
+
+	if (m_lstShared.GetCount() == 0)
+
+		SharedMenu.AddMenuTitle(GetResString(IDS_NOSHAREDFOLDERS));
+
+	else
+
 	SharedMenu.AddMenuTitle(GetResString(IDS_SHAREDFOLDERS));
 	bool bMenuIsEmpty = true;
 
@@ -576,9 +583,9 @@ void CDirectoryTreeCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 BOOL CDirectoryTreeCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam < MP_SHAREDFOLDERS_FIRST)
-	{
+
 		ShellExecute(NULL, _T("open"), m_strLastRightClicked, NULL, NULL, SW_SHOW);
-	}
+
 	else
 	{
 		POSITION pos = m_lstShared.FindIndex(wParam - MP_SHAREDFOLDERS_FIRST);

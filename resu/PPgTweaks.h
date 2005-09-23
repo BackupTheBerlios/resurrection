@@ -135,4 +135,6 @@ protected:
 	afx_msg LRESULT OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam);
 	//afx_msg void OnHelp(); removed help [lama]
 	//afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);  removed help [lama]
+public:
+	afx_msg void OnStnClickedWarning();
 };

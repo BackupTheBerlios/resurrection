@@ -51,7 +51,6 @@
 #define MP_HM_LINK1				10230
 #define MP_HM_LINK2				10231
 #define MP_HM_LINK3				10232
-//#define MP_HM_SCHEDONOFF		10233 removed scheduler [lama]
 #define MP_SELECTTOOLBARBITMAPDIR 10234
 #define MP_SELECTTOOLBARBITMAP	10235
 #define MP_NOTEXTLABELS			10236
@@ -61,7 +60,6 @@
 #define	MP_SELECT_SKIN_FILE		10240
 #define	MP_SELECT_SKIN_DIR		10241
 #define MP_HM_HELP				10242
-//#define MP_HM_1STSWIZARD		10243 lama - removed wizard
 #define MP_OPENFOLDER			10244
 #define	MP_HM_IPFILTER			10245
 #define	MP_WEBSVC_EDIT			10246
@@ -165,7 +163,6 @@
 
 #define MP_WEBURL				10600	// reserve 100 entries for weburls!
 #define MP_ASSIGNCAT			10700	// reserve 100 entries for categories!
-//#define MP_SCHACTIONS			10800	// reserve 100 entries for schedules removed scheduler [lama]
 #define MP_CAT_SET0				10900	// reserve 100 entries for change all-cats
 #define MP_TOOLBARBITMAP		11000	// reserve 100 entries for toolbar bitmaps
 #define	MP_SKIN_PROFILE			11100	// reserve 100 entries for skin profiles
@@ -202,6 +199,9 @@
 #define MP_DROP_ASKING			11010
 //Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 #define MP_SIVKA_FILE_SETTINGS	17011 //Sivka AutoHL added by lama
+#define MP_SHOWUPLOADFLAG		18010
+#define MP_SHOWCLIENTFLAG		18011
+#define MP_SHOWQUEUEFLAG		18012
 //KTS+ webcache
 #define MP_PRIOWCRELEASE		20000//jp webcache release
 //KTS- webcache

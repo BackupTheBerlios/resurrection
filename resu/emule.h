@@ -55,9 +55,9 @@ class CFakecheck; //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updati
 //KTS+// sicks ajout [lama]
 class CSystemInfo;  
 //KTS-// sicks ajout [lama]
-// IP-to-Country +
+//KTS+ IP to Country
 class CIP2Country; 
-// IP-to-Country -
+//KTS- IP to Country
 struct SLogItem;
 
 enum AppState{
@@ -80,9 +80,9 @@ public:
 	CPUInfo 			cpu; 
 	//End Optimizer Spe64
 
-	// IP-to-Country +
+	//KTS+ IP to Country
 	CIP2Country*		ip2country; 
-	// IP-to-Country -	
+	//KTS- IP to Country
 	CemuleDlg*			emuledlg;
 	CClientList*		clientlist;
 	CKnownFileList*		knownfiles;

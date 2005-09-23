@@ -55,6 +55,8 @@ void CUrlClient::SetRequestFile(CPartFile* pReqFile)
 	if (reqfile)
 	{
 		m_nPartCount = reqfile->GetPartCount();
+		 SAFE_DELETE(m_abyPartStatus); //WiZaRd - Memleak?
+		//<<<Spanish; WiZaRd - Memleak 
 		m_abyPartStatus = new uint8[m_nPartCount];
 		MEMSET(m_abyPartStatus, 1, m_nPartCount);
 		m_bCompleteSource = true;

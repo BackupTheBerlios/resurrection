@@ -1024,18 +1024,16 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 0:{
 					uint8 image;
 					image = 0;
-
-					//POINT point = {cur_rec.left, cur_rec.top+1};
 					Sbuffer = server->GetListName();
 
-					//Draw Country Flag
+					CString tempStr;
+					tempStr.Format(_T("%s%s"), server->GetCountryName(), Sbuffer);
+					Sbuffer = tempStr;
 
-					POINT point2= {cur_rec.left,cur_rec.top+1};
 					if(theApp.ip2country->ShowCountryFlag() ){
+						POINT point2= {cur_rec.left,cur_rec.top+1};
 						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, server->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
 					}
-					else
-						imagelist.DrawIndirect(dc, 0, point2, CSize(16,16), CPoint(0,0), ILD_NORMAL);
 
 					cur_rec.left +=20;
 					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);

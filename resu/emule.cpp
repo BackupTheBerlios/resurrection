@@ -75,9 +75,9 @@
 #include "StringConversion.h"
 #include "Log.h"
 #include "Collection.h"
-// IP-to-Country +
+//KTS+ IP to Country
 #include "IP2Country.h"
-// IP-to-Country -
+//KTS- IP to Country
 #include "fakecheck.h" //MORPH - Added by SiRoB
 #include "AntiLeech.h" //>>> AntiLeech Class 
 
@@ -584,9 +584,9 @@ BOOL CemuleApp::InitInstance()
 	webserver = new CWebServer(); // Webserver [kuchin]
 	mmserver = new CMMServer();
 	m_pPeerCache = new CPeerCacheFinder();
-	// IP-to-Country +
+	//KTS+ IP to Country
 	ip2country = new CIP2Country(); 
-	// IP-to-Country -
+	//KTS- IP to Country
 FakeCheck 	= new CFakecheck(); //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updating
 	thePerfLog.Startup();
 	dlg.DoModal();

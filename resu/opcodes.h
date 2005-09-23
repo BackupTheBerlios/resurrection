@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#define MOD_VERSION _T("ReSuRReCTioN 1.1 Beta 1g") //[lama] ModVersion
-#define MOD_ID				_T("RedSmurf") // Mondgott :: Show RedSmurfIconOnClientDetect
+#define MOD_VERSION _T("ReSuRReCTioN 1.1 Prefinal") //[lama] ModVersion
+#define MOD_ID		_T("ReSuRReCTioN") // Mondgott :: Show RedSmurfIconOnClientDetect
 
 // MOD Note: Do not change this part - Merkur
 #define	EMULE_PROTOCOL			0x01

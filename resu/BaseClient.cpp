@@ -1034,7 +1034,7 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	data->WriteUInt32(clientid);
 	data->WriteUInt16(thePrefs.GetPort());
 
-	uint32 tagcount = 6+1;// [lama] ModVersion
+		uint32 tagcount = 6+1+2;// [lama] ModVersion + wc
 
 	if( theApp.clientlist->GetBuddy() && theApp.IsFirewalled() )
 		tagcount += 2;

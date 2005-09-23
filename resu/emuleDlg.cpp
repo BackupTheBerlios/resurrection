@@ -100,9 +100,10 @@
 #include "TextToSpeech.h"
 #include "Collection.h"
 #include "CollectionViewDialog.h"
-// IP-to-Country +
+//KTS+ IP to Country
 #include "IP2Country.h" 
-// IP-to-Country -
+//KTS- IP to Country
+
 #include "fakecheck.h" //MORPH - Added by SiRoB
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1895,9 +1896,9 @@ void CemuleDlg::OnClose()
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
 	delete theApp.m_pFirewallOpener;theApp.m_pFirewallOpener = NULL;
-	// IP-to-Country +
+	//KTS+ IP to Country
 	delete theApp.ip2country;		theApp.ip2country = NULL;
-	// IP-to-Country -	
+	//KTS- IP to Country
 	delete theApp.uploadBandwidthThrottler; theApp.uploadBandwidthThrottler = NULL;
 	delete theApp.lastCommonRouteFinder; theApp.lastCommonRouteFinder = NULL;
 

@@ -2310,6 +2310,9 @@
 				RelativePath="res\FriendSlot.ico">
 			</File>
 			<File
+				RelativePath=".\res\FunnyNick.ico">
+			</File>
+			<File
 				RelativePath="res\Global.ico">
 			</File>
 			<File
@@ -2374,6 +2377,9 @@
 			</File>
 			<File
 				RelativePath="res\KadWordSearch.ico">
+			</File>
+			<File
+				RelativePath=".\res\lamapic.bmp">
 			</File>
 			<File
 				RelativePath="res\ListAdd.ico">

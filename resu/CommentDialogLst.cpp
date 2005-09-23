@@ -142,11 +142,14 @@ void CCommentDialogLst::OnDestroy()
 
 void CCommentDialogLst::Localize(void)
 { 
+	if(m_hWnd) 
+{ 
 	GetDlgItem(IDC_SEARCHKAD)->SetWindowText(GetResString(IDS_SEARCHKAD));
 	if( Kademlia::CKademlia::isConnected() )
 		GetDlgItem(IDC_SEARCHKAD)->ShowWindow(SW_SHOW);
 	else
 		GetDlgItem(IDC_SEARCHKAD)->ShowWindow(SW_HIDE);
+} 
 } 
 
 void CCommentDialogLst::RefreshData(bool deleteOld)

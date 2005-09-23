@@ -1913,12 +1913,17 @@ float CKnownFile::GetFileRatio()
 //>>> PowerShare
 bool CKnownFile::IsPowerShared() const
 {
+	if(IsPartFile()) //no PS for partfiles!
+		return false;
 	return m_bIsPowerShared;
 }
 
 void CKnownFile::SetPowerShared(const bool& b)
 {
-	m_bIsPowerShared = b;
+	if(IsPartFile()) //no PS for partfiles!
+		m_bIsPowerShared = false;
+	else
+		m_bIsPowerShared = b;
 }
 //<<< PowerShare 
 //Ackronic START - PowerRelease
@@ -2120,12 +2125,15 @@ CString CKnownFile::GetFeedback(bool isUS)
 					feed.AppendFormat(_T("Akzeptierte Anfragen Session : %i \r\n"), (statistic.GetAccepts())); 
 					feed.AppendFormat(_T("Akzeptierte Anfragen gesamt : %i \r\n"), (statistic.GetAllTimeAccepts())); 
 					//Added by Magic - Requested & Accepted for sessions & all sessions
-					feed.AppendFormat(_T("Geschätzte volle Quellen : %i \r\n"), m_nCompleteSourcesCount);
-		if(IsPartFile()){
-			        feed.AppendFormat(_T("Currently Downloading @: %i \r\n"), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));//actual Download [lama]
+		if(IsPartFile())
+		{
+			        feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADING_DE), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));// actual download [lama]
+			        feed.Append(_T(" \r\n"));
 					feed.AppendFormat(_T("Quellen gesamt: %i \r\n"),((CPartFile*)this)->GetSourceCount());
 					feed.AppendFormat(_T("Verfügbare Quellen : %i \r\n"),((CPartFile*)this)->GetValidSourcesCount());
 					feed.AppendFormat(_T("Quellen mit nicht benötigten Teilen : %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+					feed.AppendFormat(_T("Volle Quellen : %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_REMOTEQUEUEFULL));
+
 		}
 					feed.AppendFormat(_T("Komplette Quellen : %i (%i) \r\n"),m_nCompleteSourcesCount, m_nCompleteSourcesCount);
 	}
@@ -2135,9 +2143,9 @@ CString CKnownFile::GetFeedback(bool isUS)
 					feed.AppendFormat(GetResString(IDS_FEEDBACK_CREATE),CTime::GetCurrentTime().Format(thePrefs.GetDateTimeFormat4Log()));
 					feed.AppendFormat(_T(" \r\n"));
 					//show Date & Time added by Mondgott
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME), GetFileName());
+		            feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME), GetFileName());
 					feed.AppendFormat(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE), GetFileType());
+		            feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE), GetFileType());
 					feed.AppendFormat(_T(" \r\n"));
 					feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE), (GetFileSize()/1048576));
 					feed.AppendFormat(_T(" \r\n"));
@@ -2163,7 +2171,8 @@ CString CKnownFile::GetFeedback(bool isUS)
 					feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPT_FULL), (statistic.GetAllTimeAccepts())); 
 					feed.AppendFormat(_T(" \r\n"));
 					//Added by Magic - Requested & Accepted for sessions & all sessions
-		if(IsPartFile()){
+		if(IsPartFile())
+		{
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADING), CastItoXBytes(((CPartFile*)this)->GetDatarate(),false,false,3));// actual download [lama]
 			feed.Append(_T(" \r\n"));
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL), ((CPartFile*)this)->GetSourceCount());
@@ -2172,6 +2181,8 @@ CString CKnownFile::GetFeedback(bool isUS)
 			feed.Append(_T(" \r\n"));
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
 			feed.Append(_T(" \r\n"));
+			feed.AppendFormat(_T("Full Sources : %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_REMOTEQUEUEFULL));
+
 		}
 		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE), m_nCompleteSourcesCount, m_nCompleteSourcesCount);
 		feed.Append(_T(" \r\n"));

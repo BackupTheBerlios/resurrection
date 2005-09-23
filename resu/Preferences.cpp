@@ -38,9 +38,10 @@
 #include "StatisticsDlg.h"
 #include "Log.h"
 //#include "MuleToolbarCtrl.h" Spe64 Toolbar
-//Start IP to Country
+//KTS+ IP to Country
 #include "IP2Country.h" 
-//End IP to Country
+//KTS- IP to Country
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -61,14 +62,15 @@ char	CPreferences::olduserhash[64];
 #endif
 //KTS- Display User Hash
 
-//Start IP to Country
+//KTS+ IP to Country
 IP2CountryNameSelection	CPreferences::m_iIP2CountryNameMode;
 bool	CPreferences::m_bIP2CountryShowFlag;
-//End IP to Country
-//Commander - Added: IP2Country Auto-updating - Start
-bool	CPreferences::AutoUpdateIP2Country;
-SYSTEMTIME	CPreferences::m_IP2CountryVersion;
-//Commander - Added: IP2Country Auto-updating - End
+//KTS- IP to Country
+//KTS+ ShowUploadFlag
+bool	CPreferences::m_bShowUploadFlag;
+bool	CPreferences::m_bShowClientFlag;
+bool	CPreferences::m_bShowQueueFlag;
+//KTS- ShowUploadFlag
 
 int     CPreferences::m_iCreditSystem;  // Credit System
 uint8	CPreferences::m_uScoreRatioThres;	// Credit System
@@ -124,6 +126,13 @@ bool    CPreferences::m_bStartInvisible;
 UINT    CPreferences::m_iInvisibleModeHotKeyModifier; 
 char    CPreferences::m_cInvisibleModeHotKey; 
 // eF-Mod end
+//Commander - Added: IP2Country Auto-updating - Start
+TCHAR	CPreferences::UpdateURLIP2Country[256];
+TCHAR	CPreferences::UpdateVerURLIP2Country[256];
+bool	CPreferences::AutoUpdateIP2Country;
+uint32	CPreferences::m_IP2CountryVersion; 
+//Commander - Added: IP2Country Auto-updating - End
+
 int		CPreferences::m_iDbgHeap;
 CString	CPreferences::strNick;
 uint16	CPreferences::minupload;
@@ -500,8 +509,6 @@ CSize	CPreferences::m_sizToolbarIconSize;
 bool	CPreferences::m_bPreviewEnabled;
 TCHAR	CPreferences::UpdateURLFakeList[256];//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 TCHAR	CPreferences::UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat update
-TCHAR	CPreferences::UpdateURLIP2Country[256];//Commander - Added: IP2Country auto-updating
-TCHAR	CPreferences::UpdateVerURLIP2Country[256];//Commander - Added: IP2Country auto-updating
 bool	CPreferences::m_bDynUpEnabled;
 int		CPreferences::m_iDynUpPingTolerance;
 int		CPreferences::m_iDynUpGoingUpDivider;
@@ -1880,10 +1887,15 @@ void CPreferences::SavePreferences()
 //Telp Start payback first
 	ini.WriteBool(_T("PBF"),m_bPBF ,_T("eMule"));
 	//Telp End payback First
-//Start IP to Country
+    //KTS+ IP to Country
 	ini.WriteInt(_T("IP2Country"), m_iIP2CountryNameMode,_T("eMule")); 
 	ini.WriteBool(_T("IP2CountryShowFlag"), m_bIP2CountryShowFlag,_T("eMule"));
-	//End IP to Country
+	//KTS- IP to Country
+	//KTS+ ShowUploadFlag
+	ini.WriteBool(_T("ShowUploadFlag"),m_bShowUploadFlag);
+	ini.WriteBool(_T("ShowClientFlag"),m_bShowClientFlag);
+	ini.WriteBool(_T("ShowQueueFlag"),m_bShowQueueFlag);
+	//KTS- ShowUploadFlag
 	//Telp Start push rare file
     ini.WriteBool(_T("EnablePushRareFile"), enablePushRareFile, _T("eMule")); //Hawkstar, push rare file
 //Telp End push rare file
@@ -1937,7 +1949,12 @@ void CPreferences::SavePreferences()
     ini.WriteInt	(_T("InvisibleModeHKKey"),(int)m_cInvisibleModeHotKey);
     ini.WriteInt	(_T("InvisibleModeHKKeyModifier"),m_iInvisibleModeHotKeyModifier); 
 	// eF-Mod end
-
+	//Commander - Added: IP2Country Auto-updating - Start
+	ini.WriteInt(_T("IP2CountryVersion"),m_IP2CountryVersion,_T("eMule")); 
+	ini.WriteBool(_T("AutoUPdateIP2Country"),AutoUpdateIP2Country,_T("eMule"));
+	ini.WriteString(_T("UpdateURLIP2Country"),UpdateURLIP2Country,_T("eMule"));
+	ini.WriteString(_T("UpdateVerURLIP2Country"),UpdateVerURLIP2Country,_T("eMule"));
+	//Commander - Added: IP2Country Auto-updating - End
 
 	// Barry - New properties...
     ini.WriteBool(_T("AutoConnectStaticOnly"), m_bAutoConnectToStaticServersOnly);
@@ -2128,11 +2145,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("Found"), m_bPeerCacheWasFound);
 	ini.WriteBool(_T("Enabled"), m_bPeerCacheEnabled);
 	ini.WriteInt(_T("PCPort"), m_nPeerCachePort);
-//Commander - Added: IP2Country Auto-updating - Start
-	ini.WriteBinary(_T("IP2CountryVersion"), (LPBYTE)&m_IP2CountryVersion, sizeof(m_IP2CountryVersion),_T("eMule")); 
-	ini.WriteBool(_T("AutoUPdateIP2Country"),AutoUpdateIP2Country,_T("eMule"));
-	//Commander - Added: IP2Country Auto-updating - End
-ini.WriteString(_T("UpdateURLIP2Country"),UpdateURLIP2Country,_T("eMule"));//Commander - Added: IP2Country auto-updating
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
 	ini.WriteBinary(_T("FakesDatVersion"), (LPBYTE)&m_FakesDatVersion, sizeof(m_FakesDatVersion),_T("eMule")); 
 	ini.WriteBool(_T("UpdateFakeStartup"),UpdateFakeStartup,_T("eMule"));
@@ -2371,14 +2383,14 @@ void CPreferences::LoadPreferences()
 		}
 		atmp = tempdirs.Tokenize(_T("|"), curPos);
 	}
-	//Ackronic START - Modificato da Aenarion[ITA] - impostazioni UL/DL ottimali
-	maxGraphDownloadRate=ini.GetInt(_T("DownloadCapacity"),180);
+
+	maxGraphDownloadRate=ini.GetInt(_T("DownloadCapacity"),96);
 	if (maxGraphDownloadRate==0)
-		maxGraphDownloadRate=180;
-	//Ackronic END - Modificato da Aenarion[ITA] - impostazioni UL/DL ottimali
-	maxGraphUploadRate = ini.GetInt(_T("UploadCapacityNew"),-1);
+		maxGraphDownloadRate=96;
+	
+	maxGraphUploadRate = ini.GetInt(_T("UploadCapacityNew"),16);
 	if (maxGraphUploadRate == 0)
-		maxGraphUploadRate = UNLIMITED;
+		maxGraphUploadRate = 16;
 	else if (maxGraphUploadRate == -1){
 		// converting value from prior versions
 		int nOldUploadCapacity = ini.GetInt(_T("UploadCapacity"), 16);
@@ -2607,10 +2619,15 @@ void CPreferences::LoadPreferences()
 //Telp Start payback first
 	m_bPBF=ini.GetBool(_T("PBF"), false); 
 //Telp End payback first
-//Start IP to Country
+    //KTS+ IP to Country
 	m_iIP2CountryNameMode = (IP2CountryNameSelection)ini.GetInt(_T("IP2Country"), IP2CountryName_DISABLE); 
 	m_bIP2CountryShowFlag = ini.GetBool(_T("IP2CountryShowFlag"), false );
-	//End IP to Country
+	//KTS- IP to Country
+	//KTS+ ShowUploadFlag
+	m_bShowUploadFlag = ini.GetBool(_T("ShowUploadFlag"),true);
+	m_bShowClientFlag = ini.GetBool(_T("ShowClientFlag"),true);
+	m_bShowQueueFlag = ini.GetBool(_T("ShowQueueFlag"),true);
+	//KTS- ShowUploadFlag
 //eMulefan83 Show Client Percentage added by lama
 	enableClientPerc = ini.GetBool(_T("EnableClientPerc"), false); 
 //eMulefan83 Show Client Percentage added by lama	
@@ -2633,6 +2650,12 @@ void CPreferences::LoadPreferences()
 	log2disk = ini.GetBool(_T("SaveLogToDisk"),false);
 	uMaxLogFileSize = ini.GetInt(_T("MaxLogFileSize"), 1024*1024);
 	iMaxLogBuff = ini.GetInt(_T("MaxLogBuff"),64) * 1024;
+	//Commander - Added: IP2Country Auto-updating - Start
+	m_IP2CountryVersion=ini.GetInt(_T("IP2CountryVersion"),0); 
+	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
+	_stprintf(UpdateURLIP2Country,_T("%s"),ini.GetString(_T("UpdateURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip")));
+	_stprintf(UpdateVerURLIP2Country,_T("%s"),ini.GetString(_T("UpdateVerURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/latest")));
+    //Commander - Added: IP2Country Auto-updating - End
     m_iLogFileFormat = (ELogFileFormat)ini.GetInt(_T("LogFileFormat"), Unicode, 0);
 	m_bEnableVerboseOptions=ini.GetBool(_T("VerboseOptions"), true);
 	if (m_bEnableVerboseOptions)
@@ -2793,23 +2816,7 @@ _stprintf(UpdateURLIPFilter,_T("%s"),ini.GetString(_T("UpdateURLIPFilter"),_T("h
 	//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating	
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
 _stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/fakes.dat")));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
-//Commander - Added: IP2Country Auto-updating - Start
-	pst = NULL;
-	usize = sizeof m_IP2CountryVersion;
-	if (ini.GetBinary(_T("IP2CountryVersion"), &pst, &usize) && usize == sizeof m_IP2CountryVersion)
-		memcpy(&m_IP2CountryVersion, pst, sizeof m_IP2CountryVersion);
-	else
-		memset(&m_IP2CountryVersion, 0, sizeof m_IP2CountryVersion);
-	delete[] pst;
-	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
-    //Commander - Added: IP2Country Auto-updating - End
-//Commander - Added: IP2Country Auto-updating - Start
-	//m_IP2CountryVersion=ini.GetInt(_T("IP2CountryVersion"),0); 
-	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
-    //Commander - Added: IP2Country Auto-updating - End
 	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);//MORPH - Added by SiRoB, Optionnal funnynick display
-	_stprintf(UpdateURLIP2Country,_T("%s"),ini.GetString(_T("UpdateURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip")));//Commander - Added: IP2Country auto-updating
-	_stprintf(UpdateVerURLIP2Country,_T("%s"),ini.GetString(_T("UpdateVerURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/latest")));//Commander - Added: IP2Country auto-updating
 m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_uScoreRatioThres = m_iCreditSystem == 2 ? 3 : 1; // Credit System	
 	LPBYTE pData = NULL;

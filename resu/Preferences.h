@@ -75,17 +75,35 @@ struct Category_Struct{
 	CString	regexp;
 };
 #pragma pack()
-// IP-to-Country +
+//KTS+ IP to Country
 enum IP2CountryNameSelection{
 	IP2CountryName_DISABLE = 0,
 	IP2CountryName_SHORT,
 	IP2CountryName_MID,
 	IP2CountryName_LONG
 };
-// IP-to-Country -
+//KTS- IP to Country
 class CPreferences
 {
 public:
+	//KTS+ IP to Country
+	static IP2CountryNameSelection	m_iIP2CountryNameMode;
+	static bool		m_bIP2CountryShowFlag;
+	//KTS- IP to Country
+	//KTS+ ShowUploadFlag
+	static bool		m_bShowUploadFlag;
+	static bool		m_bShowClientFlag;
+	static bool		m_bShowQueueFlag;
+
+	static bool		ShowUploadFlag()							{return m_bShowUploadFlag;}
+	static bool		ShowClientFlag()							{return m_bShowClientFlag;}
+	static bool		ShowQueueFlag()								{return m_bShowQueueFlag;}
+
+	static void		SetShowUploadFlag(bool in)					{m_bShowUploadFlag = in;}
+	static void		SetShowClientFlag(bool in)					{m_bShowClientFlag = in;}
+	static void		SetShowQueueFlag(bool in)					{m_bShowQueueFlag = in;}
+	//KTS- ShowUploadFlag
+
 	//Start Download Color
 	static	bool	EnableDownloadInColor;
 	static	int		DownloadColor;
@@ -119,9 +137,6 @@ public:
 	static	char    olduserhash[64];
 	#endif
 	//KTS- Display User Hash
-	// IP-to-Country +
-	static IP2CountryNameSelection	m_iIP2CountryNameMode;
-	static bool		m_bIP2CountryShowFlag;
 //Telp start payback first
 	static	bool	m_bPBF;
 	static	bool	GetPBF()					{return m_bPBF;} 
@@ -137,13 +152,13 @@ public:
     static  bool	enablePushSmallFile; //Hawkstar, push small file
 //Telp End push small file
 	static bool		AutoUpdateIP2Country; 
-	static SYSTEMTIME	m_IP2CountryVersion;
+	static uint32	m_IP2CountryVersion;
 	static TCHAR	UpdateURLIP2Country[256]; //Commander - Added: IP2Country auto-updating
 	static TCHAR	UpdateVerURLIP2Country[256];//Commander - Added: IP2Country auto-updating
 	static CString	GetUpdateURLIP2Country()			{return CString(UpdateURLIP2Country);}//Commander - Added: IP2Country auto-updating
 	static CString	GetUpdateVerURLIP2Country()			{return CString(UpdateVerURLIP2Country);}//Commander - Added: IP2Country auto-updating
-	static LPSYSTEMTIME   GetIP2CountryVersion()	{return &m_IP2CountryVersion;}//Commander - Added: IP2Country auto-updating
-	//static void		SetIP2CountryVersion(uint32 version){m_IP2CountryVersion = version;}
+	static uint32   GetIP2CountryVersion()				{return m_IP2CountryVersion;}//Commander - Added: IP2Country auto-updating
+	static void		SetIP2CountryVersion(uint32 version){m_IP2CountryVersion = version;}
 	static bool		IsAutoUPdateIP2CountryEnabled()		{return AutoUpdateIP2Country;} //Commander - Added: IP2Country Auto-updating
 	// IP-to-Country -
 static  int     m_iCreditSystem; // Credit System
@@ -756,10 +771,10 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
 
 
-// IP-to-Country +
+    //KTS+ IP to Country
 	IP2CountryNameSelection	GetIP2CountryNameMode()	{return m_iIP2CountryNameMode;}
 	bool	IsIP2CountryShowFlag()					{return m_bIP2CountryShowFlag;}
-	// IP-to-Country -
+	//KTS- IP to Country
 
 //eMulefan83 Show Client Percentage added by lama
 	static bool GetEnableClientPerc()					{return enableClientPerc;}

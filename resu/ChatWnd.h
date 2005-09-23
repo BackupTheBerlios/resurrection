@@ -62,7 +62,6 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnSysColorChange();
 	afx_msg LRESULT OnCloseTab(WPARAM wparam, LPARAM lparam);
-	//afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo); removed help [lama]
 	afx_msg void OnLvnItemActivateFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnStnDblclickFriendsicon();

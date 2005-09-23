@@ -202,29 +202,32 @@ BEGIN
     PUSHBUTTON      "Close",IDC_CCLOSE,449,262,50,14,BS_FLAT
     CONTROL         "",IDC_LIST2,"SysListView32",LVS_REPORT | LVS_SINGLESEL | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,5,17,132,
-                    174,WS_EX_STATICEDGE
+                    159,WS_EX_STATICEDGE
     CONTROL         "Messages",IDC_MESSAGES_LBL,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,157,6,236,8
     ICON            "",IDC_MESSAGEICON,144,4,21,20
     CONTROL         "Friends",IDC_FRIENDS_LBL,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,18,6,93,8
-    ICON            "",IDC_FRIENDSICON,5,5,20,20,SS_NOTIFY
-    GROUPBOX        "Info",IDC_FRIENDS_MSG,5,195,132,89
-    LTEXT           "Hash:",IDC_FRIENDS_USERHASH,10,220,61,8
-    LTEXT           "Software:",IDC_FRIENDS_CLIENT,10,232,61,8
-    LTEXT           "Uploaded:",IDC_FRIENDS_UPLOADED,10,256,61,8
-    LTEXT           "Downloaded:",IDC_FRIENDS_DOWNLOADED,10,268,61,8
-    LTEXT           "ID:",IDC_FRIENDS_IDENT,10,244,61,8
-    LTEXT           "Name:",IDC_FRIENDS_NAME,10,208,61,8
-    LTEXT           "-",IDC_FRIENDS_NAME_EDIT,73,208,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_USERHASH_EDIT,73,220,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_CLIENTE_EDIT,73,232,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_IDENTIFICACION_EDIT,73,244,60,8,
+    ICON            "",IDC_FRIENDSICON,5,5,21,20,SS_NOTIFY
+    GROUPBOX        "Info",IDC_FRIENDS_MSG,5,176,132,108
+    LTEXT           "Hash:",IDC_FRIENDS_USERHASH,12,210,54,8
+    LTEXT           "Software:",IDC_FRIENDS_CLIENT,12,222,54,8
+    LTEXT           "Uploaded:",IDC_FRIENDS_UPLOADED,12,246,54,8
+    LTEXT           "Downloaded:",IDC_FRIENDS_DOWNLOADED,12,258,54,8
+    LTEXT           "ID:",IDC_FRIENDS_IDENT,12,234,54,8
+    LTEXT           "Name:",IDC_FRIENDS_NAME,12,198,54,8
+    LTEXT           "-",IDC_FRIENDS_NAME_EDIT,72,198,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_USERHASH_EDIT,72,210,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_CLIENTE_EDIT,72,222,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_IDENTIFICACION_EDIT,72,234,60,8,
                     SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_SUBIDO_EDIT,73,256,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_DESCARGADO_EDIT,73,268,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_SUBIDO_EDIT,72,246,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_DESCARGADO_EDIT,72,258,60,8,SS_NOPREFIX
     CONTROL         "",IDC_SPLITTER_FRIEND,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,139,5,3,278
+    LTEXT           "Country:",IDC_FRIENDS_COUNTRY,12,270,61,8
+    LTEXT           "-",IDC_FRIENDS_COUNTRY_EDIT,72,270,60,8,SS_NOPREFIX
+    ICON            "",IDC_COUNTRYFLAG2,44,269,21,20
 END
 
 IDD_STATISTICS DIALOGEX 0, 35, 511, 290
@@ -353,48 +356,48 @@ BEGIN
                     216,10
 END
 
-IDD_PPG_GENERAL DIALOGEX 0, 0, 230, 241
+IDD_PPG_GENERAL DIALOGEX 0, 0, 235, 321
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "General"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Nick:",IDC_NICK_FRM,7,7,104,33,BS_FLAT
     EDITTEXT        IDC_NICK,10,21,97,12,ES_AUTOHSCROLL
-    GROUPBOX        "Language:",IDC_LANG_FRM,114,7,109,33,BS_FLAT
+    GROUPBOX        "Language:",IDC_LANG_FRM,119,7,109,33,BS_FLAT
     COMBOBOX        IDC_LANGS,121,21,95,75,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Misc:",IDC_MISC_FRM,7,47,216,203,BS_FLAT
+    GROUPBOX        "Misc:",IDC_MISC_FRM,7,47,221,267,BS_FLAT
     CONTROL         "Beep on errors",IDC_BEEPER,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,14,61,202,10
+                    BS_FLAT | WS_TABSTOP,18,60,202,10
     CONTROL         "Bring to front on link click",IDC_BRINGTOFOREGROUND,
-                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,73,
+                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,72,
                     202,10
     CONTROL         "Prompt on exit",IDC_EXIT,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,14,98,202,10
+                    BS_FLAT | WS_TABSTOP,18,96,156,10
     CONTROL         "Onlinesig",IDC_ONLINESIG,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,14,85,202,10
-    GROUPBOX        "Static",IDC_STARTUP,14,111,202,56,BS_FLAT
+                    BS_FLAT | WS_TABSTOP,18,84,202,10
+    GROUPBOX        "Static",IDC_STARTUP,14,111,208,56,BS_FLAT
     CONTROL         "Check for new version on startup",IDC_CHECK4UPDATE,
-                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,120,
+                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,120,
                     135,10
     CONTROL         "",IDC_CHECKDAYS,"msctls_trackbar32",TBS_AUTOTICKS | 
                     WS_TABSTOP,159,126,53,10,WS_EX_STATICEDGE
     LTEXT           "days",IDC_DAYS,161,116,48,9
     CONTROL         "Show splashscreen",IDC_SPLASHON,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,132,138,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,132,138,10
     CONTROL         "Startup Minimized",IDC_STARTMIN,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,144,190,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,144,190,10
     CONTROL         "Start with Windows",IDC_STARTWIN,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,155,75,10
-    PUSHBUTTON      "Edit Web Services...",IDC_WEBSVEDIT,14,235,100,12,
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,156,75,10
+    PUSHBUTTON      "Edit Web Services...",IDC_WEBSVEDIT,18,234,100,12,
                     BS_FLAT
-    PUSHBUTTON      "eD2K Links",IDC_ED2KFIX,155,235,62,12,BS_FLAT
-    GROUPBOX        "Invisible Mode",IDC_INVISIBLE_MODE_GROUP_BOX,14,168,202,
+    PUSHBUTTON      "eD2K Links",IDC_ED2KFIX,156,234,62,12,BS_FLAT
+    GROUPBOX        "Invisible Mode",IDC_INVISIBLE_MODE_GROUP_BOX,14,168,208,
                     60
     CONTROL         "Activate Invisible Mode",IDC_INVISIBLE_MODE,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,179,91,8
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,180,91,8
     LTEXT           "Select the hotkey to restore the window",
-                    IDC_INVISIBLE_MODE_SELECT_STATIC,18,190,197,10
+                    IDC_INVISIBLE_MODE_SELECT_STATIC,18,190,193,10
     LTEXT           "Modifier Keys:",IDC_INVISIBLE_MODE_MODIFIER_STATIC,18,
                     200,93,8
     LTEXT           "Key:",IDC_INVISIBLE_MODE_KEY_STATIC,142,200,60,8
@@ -404,9 +407,8 @@ BEGIN
                     CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "+",IDC_INVISIBLE_MODE_SYMBOL_STATIC,125,213,8,8
     CONTROL         "Invisible on Startup",IDC_INVISIBLE_ONSTART,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,115,180,90,8
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,120,180,90,8
 END
-
 
 IDD_PPG_FILES DIALOGEX 0, 0, 229, 243
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
@@ -536,7 +538,7 @@ BEGIN
                     WS_GROUP,14,47,58,8
     GROUPBOX        "Limits:",IDC_LIMITS_FRM,80,7,143,70,BS_FLAT
     RTEXT           "KB/s",IDC_KBS1,188,18,33,8
-    RTEXT           "KB/s",IDC_KBS4,188,37,33,8
+    RTEXT           "KB/s",IDC_KBS4,188,44,33,8
     LTEXT           "Hard limit",IDC_MAXSRCHARD_LBL,14,148,82,8
     LTEXT           "UDP",IDC_UDPPORTLABEL,14,108,23,8
     LTEXT           "Static",IDC_MAXCONLABEL,120,148,86,8
@@ -700,20 +702,17 @@ BEGIN
                     WS_TABSTOP,7,106,394,143,WS_EX_STATICEDGE
 END
 
-IDD_PPG_TWEAKS DIALOGEX 0, 0, 227, 246
+IDD_PPG_TWEAKS DIALOGEX 0, 0, 234, 330
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Tweaks"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Static",IDC_WARNING,7,7,213,39
+    LTEXT           "Static",IDC_WARNING,7,7,220,24
     CONTROL         "",IDC_EXT_OPTS,"SysTreeView32",TVS_DISABLEDRAGDROP | 
-                    WS_BORDER | WS_TABSTOP,7,46,213,145
-    LTEXT           "File buffer size",IDC_FILEBUFFERSIZE_STATIC,7,195,213,8
-    CONTROL         "",IDC_FILEBUFFERSIZE,"msctls_trackbar32",WS_TABSTOP,14,
-                    205,206,11,WS_EX_STATICEDGE
-    LTEXT           "Queue size",IDC_QUEUESIZE_STATIC,7,220,213,8
+                    WS_BORDER | WS_TABSTOP,7,34,220,256
+    LTEXT           "Queue size",IDC_QUEUESIZE_STATIC,7,292,220,8
     CONTROL         "",IDC_QUEUESIZE,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    WS_TABSTOP,14,230,206,11,WS_EX_STATICEDGE
+                    WS_TABSTOP,7,304,220,11,WS_EX_STATICEDGE
 END
 
 IDD_ADDFRIEND DIALOGEX 0, 0, 269, 172
@@ -1078,6 +1077,7 @@ BEGIN
     RTEXT           "Kad:",IDC_CLIENTDETAIL_KAD,195,57,20,8
     CONTROL         "Static",IDC_CLIENTDETAIL_KADCON,"Static",
                     SS_LEFTNOWORDWRAP | SS_NOPREFIX | WS_GROUP,219,57,92,8
+    ICON            "",IDC_COUNTRYFLAG,68,68,21,20
     GROUPBOX        "Webcache",IDC_STATIC,7,215,313,47
     LTEXT           "WebCache:",IDC_STATIC,19,225,82,9
     LTEXT           "Successfull/Requested:",IDC_STATIC,19,236,83,10
@@ -1442,25 +1442,29 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDOK,162,39,56,12,BS_FLAT
 END
 
-IDD_PPG_ACKRONICII DIALOGEX 0, 0, 230, 244
+IDD_PPG_ACKRONICII DIALOGEX 0, 0, 230, 318
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+EXSTYLE WS_EX_CONTEXTHELP
 CAPTION "AcKroNiC II"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Buffer time limit",IDC_BTL_TEXT,7,187,213,8
+    LTEXT           "Buffer time limit",IDC_BTL_TEXT,12,246,204,8
     CONTROL         "",IDC_BTL,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    WS_TABSTOP,14,197,206,11,WS_EX_STATICEDGE
-    LTEXT           "File buffer size",IDC_FILEBUFFERSIZE_STATIC,7,212,213,8
-    CONTROL         "",IDC_FILEBUFFERSIZE,"msctls_trackbar32",WS_TABSTOP,14,
-                    222,206,11,WS_EX_STATICEDGE
-    LTEXT           "Upload slots:",IDC_UP_SLOTS_LABEL,18,108,63,13
-    LTEXT           "X",IDC_UP_SLOTS,166,107,22,8
-    LTEXT           "Upload speed per client:",IDC_UP_DR_PER_CLIENT_LABEL,17,
-                    145,96,12
-    RTEXT           "YYYY",IDC_UP_DR_PER_CLIENT,136,145,34,10
-    LTEXT           "Bps",IDC_UP_DR_PER_CLIENT2,174,145,16,12
+                    WS_TABSTOP,12,258,206,11,WS_EX_STATICEDGE
+    LTEXT           "File buffer size",IDC_FILEBUFFERSIZE_STATIC,12,282,204,
+                    8
+    CONTROL         "",IDC_FILEBUFFERSIZE,"msctls_trackbar32",WS_TABSTOP,12,
+                    294,206,11,WS_EX_STATICEDGE
+    LTEXT           "Upload slots:",IDC_UP_SLOTS_LABEL,66,174,63,13
+    LTEXT           "X",IDC_UP_SLOTS,144,174,22,8
+    LTEXT           "Upload speed per client:",IDC_UP_DR_PER_CLIENT_LABEL,18,
+                    204,96,12
+    RTEXT           "YYYY",IDC_UP_DR_PER_CLIENT,138,204,34,10
+    LTEXT           "Bps",IDC_UP_DR_PER_CLIENT2,186,204,16,12
     CONTROL         "",IDC_UP_SLOTS_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,124,201,13
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,186,210,13
+    CONTROL         60090,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,6,
+                    12,220,149
 END
 
 IDD_PPG_NE DIALOGEX 0, 0, 231, 343
@@ -1547,42 +1551,46 @@ BEGIN
     GROUPBOX        "NiceHash",IDC_STATIC,6,287,216,44
 END
 
-IDD_PPG_Spe3 DIALOGEX 0, 0, 230, 222
+IDD_PPG_Spe3 DIALOGEX 0, 0, 229, 287
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "ReSuRReCTioN Update"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Update fakelist on startup",IDC_UPDATEFAKELISTSTART,
-                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,16,
+                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,12,18,
                     202,8
-    PUSHBUTTON      "Update",IDC_UPDATEFAKES,168,53,48,14,BS_FLAT
-    EDITTEXT        IDC_UPDATE_URL_FAKELIST,14,39,202,12,ES_AUTOHSCROLL
-    LTEXT           "URL for updating",IDC_URL_FOR_UPDATING,14,28,202,8,0,
+    PUSHBUTTON      "Update",IDC_UPDATEFAKES,168,60,48,14,BS_FLAT
+    EDITTEXT        IDC_UPDATE_URL_FAKELIST,12,42,202,12,ES_AUTOHSCROLL
+    LTEXT           "URL for updating",IDC_URL_FOR_UPDATING,12,30,202,8,0,
                     WS_EX_TRANSPARENT
-    PUSHBUTTON      "Update",IDC_UPDATEIPFURL,168,125,48,14,BS_FLAT
+    PUSHBUTTON      "Update",IDC_UPDATEIPFURL,168,138,48,14,BS_FLAT
     CONTROL         "Update IPfilter.dat on startup",IDC_AUTOUPIPFILTER,
-                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,87,
-                    202,10
-    EDITTEXT        IDC_UPDATE_URL_IPFILTER,14,110,202,12,ES_AUTOHSCROLL
-    LTEXT           "URL for updating",IDC_URL_FOR_UPDATING2,14,99,202,8,0,
+                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,12,96,
+                    202,8
+    EDITTEXT        IDC_UPDATE_URL_IPFILTER,12,120,202,12,ES_AUTOHSCROLL
+    LTEXT           "URL for updating",IDC_URL_FOR_UPDATING2,12,108,202,8,0,
                     WS_EX_TRANSPARENT
-    GROUPBOX        "File",IDC_MORPH2_FILE,7,6,217,67,BS_FLAT
-    GROUPBOX        "Security",IDC_MORPH2_SECURITY,7,76,217,69,BS_FLAT
-    PUSHBUTTON      "Update",IDC_UPDATEIPCURL,168,197,48,14,BS_FLAT
+    GROUPBOX        "File",IDC_MORPH2_FILE,6,6,216,72,BS_FLAT
+    PUSHBUTTON      "Update",IDC_UPDATEIPCURL,168,246,48,14,BS_FLAT
+    LTEXT           "Static",IDC_IPFILTER_VERSION,12,138,93,8
+    LTEXT           "Static",IDC_FAKELIST_VERSION,12,60,94,8
+    PUSHBUTTON      "Reset",IDC_RESETFAKESURL,114,60,48,14,BS_FLAT
+    PUSHBUTTON      "Reset",IDC_RESETIPFURL,114,138,48,14,BS_FLAT
+    PUSHBUTTON      "Reset",IDC_RESETIPCURL,114,246,48,14,BS_FLAT
+    GROUPBOX        "IP2Country Update",IDC_STATIC,6,164,216,100
     CONTROL         "Update Ip-to-country.csv on startup",
-                    IDC_AUTOUPIP2COUNTRY,"Button",BS_AUTOCHECKBOX | BS_FLAT | 
-                    WS_TABSTOP,14,159,202,10
-    EDITTEXT        IDC_UPDATE_URL_IP2COUNTRY,14,182,202,12,ES_AUTOHSCROLL
+                    IDC_AUTOUPIP2COUNTRY,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,12,176,183,8
     LTEXT           "File-URL for updating",IDC_URL_FOR_UPDATING_IP2COUNTRY,
-                    14,171,202,8,0,WS_EX_TRANSPARENT
-    GROUPBOX        "Country",IDC_MORPH2_COUNTRY,7,148,217,69,BS_FLAT
-    LTEXT           "Static",IDC_IP2COUNTRY_VERSION,14,202,96,8
-    LTEXT           "Static",IDC_IPFILTER_VERSION,14,131,93,8
-    LTEXT           "Static",IDC_FAKELIST_VERSION,14,59,94,8
-    PUSHBUTTON      "Reset",IDC_RESETFAKESURL,115,53,48,14,BS_FLAT
-    PUSHBUTTON      "Reset",IDC_RESETIPFURL,114,125,48,14,BS_FLAT
-    PUSHBUTTON      "Reset",IDC_RESETIPCURL,115,197,48,14,BS_FLAT
+                    12,188,168,8
+    EDITTEXT        IDC_UPDATE_URL_IP2COUNTRY,12,200,202,12,ES_AUTOHSCROLL
+    LTEXT           "Version-File-URL for updating",
+                    IDC_URL_FOR_UPDATING_IP2COUNTRY_VERFILE,12,216,170,8
+    EDITTEXT        IDC_UPDATE_VER_URL_IP2COUNTRY,12,228,202,12,
+                    ES_AUTOHSCROLL
+    LTEXT           "version",IDC_IP2COUNTRY_VERSION,12,245,64,8
+    GROUPBOX        "Security",IDC_MORPH2_SECURITY,6,84,216,72,BS_FLAT
 END
 
 IDD_PPG_WEBCACHESETTINGS DIALOGEX 0, 0, 234, 230
@@ -1624,6 +1632,15 @@ BEGIN
     PUSHBUTTON      "Autodetect Webcache",IDC_DETECTWEBCACHE,13,166,206,14
     CONTROL         "",IDC_WEBCACHELINK2,"Static",SS_BLACKFRAME,13,182,205,
                     11
+END
+
+60063 DIALOGEX 0, 0, 226, 255
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "ReSuRReCTioN"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_VP_OPTS,"SysTreeView32",WS_BORDER | WS_TABSTOP,7,
+                    7,211,240
 END
 
 
@@ -1748,11 +1765,11 @@ BEGIN
     IDD_PPG_GENERAL, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 223
+        RIGHTMARGIN, 228
         VERTGUIDE, 14
         VERTGUIDE, 150
         TOPMARGIN, 7
-        BOTTOMMARGIN, 234
+        BOTTOMMARGIN, 314
     END
 
     IDD_PPG_FILES, DIALOG
@@ -1853,14 +1870,14 @@ BEGIN
     IDD_PPG_TWEAKS, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 220
+        RIGHTMARGIN, 227
         VERTGUIDE, 14
         VERTGUIDE, 24
         VERTGUIDE, 73
         VERTGUIDE, 106
         VERTGUIDE, 122
         TOPMARGIN, 7
-        BOTTOMMARGIN, 231
+        BOTTOMMARGIN, 315
     END
 
     IDD_ADDFRIEND, DIALOG
@@ -2103,7 +2120,7 @@ BEGIN
 
     IDD_PPG_ACKRONICII, DIALOG
     BEGIN
-        BOTTOMMARGIN, 237
+        BOTTOMMARGIN, 311
     END
 
     IDD_PPG_NE, DIALOG
@@ -2114,14 +2131,21 @@ BEGIN
     IDD_PPG_Spe3, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 224
         VERTGUIDE, 14
         VERTGUIDE, 216
+        BOTTOMMARGIN, 264
         HORZGUIDE, 39
         HORZGUIDE, 53
         HORZGUIDE, 67
         HORZGUIDE, 139
-        HORZGUIDE, 210
+    END
+
+    60063, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 218
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 247
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2320,6 +2344,7 @@ LSD_BUT_HIGH_QUEUE_SOURCES ICON                    "res\\LSD_BUT_HIGH_QUEUE_SOUR
 LSD_BUT_NNS             ICON                    "res\\LSD_BUT_NNS.ico"
 LSD_BUT_TM              ICON                    "res\\LSD_BUT_TM.ico"
 FUNNYNICK               ICON                    "res\\FunnyNick.ico"
+REDSMURF                ICON                    "res\\Mule.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2365,6 +2390,7 @@ IDB_CONNECT_CLICK       BITMAP                  "res\\Toolbar\\btn_connect_click
 IDB_CONNECT_NORMAL      BITMAP                  "res\\Toolbar\\btn_connect_normal.bmp"
 IDB_DISCONNECT_OVER     BITMAP                  "res\\Toolbar\\btn_disconnect_over.bmp"
 60035                   BITMAP                  "res\\ionix-banner.bmp"
+60090                   BITMAP                  "res\\lamapic.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2586,15 +2612,6 @@ BEGIN
     GROUPBOX        "Options",IDC_VCOLL_OPTIONS,7,213,404,30,BS_FLAT
 END
 
-60063 DIALOGEX 0, 0, 226, 255
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "ReSuRReCTioN"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    CONTROL         "",IDC_VP_OPTS,"SysTreeView32",WS_BORDER | WS_TABSTOP,7,
-                    7,211,170
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2628,14 +2645,6 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 265
         HORZGUIDE, 17
-    END
-
-    60063, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 218
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 247
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3448,6 +3457,16 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_PAWCIO_CREDIT       "Pawcio Credit"
+    IDS_EASTSHARE_CREDIT    "Eastshare"
+    IDS_CREDITS_NONE        "None"
+    IDS_FINE_CREDIT         "Fine Credit (BastarD)"
+    IDS_UPDATEFAKES         "Update"
+    IDS_URL_FOR_UPDATING    "URL for updating"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_HARDLIMIT           "Hard limit"
     IDS_COL_MORECOLORS      "more..."
     IDS_KBYTESEC            "kB/s"
@@ -3492,6 +3511,18 @@ BEGIN
     IDS_CHECK_SIVKABAN      "activate Sivka-Ban"
     IDS_ACKRONIC_SETTINGS   "AcKroNiC Setting"
     IDS_POWERRELEASE        "PowerRelease"
+	IDS_ISCLIENTBANTIME_STATIC "BanTime (2-25 hours)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DISPLAYFUNNYNICK    "Enable FunnyNick display"
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_FN_TAG_NO           "No Tag"
+    IDS_FN_TAG_CUSTOM       "Custom Tag"
+    IDS_FN_TAG_CUSTOMTEXT   "Set Cutom Tag:"
+    IDS_HASHING_PROGRESS    "Hash: %d%% - %s"
+    IDS_HASHING_FINISHED    "Hashing Finished"
 END
 
 STRINGTABLE 
@@ -4510,6 +4541,8 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_FEEDBACK_DOWNLOADING "Currently Downloading @: %s"
+    IDS_FEEDBACK_DOWNLOADING_DE "Zur Zeit saugend mit: %s"
     IDS_FAKECHECKUPERROR    "Error updating fake list list"
     IDS_UPDATEFAKECHECKONSTART "Update fake list on startup"
     IDS_CHECKFAKE           "Check fake"
@@ -4521,13 +4554,8 @@ END
 
 STRINGTABLE 
 BEGIN
-IDS_FEEDBACK_DOWNLOADING "Currently Downloading @: %s"// actual Download [lama]
-    END
-
-
-STRINGTABLE 
-BEGIN
     IDS_PW_WEBCACHE         "Webcache"
+    IDS_BTL_TEXT            "Buffer time limit"
 END
 
 STRINGTABLE 
@@ -4547,7 +4575,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_DOWNFAKECHECKVER    "Downloading Fake Check version file"
-   IDS_DROP_LOWIPTOLOWIP   "Drop Low ID to Low ID"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_POWERSHARE_ON       "Powershare activ"
+    IDS_POWERSHARE_OFF      "Powershare off "
+    IDS_DROP_LOWIPTOLOWIP   "Drop Low ID to Low ID"
     IDS_DROP_UNKNOW_ERROR_BANNED "Drop Unknown, Error and banned user"
     IDS_DROP_NNS            "Drop not need sources"
     IDS_DROP_FQS            "Drop ""Full Queue"" sources"
@@ -4556,16 +4590,16 @@ BEGIN
                             "Drop NNS, FQS, HQRS, ERR, BAN & L2L"
     IDS_DROP_MENUE          "Drop sources manually"
     IDS_DROPTIME            "Waiting time for sourcen droped  [1-4h]"
-END
-
-STRINGTABLE 
-BEGIN
- IDS_DROPS               "Drop sources automatically:"
+    IDS_DROPS               "Drop sources automatically:"
     IDS_DROPHQSLIMIT        "Drop sources with queues higher to:"
     IDS_DROPS1              "that they have 'not need sources'"
     IDS_DROPS2              "every minute"
     IDS_DROPS3              "that they have 'Full queue'"
     IDS_DROPS4              "that they have queues higher"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_LOG_FC_LOADED       "Loaded Fake Check from ""%s"" in %ums"
     IDS_DOWNFAKECHECKFILE   "Downloading Fake Check file"
     IDS_LOG_FC_INFO         "Found Fake Reference:%u  Duplicate:%u  Merged:%u"
@@ -4608,7 +4642,13 @@ BEGIN
     IDS_UP_SLOTS            "Upload slots:"
     IDS_UP_SPEED_PER_CLIENT "Upload speed per client:"
     IDS_HIDEOVERSHARES      "Overshares before hiding chunks (0 = Disabled)"
+    IDS_INVISIBLEMODE       "Invisible Mode"
+    IDS_CTRLKEY             "CTRL"
+    IDS_ALTKEY              "ALT"
     IDS_SFM                 "Shared File Management"
+    IDS_SHIFTKEY            "SHIFT"
+    IDS_INVMODE_HOTKEY      "Select the hotkey to restore the window"
+    IDS_INVMODE_MODKEY      "Modifier Keys:"
 END
 
 STRINGTABLE 
@@ -4641,22 +4681,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PAWCIO_CREDIT       "Pawcio Credit"
-    IDS_EASTSHARE_CREDIT    "Eastshare"
-    IDS_CREDITS_NONE        "None"
-    IDS_FINE_CREDIT         "Fine Credit (BastarD)"
-    IDS_URL_FOR_UPDATING    "URL for updating"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_RESET               "Reset"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_POWERSHARE_ON       "Powershare activ"
-    IDS_POWERSHARE_OFF      "Powershare off "
 END
 
 STRINGTABLE 
@@ -4667,15 +4692,20 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
     IDS_SF_TURN_PART        "File UL (part)"
+    IDS_INVMODE             "Activate Invisible Mode"
     IDS_SF_TURN_SIMPLE      "File UL (simple)"
+    IDS_INVMODE_ONSTART     "Invisible on startup"
     IDS_SF_FULLUPLOAD       "File UL (full)"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FEEDBACK_CREATE     "Created at: %s"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_UM                  "Upload Management"
     IDS_SPREADBAR           "Spreadbar"
     IDS_SPREADBAR_DEFAULT_CHECKBOX "Enable SpreadBar by default"
@@ -4683,7 +4713,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FEEDBACK_FROM       "Feedback from %s on eMule %s [%s]"
+    IDS_FEEDBACK_FROM       "Feedback from %s on eMule %s "
     IDS_FEEDBACK_FILENAME   "File name: %s"
     IDS_FEEDBACK_FILETYPE   "File type: %s"
     IDS_FEEDBACK_FILESIZE   "Size: %i MB"
@@ -4698,6 +4728,10 @@ BEGIN
     IDS_FEEDBACK_UPLOADED_SESSION "Uploaded This Session : %i MB"
     IDS_FEEDBACK_REQUEST_SESSION "Requests This Session: %i"
     IDS_FEEDBACK_REQUEST_FULL "Requests All Sessions: %i"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CREDIT_SYSTEM       "Creditsystem Options"
     IDS_OFFICIAL_CREDIT     "Official"
     IDS_LOVELACE_CREDIT     "Lovelace"
@@ -4707,11 +4741,14 @@ BEGIN
     IDS_SWAT_CREDIT         "Swat"
 END
 
-
 STRINGTABLE 
 BEGIN
     IDS_FEEDBACK_ACCEPT_SESSION "Accepted Requests This Session: %i"
     IDS_FEEDBACK_ACCEPT_FULL "Accepted Requests All Sessions: %i"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_REASKSRCAFTERIPCHANGE 
                             "ReAsk SRCs after IP Change (does not work with LowID!)"
 END
@@ -4752,17 +4789,11 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_BTL_TEXT            "Buffer time limit"
-    IDS_INVMODE_GROUP       "Invisible Mode"
-    IDS_INVMODE             "Activate Invisible Mode"
-    IDS_INVMODE_ONSTART     "Invisible on startup"
-    IDS_INVISIBLEMODE       "Invisible Mode"
-    IDS_CTRLKEY             "CTRL"
-    IDS_ALTKEY              "ALT"
-    IDS_SHIFTKEY            "SHIFT"
-    IDS_INVMODE_HOTKEY      "Select the hotkey to restore the window"
-    IDS_INVMODE_MODKEY      "Modifier Keys:"
     IDS_INVMODE_VKEY        "Key:"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_SOFTWARE_LABEL      "Software"
 END
 
@@ -4771,17 +4802,6 @@ BEGIN
     IDS_NICEHASH_STATIC     "Relax Time for Hashing"
     IDS_NICEHASH_RIGHT      "Less CPU-load"
     IDS_NICEHASH_LEFT       "Faster hashing"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DISPLAYFUNNYNICK    "Enable FunnyNick display"
-    IDS_FN_TAG              "FunnyNick Tag"
-    IDS_FN_TAG_NO           "No Tag"
-    IDS_FN_TAG_CUSTOM       "Custom Tag"
-    IDS_FN_TAG_CUSTOMTEXT   "Set Cutom Tag:"
-IDS_HASHING_PROGRESS    "Hash: %d%% - %s"
-    IDS_HASHING_FINISHED    "Hashing Finished"
 END
 
 #endif    // Englisch (USA) resources

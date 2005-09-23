@@ -348,7 +348,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 					}
 				case 1:
-					Sbuffer.Format(_T("%s"), client->GetClientSoftVer());
+					Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer());//KTS
 					break;
 				case 2:
 					Sbuffer.Format(_T("%s"), client->GetRequestFile()->GetFileName());
