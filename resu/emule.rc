@@ -4520,8 +4520,6 @@ BEGIN
     IDS_DC_BROWN            "Brown"
     IDS_DC_BURLYWOOD        "Burlywood"
     IDS_DC_ORANGE           "Dark Orange"
-    IDS_CSP_XMAN            "Xman's Chunk Selection Patch"
-    IDS_CSP_NORMAL          "Official Chunk Selection"
     IDS_TK4_CREDIT          "TK4 Credit"
     IDS_DONTREMOVESTATICSERVER "Don't Remove Static Server"
     IDS_EnableDownloadInBold "Downloading Files in Bold"

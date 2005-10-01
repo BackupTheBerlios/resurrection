@@ -4,23 +4,18 @@ Changelog ReSuRReCTioN 1.1
 merged to Ackronic 3.0 Codebase
 
 
-half updated to Ackronic 3.1 - (only added invisible Mode) 
-
-
-the following code I changed from Ackronic one to my from Resurrection 1.0 
+half updated to Ackronic 3.1 - (only added invisible Mode) Rest would have make some functions impossibble ;-)
 
 Changed: Optimizer 
 Changed: Quickstart
 Changed: AntiLeechClass
 Changed: IP2Country
-Changed: Diif-QR
+Changed: Diff-QR
 Changed: Client%
 Changed: DL and UL in color
 Changed: Modversion (thanx at Spe64 for help) 
-Changed Feedback - (removed ionix and added Morph one - added currend dl speed to feed)  
-
-
-the following I removed from Ackronic Base or my old Resurrection 1.0
+Changed: Feedback - (removed ionix and added Morph one - added currend dl speed to feed)  
+Changed: Drops 
 
 Removed: Family Filter
 Removed: SNAFU 3
@@ -36,10 +31,6 @@ Removed: Allow Bandwidth Settings
 Removed: Low Id Notifier
 Removed: Next EMF Slotmanager
 Removed: SLS
-Removed: CB-Creditsystem
-
-
-Ok and last but not least the things I added: 
 
 Added: Webcache
 Added: Powershare [WiZaRd] 
@@ -49,31 +40,34 @@ Added: Blinking Tray Icon On Message Recieve [emulEspaña]
 Added: show Date & Time in Feedback [Mondgott]
 Added: Show Loaded Filesize & Percent if File not complete in Share [Mondgott]
 Added: Show current downloadspeed in Feedback [lama]
+Added: show Resu Icon on Client detect [iONix][RedSmurf]
 
-
-And least lol the fixed things: 
 Fixed: TrayAnzeige (CB) 
 Fixed: DL-Feedback
 Fixed: AntiLeechclass (updated) 
 Fixed: Ul - Colors
+Fixed: wrong tagcount from beta version
 
-Now I have many Peoples to say thanx..... ok thanx at all - ;-) and bye - loool -  no I will mention all here because without several people 
-ReSuRReCTioN were not what is is..... 
+Now I have many Peoples to say thanx..... ok thanx at all - ;-) and bye - loool -  no I will mention all here because
+without several people ReSuRReCTioN were not what is is..... 
 
-FIRST of all - REALLY BIG THANX to Spe64 for your work at ReSuRReCTioN 1.0 - you know without your help there would be NO Resurrection Mod at all. 
-You gave me the POWER and MOTIVATION to make the best out of my situation.... so it is really sad that you decided to leave the team .... 
-but I will do my really best to make a great Mod for many People........ have many thanx for your work...... (k) 
+FIRST of all - REALLY BIG THANX to Spe64 for your work at ReSuRReCTioN 1.0 - you know without your help there would 
+be NO Resurrection Mod at all. You gave me the POWER and MOTIVATION to make the best out of my situation.... 
+so it is really sad that you decided to leave the team .... but I will do my really best to make a great Mod for many People........ 
+have many thanx for your work...... (k) and for little help with fixing bugs in this Version (lol)
 
-
-Second  - WiZaRd for much help (especially with the Powershare - and several situations were I sat crying in front of my PC and
+Second  - WiZaRd for much help (especially with the Powershare - and several situations were I sat crying in front of my PC
 and nothing seems to work..... as I say at other Page - "WiZaRd for President".... (k) 
 Believe in me - I will go my way - even if it takes more time you thougt....
 
 At Third place I mention - G6R- First of all for his long work at the new Toolbar optic - (and the mule.ico.... *fg) 
-and second for his really patient testing of my several betas (with many bugs..... I think you found every ( I hope so..... so really good work... ) 
+and second for his really patient testing of my several betas (with many bugs..... I think you found every 
+( I hope so..... so really good work... ) and third for his work at the german and italian.dll
 
-And the fourth place but even the MOST Impoertant I think I want to say really big thanx to all my Beta Testers the last test show me how good this Version is. 
-And without the bugs you found I think..... hum.... its a really good one.... lol 
+And fourth place I wanna say thanx to wolf from DDoS for making the translation for the Italian.dll 
+
+And the fifth place but even the MOST Important (I think) I want to say really big thanx to all my Beta Testers the last test show
+me how good this Version is. And without the bugs you found I think..... hum.... its a really good one.... lol 
 
 BETA TESTERS
 
@@ -83,18 +77,15 @@ wolf
 svenvath
 pontew8
 dd_77
+mukuro
+ottomane
 
-at this place its time to say a REAL Big THANX to the WHOLE Team of DDoS - guys you are really great !!!!!!!!!!!!!!!!!! I hope you will test every of my next coming
+at this place its time to say a REAL Big THANX to the WHOLE Team of DDoS - guys you are really great !!!!!!!! I hope you will test every of my next coming
 betas like the last one....... 
 
-ok thats it - wish much fun and Good sessions to everybody.... 
+maybe I forgot to mention something in Changelog - so please don`t be angry it was very much work at all :-(
 
-lama
-
-
-
-
-
-
-
-
+and last I have removed some things what U might need - but I will readd this in further Versions - so please be patient - it was difficult to add them
+in this version becauseoj much completely changed code..... 
+ 
+lama 

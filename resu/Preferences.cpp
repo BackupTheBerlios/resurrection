@@ -571,10 +571,6 @@ bool	CPreferences::m_bNotifierSendMail;
 CString	CPreferences::m_strNotifierMailServer;
 CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
-//==> Chunk Selection Patch by Xman [lama]
-int		CPreferences::m_iEnableCSP;
-//<== Chunk Selection Patch by Xman [lama]
-
 bool	CPreferences::m_bWinaTransToolbar;
 //START adding by sivka (AutoHL) added by lama
 bool	CPreferences::m_EnableAutoHLTemp;
@@ -2167,8 +2163,8 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 //<<< Sivka - Aggressive Client Handling [WiZaRd]
 	ini.WriteBool(_T("DisplayFunnyNick"), m_bFunnyNick,_T("eMule"));//MORPH - Added by SiRoB, Optionnal funnynick display
 // ==> FunnyNick Tag - Stulle
-	ini.WriteInt(_T("FnTagMode"), FnTagMode,_T("StulleMule"));
-	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag,_T("StulleMule"));
+	ini.WriteInt(_T("FnTagMode"), FnTagMode,_T("eMule"));
+	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag,_T("eMule"));
 	// <== FunnyNick Tag - Stulle
 	uint32 temp = ini.GetInt(_T("ReAskFileSRC"), FILEREASKTIME); //29 mins
 	uReAskFileSRC = (temp >= FILEREASKTIME && temp <= 3300000) ? temp : FILEREASKTIME;
@@ -2182,12 +2178,9 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 	ini.WriteBool(_T("AntiLeecherMod"),m_bAntiLeecherMod ,_T("eMule"));
 	ini.WriteBool(_T("LeecherSecureLog"),m_bLeecherSecureLog ,_T("eMule"));
 	// [ionix] WiZaRd - AntiNickThief 
-//==> Chunk Selection Patch by Xman [shadow2004]
-	ini.WriteInt(_T("EnableCSP"),m_iEnableCSP,_T("NextEMF"));
-//<== Chunk Selection Patch by Xman [shadow2004]
 	// ==> Anti Uploader Ban - Stulle
-	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit,_T("StulleMule"));
-	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode,_T("StulleMule"));
+	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit,_T("eMule"));
+	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode,_T("eMule"));
 	// <== Anti Uploader Ban - Stulle
 }
 
@@ -2947,8 +2940,8 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_bPeerCacheShow = ini.GetBool(_T("Show"), false);
 //Sivka (AutoHL) added by lama
 // ==> Anti Uploader Ban - Stulle
-	m_iAntiUploaderBanLimit = ini.GetInt(_T("AntiUploaderBanLimit"), 0, _T("StulleMule"));
-	AntiUploaderBanCaseMode = ini.GetInt(_T("AntiUploaderBanCaseMode"), 1, _T("StulleMule"));
+	m_iAntiUploaderBanLimit = ini.GetInt(_T("AntiUploaderBanLimit"), 0, _T("eMule"));
+	AntiUploaderBanCaseMode = ini.GetInt(_T("AntiUploaderBanCaseMode"), 1, _T("eMule"));
 	// <== Anti Uploader Ban - Stulle
   bReAskSRCAfterIPChange = ini.GetBool(_T("ReAskSRCAfterIPChange"),false); // [Maella/sivka: -ReAsk SRCs after IP Change-]
 	m_activeConnectionControl = ini.GetBool(_T("ActiveConnectionControl"), false,_T("eMule"));//Obelix
@@ -2960,11 +2953,8 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_bLogSivkaBan = ini.GetBool(_T("LogSivkaBan"), false, _T("eMule"));
 //<<< Sivka - Aggressive Client Handling [WiZaRd]
    bReAskSRCAfterIPChange = ini.GetBool(_T("ReAskSRCAfterIPChange"),true); // [Maella/sivka: -ReAsk SRCs after IP Change-]
-//==> Chunk Selection Patch by Xman [lama]
-	m_iEnableCSP = ini.GetInt(_T("EnableCSP"), 1, _T("NextEMF")); // 0=original, 1=Xman
-//<== Chunk Selection Patch by Xman [lama]
 	// ==> FunnyNick Tag - Stulle
-	FnTagMode = ini.GetInt(_T("FnTagMode"), 2, _T("StulleMule"));
+	FnTagMode = ini.GetInt(_T("FnTagMode"), 2, _T("eMule"));
 	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
 	// <== FunnyNick Tag - Stulle
 	LoadCats();

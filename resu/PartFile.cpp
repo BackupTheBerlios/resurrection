@@ -2650,28 +2650,19 @@ void CPartFile::UpdatePartsInfo()
 	for (POSITION pos = srclist.GetHeadPosition(); pos != 0; )
 	{
 		CUpDownClient* cur_src = srclist.GetNext(pos);
-//==> Chunk Selection Patch by Xman [lama]
+		//Xman better chunk selection
+		//use different weight
 		uint8 weight=2;
-		if (thePrefs.GetCSPType() == 1) {
-			if(cur_src->GetDownloadState()==DS_ONQUEUE && (cur_src->IsBanned() || cur_src->IsRemoteQueueFull() || cur_src->GetRemoteQueueRank()>4000)) 
+		if(cur_src->GetDownloadState()==DS_ONQUEUE && (cur_src->GetUploadState()==US_BANNED || cur_src->IsRemoteQueueFull() || cur_src->GetRemoteQueueRank()>4000)) 
 				weight=1;
-		}
-//<== Chunk Selection Patch by Xman [lama]
+		//Xman end
 
 		if( cur_src->GetPartStatus() )
 		{		
 			for (int i = 0; i < partcount; i++)
 			{
 				if (cur_src->IsPartAvailable(i))
-//==> Chunk Selection Patch by Xman [lama]
-				{
-
-					if (thePrefs.GetCSPType() == 1)
-						m_SrcpartFrequency[i] +=weight;
-					else
-					m_SrcpartFrequency[i] += 1;
-			}
-//<== Chunk Selection Patch by Xman [lama4]
+					m_SrcpartFrequency[i] +=weight; //Xman better chunk selection
 			}
 			if ( flag )
 			{
@@ -2680,17 +2671,16 @@ void CPartFile::UpdatePartsInfo()
 		}
 	}
 
-//==> Chunk Selection Patch by Xman [shadow2004]
-#ifdef CSP
-	if (thePrefs.GetCSPType() == 1) {
+	//Xman better chunk selection
+	//at this point we have double weight -->reduce to normal (division by 2)
 		for(uint16 i = 0; i < partcount; i++)
 		{
 			if(m_SrcpartFrequency[i]>1)
-				m_SrcpartFrequency[i] = m_SrcpartFrequency[i]>>1;
-		}
+			m_SrcpartFrequency[i] = m_SrcpartFrequency[i]>>1; //nothing else than  m_SrcpartFrequency[i]/2; 
 	}
-#endif
-//<== Chunk Selection Patch by Xman [shadow2004]
+	//Xman end
+
+
 	if (flag)
 	{
 		m_nCompleteSourcesCount = m_nCompleteSourcesCountLo = m_nCompleteSourcesCountHi = 0;
@@ -5020,9 +5010,10 @@ bool CPartFile::GetNextRequestedBlock(CUpDownClient* sender,
 				// more depending on available sources
 				uint8 modif=10;
 				if (GetSourceCount()>800) modif=2; else if (GetSourceCount()>200) modif=5;
-				//==> Chunk Selection Patch by Xman [shadow2004]
-uint16 limit= ceil((float)modif*GetSourceCount()/ 100) + 1;
-//<== Chunk Selection Patch by Xman [shadow2004]
+				//Xman better chunk selection
+				uint16 limit= ceil((float)modif*GetSourceCount()/ 100) + 1; //Xman: better if we have very low sources
+				//if (limit==0) limit=1;
+
 				const uint16 veryRareBound = limit;
 				const uint16 rareBound = 2*limit;
 

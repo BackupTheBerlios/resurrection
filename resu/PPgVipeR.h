@@ -105,14 +105,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiUpSlotsMin;
 	HTREEITEM m_htiUpSlotsMax;
 
-//==> Chunk Selection Patch by Xman [lama]
-	int m_iEnableCSP;
-//<== Chunk Selection Patch by Xman [lama]
-//==> Chunk Selection Patch by Xman [lama]
-	HTREEITEM m_htiEnableCSP;
-	HTREEITEM m_htiEnableCSPNormal;
-	HTREEITEM m_htiEnableCSPXman;
-//<== Chunk Selection Patch by Xman [lama]
 // [ionix] - FunnyNick
 	bool m_bFunnyNickEnabled;
 	int m_iFunnyNickTag;

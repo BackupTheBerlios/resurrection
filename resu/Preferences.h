@@ -705,9 +705,6 @@ static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat
 	static CString	m_strNotifierMailServer;
 	static CString	m_strNotifierMailSender;
 	static CString	m_strNotifierMailReceiver;
-//==> Chunk Selection Patch by Xman [lama]
-	static	int		m_iEnableCSP;
-//<== Chunk Selection Patch by Xman [lama]
 	// ==> Anti Uploader Ban - Stulle
 	static uint16 m_iAntiUploaderBanLimit;
 	static uint8 AntiUploaderBanCaseMode;
@@ -1594,9 +1591,6 @@ static LPSYSTEMTIME   GetIPfilterVersion()				{return &m_IPfilterVersion;}
 	static  uint16		m_uiAutoHLUpdateTimer; 
 	static  uint16		GetAutoHLUpdateTimer()		{return m_uiAutoHLUpdateTimer;} 
 	//<<< WiZaRd - AutoHL added by lama
-//==> Chunk Selection Patch by Xman [lama]
-	static	int		GetCSPType()				{return m_iEnableCSP;}
-//<== Chunk Selection Patch by Xman [lama]
 	static	void	EstimateMaxUploadCap(uint32 nCurrentUpload);
 
 

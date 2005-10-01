@@ -41,9 +41,6 @@ CPPgVipeR::CPPgVipeR()
 	, VP(0)
 {
 	m_bInitializedTreeOpts = false;
-//==> Chunk Selection Patch by Xman [shadow2004]
-	m_iEnableCSP = 0;
-//<== Chunk Selection Patch by Xman [shadow2004]
 //Telp + Menu VipeR
 	m_AdditionalVipeR = NULL;
 //Telp - Menu VipeR
@@ -72,10 +69,6 @@ m_htiClientPerc = NULL;
         m_htiCreditsNone = NULL;
 	
 	// CreditSystem
-
-//==> Chunk Selection Patch by Xman [lama]
-	m_htiEnableCSP = NULL;
-//<== Chunk Selection Patch by Xman [lama]
 
 // IP-to-Country +
 	m_htiIP2CountryName = NULL;
@@ -130,9 +123,6 @@ void CPPgVipeR::DoDataExchange(CDataExchange* pDX)
 		int iImgAddTweaks = 8;
 //Telp- Menu VipeR
 		int iImgFunnyNick = 8; // [ionix] - FunnyNick
-//==> Chunk Selection Patch by Xman [lama]
-		int iImgCSP = 8;
-//<== Chunk Selection Patch by Xman [lama]
 int iImgSecu = 8; 
 // IP-to-Country +
 		int iImgIP2Country = 8;
@@ -167,9 +157,6 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 		m_ctrlTreeOptions.SetItemState(m_secu, TVIS_BOLD, TVIS_BOLD);
 
 iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
-	//==> Chunk Selection Patch by Xman [lama]
-			iImgCSP = piml->Add(CTempIconLoader(_T("CONVERT")));
-//<== Chunk Selection Patch by Xman [lama]
 
 // IP-to-Country +
 		m_htiIP2CountryName = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_IP2COUNTRY), iImgIP2Country, TVI_ROOT);
@@ -212,13 +199,6 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_ctrlTreeOptions.Expand(m_htiDropSources, TVE_EXPAND);
 		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-	//==> Chunk Selection Patch by Xman [lama]
-		m_htiEnableCSP = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CSP_ENABLE), iImgCSP, m_htiSFM);
-		m_ctrlTreeOptions.SetItemState(m_htiEnableCSP, TVIS_BOLD, TVIS_BOLD);
-		m_htiEnableCSPNormal = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CSP_NORMAL), m_htiEnableCSP, m_iEnableCSP == 0);
-		m_htiEnableCSPXman = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CSP_XMAN), m_htiEnableCSP, m_iEnableCSP == 1);
-		m_ctrlTreeOptions.Expand(m_htiEnableCSP, TVE_EXPAND);
-//<== Chunk Selection Patch by Xman [lama]
 		m_ctrlTreeOptions.Expand(m_htiHideOS, TVE_EXPAND);
 		
 		//Telp Start push small file
@@ -297,9 +277,6 @@ DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // C
 		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerHQR, m_iDropSourcesTimerHQR);
 		DDV_MinMaxInt(pDX, iMaxRemoveQRS, 2500, 100000);
 		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-//==> Chunk Selection Patch by Xman [lama]
-	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiEnableCSP, m_iEnableCSP);
-//<== Chunk Selection Patch by Xman [lama]
 }
 
 /////////////////////////////////////////  OnInitDialog  ///////////////////////////////////////////////////////------
@@ -338,9 +315,6 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 	m_iDropSourcesTimerHQR = thePrefs.m_iDropSourcesTimerHQR;
     iMaxRemoveQRS = (int) thePrefs.GetMaxRemoveQRS();
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-//==> Chunk Selection Patch by Xman [lama]
-	m_iEnableCSP	= thePrefs.m_iEnableCSP;
-//<== Chunk Selection Patch by Xman [lama]
 		// [ionix] - FunnyNick
 	m_bFunnyNickEnabled = thePrefs.DisplayFunnyNick();
 	m_iFunnyNickTag = thePrefs.GetFnTag();
@@ -399,11 +373,6 @@ void CPPgVipeR::Localize(void)
 		// ==> Anti Uploader Ban - Stulle
 	    if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 // <== Anti Uploader Ban - Stulle
-//==> Chunk Selection Patch by Xman [lama]
-		if (m_htiEnableCSP) m_ctrlTreeOptions.SetItemText(m_htiEnableCSP, GetResString(IDS_CSP_ENABLE));
-		if (m_htiEnableCSPNormal) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPNormal, GetResString(IDS_CSP_NORMAL));		
-		if (m_htiEnableCSPXman) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPXman, GetResString(IDS_CSP_XMAN));		
-//<== Chunk Selection Patch by Xman [lama]
 	//>>> [ionix] - FunnyNick
 		if (m_htiFunnyNickEnabled) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickEnabled, GetResString(IDS_DISPLAYFUNNYNICK));
 		if (m_htiFunnyNickTag) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag, GetResString(IDS_FN_TAG));
@@ -437,10 +406,6 @@ thePrefs.SetCreditSystem(m_iCreditSystem); // CreditSystem
 	thePrefs.m_bIP2CountryShowFlag = m_bIP2CountryShowFlag;
 	theApp.ip2country->Refresh();//refresh passive windows
 	// IP-to-Country -
-//==> Chunk Selection Patch by Xman [shadow2004]
-	thePrefs.m_iEnableCSP	  = m_iEnableCSP;
-//<== Chunk Selection Patch by Xman [shadow2004]
-
 // ==> Anti Uploader Ban - Stulle
 thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 	if(thePrefs.AntiUploaderBanCaseMode != m_iAntiUploaderBanCase){
@@ -525,10 +490,6 @@ void CPPgVipeR::OnDestroy()
 	m_htiDropSourcesHQR = NULL;
     m_htiHqrBox = NULL;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-//==> Chunk Selection Patch by Xman [lama]
-	m_htiEnableCSP			 = NULL;
-//<== Chunk Selection Patch by Xman [lama]
-
 // IP-to-Country +
 	m_htiIP2CountryName = NULL;
 	m_htiIP2CountryName_DISABLE = NULL;
