@@ -26,15 +26,11 @@
 #include "Sockets.h"
 #include "MenuCmds.h"
 #include "ServerWnd.h"
-//#include "IrcWnd.h" removed irc [lama]
 #include "Opcodes.h"
 #include "Log.h"
 #include "ToolTipCtrlX.h"
-// IP-to-Country +
-#include "IP2Country.h" 
-#include "MemDC.h"
-#define DLC_DT_TEXT (DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX|DT_END_ELLIPSIS)
-// IP-to-Country -
+#include "IP2Country.h"//Ackronic - Aggiunto da Aenarion[ITA] - IP to Country
+#include "MemDC.h"//""
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -114,17 +110,22 @@ void CServerListCtrl::OnSysColorChange()
 	CMuleListCtrl::OnSysColorChange();
 	SetAllIcons();
 }
-// IP-to-Country +
+
 void CServerListCtrl::SetAllIcons()
 {
 	CImageList iml;
-	imagelist.DeleteImageList();
-	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
-	imagelist.SetBkColor(CLR_NONE);
-	imagelist.Add(CTempIconLoader(_T("server")));//0
+	iml.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
+	iml.SetBkColor(CLR_NONE);
+	iml.Add(CTempIconLoader(_T("Server")));
 	HIMAGELIST himl = ApplyImageList(iml.Detach());
 	if (himl)
 		ImageList_Destroy(himl);
+	//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
+	imagelist.DeleteImageList();
+	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
+	imagelist.SetBkColor(CLR_NONE);
+	imagelist.Add(CTempIconLoader(_T("Server")));
+	//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
 }
 
 void CServerListCtrl::Localize()
@@ -266,8 +267,13 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	int itemnr = FindItem(&find);
 	if (itemnr == -1)
 		return;
+	//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
+	Update(itemnr);
+	return;
+	//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
 
-	CString temp;
+	//Ackronic START - Tolto da Aenarion[ITA] - IP to Country
+	/*CString temp;
 	temp.Format(_T("%s : %i"), server->GetAddress(), server->GetPort());
 	SetItemText(itemnr, 1, temp);
 	SetItemText(itemnr, 0, server->GetListName());
@@ -356,9 +362,19 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	if (server->GetLowIDUsers())
 		SetItemText(itemnr, 13, CastItoIShort(server->GetLowIDUsers()));
 	else
-		SetItemText(itemnr, 13, _T(""));
+		SetItemText(itemnr, 13, _T(""));*/
+//Ackronic END - Tolto da Aenarion[ITA] - IP to Country
 }
+//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
+void CServerListCtrl::RefreshAllServer(){
 
+	for(POSITION pos = server_list->list.GetHeadPosition(); pos != NULL;){
+		RefreshServer(server_list->list.GetAt(pos));
+		server_list->list.GetNext(pos);
+	}
+
+}
+//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
 void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 { 
 	// get merged settings
@@ -574,20 +590,6 @@ BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					theApp.CopyTextToClipboard(link);
 					return TRUE;
 				}
-			/*case Irc_SetSendLink:
-				{
-					POSITION pos = GetFirstSelectedItemPosition();
-					CString buffer, link;
-					while (pos != NULL){
-						const CServer* change = (CServer*)GetItemData(GetNextSelectedItem(pos));
-						buffer.Format(_T("ed2k://|server|%s|%d|/"), change->GetFullIP(), change->GetPort());
-						if (link.GetLength() > 0)
-							buffer = _T("\r\n") + buffer;
-						link += buffer;
-					}
-					theApp.emuledlg->ircwnd->SetSendFileString(link);
-					return TRUE;
-				}removed irc [lama]*/
 			}
 		}
 	}
@@ -945,22 +947,39 @@ void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 
 	*pResult = 0;
 }
-// IP-to-Country +
-void CServerListCtrl::RefreshAllServer(){
 
-	for(POSITION pos = server_list->list.GetHeadPosition(); pos != NULL;){
-		RefreshServer(server_list->list.GetAt(pos));
-		server_list->list.GetNext(pos);
+void CServerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *plResult)
+{
+	LPNMLVCUSTOMDRAW pnmlvcd = (LPNMLVCUSTOMDRAW)pNMHDR;
+
+	if (pnmlvcd->nmcd.dwDrawStage == CDDS_PREPAINT)
+	{
+		*plResult = CDRF_NOTIFYITEMDRAW;
+		return;
 	}
 
+	if (pnmlvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT)
+	{
+		const CServer* pServer = (const CServer*)pnmlvcd->nmcd.lItemlParam;
+		const CServer* pConnectedServer = theApp.serverconnect->GetCurrentServer();
+		// the server which we are connected to always has a valid numerical IP member assigned,
+		// therefor we do not need to call CServer::IsEqual (which is little expensive)
+		//if (pConnectedServer && pConnectedServer->IsEqual(pServer))
+		if (pConnectedServer && pConnectedServer->GetIP() == pServer->GetIP() && pConnectedServer->GetPort() == pServer->GetPort())
+			pnmlvcd->clrText = RGB(32,32,255);
+		else if (pServer->GetFailedCount() >= thePrefs.GetDeadServerRetries())
+			pnmlvcd->clrText = RGB(192,192,192);
+		else if (pServer->GetFailedCount() >= 2)
+			pnmlvcd->clrText = RGB(128,128,128);
 	}
 
-//Commander - Added: CountryFlag - Start
+	*plResult = CDRF_DODEFAULT;
+}
+//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
 #define DLC_DT_TEXT (DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX|DT_END_ELLIPSIS)
 
 void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
-	//theApp.AddDebugLogLine(false,"Drawitem");
 	if( !theApp.emuledlg->IsRunning() )
 		return;
 	if (!lpDrawItemStruct->itemData)
@@ -994,8 +1013,6 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		}
 	else
 		odc->SetBkColor(GetBkColor());
-	//const CServer* server = (CServer*)lpDrawItemStruct->itemData;
-
 	CMemDC dc(CDC::FromHandle(lpDrawItemStruct->hDC), &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
 	//RECT cur_rec = lpDrawItemStruct->rcItem; //MORPH - Moved by SiRoB, Don't draw hidden Rect
@@ -1024,16 +1041,18 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 0:{
 					uint8 image;
 					image = 0;
+
+					//POINT point = {cur_rec.left, cur_rec.top+1};
 					Sbuffer = server->GetListName();
 
-					CString tempStr;
-					tempStr.Format(_T("%s%s"), server->GetCountryName(), Sbuffer);
-					Sbuffer = tempStr;
+					//Draw Country Flag
 
-					if(theApp.ip2country->ShowCountryFlag() ){
 						POINT point2= {cur_rec.left,cur_rec.top+1};
+					if(theApp.ip2country->ShowCountryFlag() ){
 						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, server->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
 					}
+					else
+						imagelist.DrawIndirect(dc, 0, point2, CSize(16,16), CPoint(0,0), ILD_NORMAL);
 
 					cur_rec.left +=20;
 					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
@@ -1178,31 +1197,4 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SelectObject(pOldFont);
 	dc.SetTextColor(crOldTextColor);
 }
-// IP-to-Country -
-void CServerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *plResult)
-{
-	LPNMLVCUSTOMDRAW pnmlvcd = (LPNMLVCUSTOMDRAW)pNMHDR;
-
-	if (pnmlvcd->nmcd.dwDrawStage == CDDS_PREPAINT)
-	{
-		*plResult = CDRF_NOTIFYITEMDRAW;
-		return;
-	}
-
-	if (pnmlvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT)
-	{
-		const CServer* pServer = (const CServer*)pnmlvcd->nmcd.lItemlParam;
-		const CServer* pConnectedServer = theApp.serverconnect->GetCurrentServer();
-		// the server which we are connected to always has a valid numerical IP member assigned,
-		// therefor we do not need to call CServer::IsEqual (which is little expensive)
-		//if (pConnectedServer && pConnectedServer->IsEqual(pServer))
-		if (pConnectedServer && pConnectedServer->GetIP() == pServer->GetIP() && pConnectedServer->GetPort() == pServer->GetPort())
-			pnmlvcd->clrText = RGB(32,32,255);
-		else if (pServer->GetFailedCount() >= thePrefs.GetDeadServerRetries())
-			pnmlvcd->clrText = RGB(192,192,192);
-		else if (pServer->GetFailedCount() >= 2)
-			pnmlvcd->clrText = RGB(128,128,128);
-	}
-
-	*plResult = CDRF_DODEFAULT;
-}
+//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
