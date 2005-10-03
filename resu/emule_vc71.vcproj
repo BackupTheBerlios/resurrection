@@ -18,7 +18,8 @@
 			ConfigurationType="1"
 			UseOfMFC="1"
 			CharacterSet="1"
-			DeleteExtensionsOnClean="*.obj;*.ilk;*.pdb;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.bat;*.asm;$(TargetPath)">
+			DeleteExtensionsOnClean="*.obj;*.ilk;*.pdb;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.bat;*.asm;$(TargetPath)"
+			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
@@ -587,6 +588,9 @@
 				RelativePath="Sockets.cpp">
 			</File>
 			<File
+				RelativePath=".\SR13-ImportParts.cpp">
+			</File>
+			<File
 				RelativePath="StatisticFile.cpp">
 			</File>
 			<File
@@ -947,6 +951,9 @@
 			</File>
 			<File
 				RelativePath="Sockets.h">
+			</File>
+			<File
+				RelativePath=".\SR13-ImportParts.h">
 			</File>
 			<File
 				RelativePath="StatisticFile.h">

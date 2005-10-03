@@ -412,7 +412,7 @@ void CDownloadQueue::Process(){
 	uint32 downspeed = 0;
     uint64 maxDownload = thePrefs.GetMaxDownloadInBytesPerSec(true);
 	if (maxDownload != UNLIMITED*1024 && datarate > 1500){
-		downspeed = (maxDownload*100)/(datarate+1);
+		downspeed = (UINT)((maxDownload*100)/(datarate+1));
 		if (downspeed < 50)
 			downspeed = 50;
 		else if (downspeed > 200)
@@ -427,7 +427,7 @@ uint32 friendDownspeed = downspeed;
 	} else {
 		datarate = 0;
 	}
-
+	
 	uint32 datarateX=0;
 	udcounter++;
 
@@ -706,23 +706,25 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 
 bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 {
+	//Xman Code Improvement
 	bool bRemovedSrcFromPartFile = false;
 	for (POSITION pos = filelist.GetHeadPosition();pos != 0;){
 		CPartFile* cur_file = filelist.GetNext(pos);
-		for (POSITION pos2 = cur_file->srclist.GetHeadPosition();pos2 != 0; cur_file->srclist.GetNext(pos2)){
-			if (toremove == cur_file->srclist.GetAt(pos2)){
+		POSITION pos2 = cur_file->srclist.Find(toremove);
+		if (pos2 != NULL){
+			cur_file->RemoveDownloadingSource(toremove); //to be sure
 				cur_file->srclist.RemoveAt(pos2);
 				bRemovedSrcFromPartFile = true;
 				if ( bDoStatsUpdate ){
-					cur_file->RemoveDownloadingSource(toremove);
+	
 					cur_file->UpdatePartsInfo();
 				}
-				break;
-			}
+			
 		}
 		if ( bDoStatsUpdate )
 			cur_file->UpdateAvailablePartsCount();
 	}
+	//Xman end
 	
 	// remove this source on all files in the downloadqueue who link this source
 	// pretty slow but no way arround, maybe using a Map is better, but that's slower on other parts
@@ -767,12 +769,16 @@ void CDownloadQueue::RemoveFile(CPartFile* toremove)
 {
 	RemoveLocalServerRequest(toremove);
 
-	for (POSITION pos = filelist.GetHeadPosition();pos != 0;filelist.GetNext(pos)){
-		if (toremove == filelist.GetAt(pos)){
+	//Xman
+	// Maella -Code Improvement-
+	POSITION pos = filelist.Find(toremove);
+	if (pos != NULL){
+		ASSERT(filelist.GetAt(pos)->srclist.IsEmpty());
+		filelist.GetAt(pos)->srclist.RemoveAll(); // Security 
 			filelist.RemoveAt(pos);
-			break;
-		}
+
 	}
+	// Maella end
 	SortByPriority();
 	CheckDiskspace();
 	ExportPartMetFilesOverview();
@@ -1117,12 +1123,20 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 	// 'bNotEnoughSpaceLeft' - avoid worse case, if we already had 'disk full'
 	if (thePrefs.GetMinFreeDiskSpace() == 0)
 	{
+		// SLUGFILLER: CheckDiskspaceFix
+		for (int i=0;i<thePrefs.tempdir.GetCount();i++) {
+			CString cur_tempdir = thePrefs.GetTempDir(i);
+			uint64 nTotalAvailableSpace = bNotEnoughSpaceLeft ? 0 : GetFreeDiskSpaceX(cur_tempdir);
+		// SLUGFILLER: CheckDiskspaceFix
+
 		for( POSITION pos1 = filelist.GetHeadPosition(); pos1 != NULL; )
 		{
 			CPartFile* cur_file = filelist.GetNext(pos1);
 
-			uint64 nTotalAvailableSpace = bNotEnoughSpaceLeft ? 0 : 
-				((thePrefs.GetTempDirCount()==1)?nTotalAvailableSpaceMain:GetFreeDiskSpaceX(cur_file->GetTempPath()));
+				// SLUGFILLER: CheckDiskspaceFix
+				if (cur_file->GetTempPath().CompareNoCase(cur_tempdir))
+					continue;
+				// SLUGFILLER: CheckDiskspaceFix
 
 			switch(cur_file->GetStatus())
 			{
@@ -1143,6 +1157,7 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 			else
 				cur_file->PauseFile(true/*bInsufficient*/);
 		}
+		}	// SLUGFILLER: CheckDiskspaceFix
 	}
 	else
 	{

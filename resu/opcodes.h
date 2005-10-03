@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#define MOD_VERSION _T("ReSuRReCTioN 1.1") //[lama] ModVersion
+#define MOD_VERSION _T("ReSuRReCTioN 1.2 Beta 1") //[lama] ModVersion
 #define MOD_ID		_T("ReSuRReCTioN") // Mondgott :: Show RedSmurfIconOnClientDetect
 
 // MOD Note: Do not change this part - Merkur
@@ -358,6 +358,7 @@
 #define  FT_ATREQUESTED			 0x51	// <uint32>
 #define  FT_ATACCEPTED			 0x52	// <uint32>
 #define  FT_CATEGORY			 0x53	// <uint32>
+#define FT_RELEASE			0x78	// <uint32>	// Super Release
 #define	 FT_ATTRANSFERREDHI		 0x54	// <uint32>
 #define	 FT_MAXSOURCES			 0x55	// <uint32>
 #define	 FT_MEDIA_ARTIST		 0xD0	// <string>
@@ -376,6 +377,23 @@
 #define TAG_FILECOMMENT			"/xF6"	// <string>
 #define  FT_FILERATING			 0xF7	// <uint8>
 #define TAG_FILERATING			"\xF7"	// <uint8>
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+ //<<-- ADDED STORMIT - SLUGFILLER: Spreadbars - //
+#define FT_POWERSHARE           "ZZUL_POWERSHARE"
+#define FT_POWERSHARE_LIMIT		"POWERSHARE_LIMIT"
+#define FT_HIDEOS				"HIDEOS"
+#define FT_SELECTIVE_CHUNK		"SELECT_CHUNK"
+#define FT_SHAREONLYTHENEED		"SHARE_ONLY_THE_NEED"
+
+ //<<-- ADDED STORMIT - SLUGFILLER: Spreadbars - //
+#define FT_SPREADSTART			0x70
+#define FT_SPREADEND			0x71
+#define FT_SPREADCOUNT			0x72
+ //<<-- ADDED STORMIT - SLUGFILLER: Spreadbars - //
+#define FT_LASTUSED				0x95	// <uint32> // EastShare - Added by TAHO, .met file control
+#define FT_ATSHARED				0x96	// <uint32> // Morph - Added by AndCycle, Equal Chance For Each File
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+#define  FT_RELEASE			 0x78	// <uint32>	// SLUGFILLER: slotRelease
 
 #define TAG_BUDDYHASH			"\xF8"	// <string>
 #define TAG_CLIENTLOWID			"\xF9"	// <uint32>
@@ -440,8 +458,12 @@
 #define TAG_NSENT				"# Sent"
 #define TAG_ONIP				"ip"
 #define TAG_ONPORT				"port"
-
-#define FT_POWERSHARE           "ZZUL_POWERSHARE"//Ackronic - Aggiunto da Aenarion[ITA] - PowerShare
+//KTS+ Spreadbars
+#define FT_SPREADBAR			"Spreadbar"
+#define FT_SPREADSTART			0x70
+#define FT_SPREADEND			0x71
+#define FT_SPREADCOUNT			0x72
+//KTS- Spreadbars
 
 // ed2k search expression comparison operators
 #define ED2K_SEARCH_OP_EQUAL         0 // eserver 16.45+

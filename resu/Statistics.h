@@ -106,6 +106,16 @@ public:
 	uint64	GetUpDataOverheadServerPackets()			{return m_nUpDataOverheadServerPackets;}
 	uint64	GetUpDataOverheadKadPackets()				{return m_nUpDataOverheadKadPackets;}
 	uint64	GetUpDataOverheadOtherPackets()				{return m_nUpDataOverheadOtherPackets;}
+
+    uint64  GetTotalCompletedBytes() { return m_nTotalCompletedBytes; }
+    void    IncTotalCompletedBytes(uint64 toAdd) { m_nTotalCompletedBytes += toAdd; }
+    void    DecTotalCompletedBytes(uint64 toDec) {
+        if(m_nTotalCompletedBytes > toDec)
+            m_nTotalCompletedBytes -= toDec;
+        else
+            m_nTotalCompletedBytes = 0;
+    }
+
 public:
 	//	Cumulative Stats
 	static float	maxDown;
@@ -180,6 +190,7 @@ private:
 	CList<TransferredData> m_AvarageDDRO_list;
 	CList<TransferredData> m_AvarageUDRO_list;
 	
+    uint64  m_nTotalCompletedBytes;
 };
 
 extern CStatistics theStats;

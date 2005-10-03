@@ -218,6 +218,10 @@ void CClientListCtrl::RefreshClient(const CUpDownClient* client)
 	if (!theApp.emuledlg->IsRunning())
 		return;
 
+	//MORPH START - SiRoB, Don't Refresh item if not needed
+	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd)
+		return;
+	//MORPH END   - SiRoB, Don't Refresh item if not needed
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)client;
@@ -425,6 +429,13 @@ void CClientListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	ClientMenu.AppendMenu(MF_STRING | (client ? MF_ENABLED : MF_GRAYED), MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+			//KTS+ Whois
+			ClientMenu.AppendMenu(MF_SEPARATOR);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS2, _T("WHOIS query (basic)"), _T("SEARCHPARAMS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS2);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS, _T("WHOIS query (more info)"), _T("SEARCHRESULTS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS);
+			//KTS- Whois
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
 			//-->Spe64	
@@ -459,6 +470,22 @@ BOOL CClientListCtrl::OnCommand(WPARAM wParam,LPARAM lParam )
 			case MP_SHOWLIST:
 				client->RequestSharedFileList();
 				break;
+												 //KTS+ Whois
+				case MP_WHOIS:{
+					TCHAR address[256];
+					_tcscpy(address, _T("http://www.whois.sc/"));
+					_tcscat(address, ipstr(client->GetConnectIP()));
+					ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+					break;
+							  }
+				case MP_WHOIS2:{
+					TCHAR address[256];
+					_tcscpy(address, _T("http://www.searchbug.com/peoplefinder/location-by-ip-address.aspx?ipaddress="));
+					_tcscat(address, ipstr(client->GetConnectIP()));
+					ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+					break;
+							   }
+							   //KTS- Whois
 			case MP_MESSAGE:
 				theApp.emuledlg->chatwnd->StartSession(client);
 				break;
@@ -505,6 +532,7 @@ case MP_FRIENDSLOT:
 }
 		}
 	}
+	
 	return true;
 } 
 

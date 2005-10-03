@@ -55,6 +55,9 @@ protected:
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support	
 	virtual BOOL OnInitDialog(); 
+	// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	// MORPH END   - Added by Commander, Friendlinks [emulEspaña]
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -62,7 +65,15 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnSysColorChange();
 	afx_msg LRESULT OnCloseTab(WPARAM wparam, LPARAM lparam);
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point); //chat
 	afx_msg void OnLvnItemActivateFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickFrlist(NMHDR *pNMHDR, LRESULT *pResult);
+
+		// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+public:
+	bool	UpdateEmfriendsMetFromURL(const CString& strURL);
+protected:
+	afx_msg void	OnBnClickedBnmenu();
+	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 	afx_msg void OnStnDblclickFriendsicon();
 };

@@ -30,6 +30,12 @@ public:
 	const CString& GetInput() const { return m_return; }
 	bool	WasCancelled() const { return m_cancel;}
 	void	SetEditFilenameMode(bool isfilenamemode = true) { m_bFilenameMode = isfilenamemode; }
+//X-InputBox
+	// khaos::categorymod+
+	void	SetNumber(bool isNum = false) { isNumber = isNum; }
+	const int	GetInputInt() const { return _tstoi(m_return); };
+	// khaos::categorymod-
+//X-InputBox
 protected:
 	CString m_label;
 	CString m_title;
@@ -38,9 +44,12 @@ protected:
 	bool	m_cancel;
 	bool	m_bFilenameMode;
 	HICON	m_icMain;
+//X-InputBox
 	// khaos::categorymod+
 	bool	isNumber;
 	// khaos::categorymod-
+//X-InputBox
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 

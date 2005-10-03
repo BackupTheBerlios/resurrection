@@ -3150,15 +3150,6 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 					cur_file->SetUpPriority(PR_HIGH);
 				else if (strTmp == _T("release"))
 					cur_file->SetUpPriority(PR_VERYHIGH);
-				//Xman PowerRelease
-				else if (strTmp == _T("PowerRelease"))
-				{
-					if(cur_file->IsPartFile())			
-						cur_file->SetUpPriority(PR_VERYHIGH);
-					else
-						cur_file->SetUpPriority(PR_POWER);
-				}
-				//Xman end
 				else if (strTmp == _T("auto"))
 				{
 					cur_file->SetAutoUpPriority(true);
@@ -3457,10 +3448,6 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 				dwResId = IDS_PRIOHIGH;
 			else if (cur_file->GetUpPriority() == PR_VERYHIGH)
 				dwResId = IDS_PRIORELEASE;
-			//Xman PowerRelease
-			else if (cur_file->GetUpPriority() == PR_POWER)
-				dwResId = IDS_POWERRELEASE;
-			//Xman end
 			else	//PR_VERYLOW
 				dwResId = IDS_PRIOVERYLOW;
 		}
@@ -3582,11 +3569,6 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 			case PR_VERYHIGH:
 				sharedpriority = _T("Release");
 				break;
-			//Xman PowerRelease
-			case PR_POWER:
-				sharedpriority = _T("PowerRelease");
-				break;
-			//Xman end
 		}
 		if (SharedArray[i].bFileAutoPriority)
 			sharedpriority = _T("Auto");
@@ -3831,7 +3813,6 @@ CString CWebServer::_GetAddServerBox(ThreadData Data)
 	Out.Replace(_T("[Port]"), _GetPlainResString(IDS_PORT));
 	Out.Replace(_T("[Name]"), _GetPlainResString(IDS_SW_NAME));
 	Out.Replace(_T("[Static]"), _GetPlainResString(IDS_STATICSERVER));
-	//Out.Replace(_T("[ConnectNow]"), _GetPlainResString(IDS_IRC_CONNECT)); removed irc [lama]
 	Out.Replace(_T("[Priority]"), _GetPlainResString(IDS_PRIORITY));
 	Out.Replace(_T("[Low]"), _GetPlainResString(IDS_PRIOLOW));
 	Out.Replace(_T("[Normal]"), _GetPlainResString(IDS_PRIONORMAL));
@@ -3842,10 +3823,8 @@ CString CWebServer::_GetAddServerBox(ThreadData Data)
 	Out.Replace(_T("[Apply]"), _GetPlainResString(IDS_PW_APPLY));
 	Out.Replace(_T("[URL_Disconnect]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=disconnect") ):GetPermissionDenied());
 	Out.Replace(_T("[URL_Connect]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=connect")):GetPermissionDenied());
-	//Out.Replace(_T("[Disconnect]"), _GetPlainResString(IDS_IRC_DISCONNECT)); remove irc [lama]
 	Out.Replace(_T("[Connect]"), _GetPlainResString(IDS_CONNECTTOANYSERVER));
 	Out.Replace(_T("[ServerOptions]"), CString(_GetPlainResString(IDS_FSTAT_CONNECTION)));
-	// Out.Replace(_T("[Execute]"), _GetPlainResString(IDS_IRC_PERFORM)); remove irc [lama]
 
 	return Out;
 }

@@ -135,6 +135,8 @@ CEMSocket::CEMSocket(void){
     m_bBusy = false;
     m_hasSent = false;
 
+//Xman Code Improvement
+	isreadyforsending=false;
     //int val = 0;
     //SetSockOpt(SO_SNDBUF, &val, sizeof(int));
 }
@@ -531,7 +533,11 @@ void CEMSocket::SendPacket(Packet* packet, bool delpacket, bool controlpacket, u
 	        controlpacket_queue.AddTail(packet);
 
             // queue up for controlpacket
+			//Xman Code Improvement
+			if(isreadyforsending)
+			{
             theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
+			}
 	    } else {
             bool first = !((sendbuffer && !m_currentPacket_is_controlpacket) || !standartpacket_queue.IsEmpty());
             StandardPacketQueueEntry queueEntry = { actualPayloadSize, packet };
@@ -615,11 +621,14 @@ void CEMSocket::OnSend(int nErrorCode){
     } else
 		byConnected = ES_CONNECTED;
 
-    if(m_currentPacket_is_controlpacket) {
+	//Xman Code Improvement
+	if((m_currentPacket_is_controlpacket || isreadyforsending==false) && (sendbuffer!=NULL || !controlpacket_queue.IsEmpty()))
+	{
         // queue up for control packet
         theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
     }
-
+	isreadyforsending=true;
+	//Xman end
     sendLocker.Unlock();
 }
 

@@ -24,6 +24,7 @@ protected:
 	HTREEITEM m_htiClientPerc;
 	bool m_bEnableClientPerc;
 	//client percentage
+
 //Telp- Menu VipeR
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	int iMaxRemoveQRS;
@@ -58,7 +59,7 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 // ==> Anti Uploader Ban - Stulle
 	int m_iAntiUploaderBanLimit;
 	int m_iAntiUploaderBanCase;
-	// <== Anti Uploader Ban - Stulle
+// ==> Anti Uploader Ban - Stulle
 // ==> Anti Uploader Ban - Stulle
 	HTREEITEM m_htiAntiUploaderBanLimit;
 	HTREEITEM m_htiAntiCase1;
@@ -100,10 +101,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
         // <--- Morph: PowerSHare
 	int	m_iSpreadbar;
 	HTREEITEM m_htiSpreadbar;
-// Upload Tweaks
-	HTREEITEM m_htiUploadTweaks;
-	HTREEITEM m_htiUpSlotsMin;
-	HTREEITEM m_htiUpSlotsMax;
 
 // [ionix] - FunnyNick
 	bool m_bFunnyNickEnabled;

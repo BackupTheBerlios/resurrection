@@ -82,7 +82,6 @@
 #define eMule_FAQ_Icons	82
 #define eMule_FAQ_ID_Explained	83
 #define eMule_FAQ_IP_Filtering	84
-#define eMule_FAQ_IRC_Chat	85
 #define eMule_FAQ_Linksys_BEFSX41	86
 #define eMule_FAQ_Linksys_BEFSX41_alternate	87
 #define eMule_FAQ_Linksys_BEFSX41_step4	88
@@ -99,7 +98,6 @@
 #define eMule_FAQ_Preferences_Extended_Settings	99
 #define eMule_FAQ_Preferences_Files	100
 #define eMule_FAQ_Preferences_General	101
-#define eMule_FAQ_Preferences_IRC	102
 #define eMule_FAQ_Preferences_Notifications	103
 #define eMule_FAQ_Preferences_Preferences_ini	104
 #define eMule_FAQ_Preferences_Proxy	105

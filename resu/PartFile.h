@@ -38,7 +38,6 @@ enum EPartFileStatus{
 #define PR_HIGH				2 //*
 #define PR_VERYHIGH			3
 #define PR_AUTO				5 //UAP Hunter
-#define PR_POWER			6 //Xman PowerRelease
 
 //#define BUFFER_SIZE_LIMIT 500000 // Max bytes before forcing a flush
 //#define BUFFER_TIME_LIMIT	60000	// Max milliseconds before forcing a flush//FrankyFive: Buffer Time Limit
@@ -65,7 +64,8 @@ enum EPartFileOp{
 	PFOP_NONE = 0,
 	PFOP_HASHING,
 	PFOP_COPYING,
-	PFOP_UNCOMPRESSING
+	PFOP_UNCOMPRESSING,
+	PFOP_SR13_IMPORTPARTS //MORPH - Added by [ionix], ImportParts
 };
 
 class CSearchFile;
@@ -154,7 +154,7 @@ public:
 	void	AddGap(uint32 start, uint32 end);
 	void	FillGap(uint32 start, uint32 end);
 	void	DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/;
-	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool	 bFlat) const;
+	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool	 bFlat) /*const*/; // Morph: PowerShare
 	bool	IsComplete(uint32 start, uint32 end, bool bIgnoreBufferedData) const;
 	bool	IsPureGap(uint32 start, uint32 end) const;
 	bool	IsAlreadyRequested(uint32 start, uint32 end) const;
@@ -167,7 +167,9 @@ public:
 	virtual void	UpdatePartsInfo();
 
 	bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
-	void	WritePartStatus(CSafeMemFile* file) const;
+
+//<<-- ADDED STORMIT -  Morph: PowerShare //
+	void	WritePartStatus(CSafeMemFile* file, CUpDownClient* client = NULL) /*const*/; // Morph: PowerShare // SLUGFILLER: hideOS
 	void	WriteCompleteSourcesCount(CSafeMemFile* file) const;
 	void	AddSources(CSafeMemFile* sources,uint32 serverip, uint16 serverport);
 	void	AddSource(LPCTSTR pszURL, uint32 nIP);
@@ -199,6 +201,9 @@ public:
 	float	GetPercentCompleted() const { return percentcompleted; }
 	uint16	GetNotCurrentSourcesCount() const;
 	int		GetValidSourcesCount() const;
+		//MORPH START - Added by SiRoB, Source Counts Are Cached [Khaos]//feedback+
+	uint16	GetAvailableSrcCount() const;
+	//MORPH END   - Added by SiRoB, Source Counts Are Cached [Khaos]//feedback-
 	bool	IsArchive(bool onlyPreviewable = false) const; // Barry - Also want to preview archives
     bool    IsPreviewableFileType() const;
 	time_t	getTimeRemaining() const;

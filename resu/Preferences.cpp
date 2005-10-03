@@ -66,12 +66,6 @@ char	CPreferences::olduserhash[64];
 IP2CountryNameSelection	CPreferences::m_iIP2CountryNameMode;
 bool	CPreferences::m_bIP2CountryShowFlag;
 //KTS- IP to Country
-//KTS+ ShowUploadFlag
-bool	CPreferences::m_bShowUploadFlag;
-bool	CPreferences::m_bShowClientFlag;
-bool	CPreferences::m_bShowQueueFlag;
-//KTS- ShowUploadFlag
-
 int     CPreferences::m_iCreditSystem;  // Credit System
 uint8	CPreferences::m_uScoreRatioThres;	// Credit System
 
@@ -518,6 +512,14 @@ int		CPreferences::m_iDynUpPingToleranceMilliseconds;
 bool	CPreferences::m_bDynUpUseMillisecondPingTolerance;
 bool	CPreferences::m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
 
+// Morph: PowerShare
+uint8	CPreferences::m_iPowershareMode; //MORPH - Added by SiRoB, Avoid misusing of powersharing
+uint8	CPreferences::hideOS;
+uint8	CPreferences::selectiveShare;
+uint8	CPreferences::ShareOnlyTheNeed;
+uint8	CPreferences::PowerShareLimit;
+// <--- Morph: PowerShare
+uint8	CPreferences::m_iSpreadbarSetStatus;
 // ZZ:DownloadManager -->
 bool    CPreferences::m_bA4AFSaveCpu;
 // ZZ:DownloadManager <--
@@ -1886,12 +1888,6 @@ void CPreferences::SavePreferences()
     //KTS+ IP to Country
 	ini.WriteInt(_T("IP2Country"), m_iIP2CountryNameMode,_T("eMule")); 
 	ini.WriteBool(_T("IP2CountryShowFlag"), m_bIP2CountryShowFlag,_T("eMule"));
-	//KTS- IP to Country
-	//KTS+ ShowUploadFlag
-	ini.WriteBool(_T("ShowUploadFlag"),m_bShowUploadFlag);
-	ini.WriteBool(_T("ShowClientFlag"),m_bShowClientFlag);
-	ini.WriteBool(_T("ShowQueueFlag"),m_bShowQueueFlag);
-	//KTS- ShowUploadFlag
 	//Telp Start push rare file
     ini.WriteBool(_T("EnablePushRareFile"), enablePushRareFile, _T("eMule")); //Hawkstar, push rare file
 //Telp End push rare file
@@ -2151,6 +2147,14 @@ void CPreferences::SavePreferences()
     //MORPH END added by Yun.SF3: Ipfilter.dat update
 ini.WriteString(_T("UpdateURLFakeList"),UpdateURLFakeList,_T("eMule"));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 ini.WriteString(_T("UpdateURLIPFilter"),UpdateURLIPFilter,_T("eMule"));//MORPH START added by Yun.SF3: Ipfilter.dat update
+// Morph: PowerShare
+	ini.WriteInt(_T("PowershareMode"),m_iPowershareMode,_T("eMule")); //MORPH - Added by SiRoB, Avoid misusing of powersharing
+	ini.WriteInt(_T("HideOvershares"),hideOS,_T("eMule"));
+	ini.WriteInt(_T("SelectiveShare"),selectiveShare,_T("eMule"));
+	ini.WriteInt(_T("ShareOnlyTheNeed"),ShareOnlyTheNeed,_T("eMule"));
+	ini.WriteInt(_T("PowerShareLimit"),PowerShareLimit,_T("eMule"));
+	// <--- Morph: PowerShare
+	ini.WriteInt(_T("SpreadbarSetStatus"), m_iSpreadbarSetStatus, _T("eMule"));
 ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 //Sivka (AutoHL) added by lama
 	ini.WriteBool(_T("ActiveConnectionControl"),m_activeConnectionControl,_T("eMule"));//Obelix
@@ -2534,9 +2538,9 @@ void CPreferences::LoadPreferences()
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	m_iDropSourcesTimerNNS = ini.GetInt(_T("DropSourcesTimerNNS"), 15);
 	m_bDropSourcesNNS = ini.GetBool(_T("DropSourcesNNS"), false);
-	m_iDropSourcesTimerFQ = ini.GetInt(_T("DropSourcesTimerFQ"));
+	m_iDropSourcesTimerFQ = ini.GetInt(_T("DropSourcesTimerFQ"),13);
 	m_bDropSourcesFQ = ini.GetBool(_T("DropSourcesFQ"), false);
-	m_iDropSourcesTimerHQR = ini.GetInt(_T("DropSourcesTimerHQR"));
+	m_iDropSourcesTimerHQR = ini.GetInt(_T("DropSourcesTimerHQR"),12);
 	m_bDropSourcesHQR = ini.GetBool(_T("DropSourcesHQR"), false);
     MaxRemoveQRS=ini.GetInt(_T("MaxRemoveQueueRatingSources"),5000);
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
@@ -2616,11 +2620,6 @@ void CPreferences::LoadPreferences()
 	m_iIP2CountryNameMode = (IP2CountryNameSelection)ini.GetInt(_T("IP2Country"), IP2CountryName_DISABLE); 
 	m_bIP2CountryShowFlag = ini.GetBool(_T("IP2CountryShowFlag"), false );
 	//KTS- IP to Country
-	//KTS+ ShowUploadFlag
-	m_bShowUploadFlag = ini.GetBool(_T("ShowUploadFlag"),true);
-	m_bShowClientFlag = ini.GetBool(_T("ShowClientFlag"),true);
-	m_bShowQueueFlag = ini.GetBool(_T("ShowQueueFlag"),true);
-	//KTS- ShowUploadFlag
 //eMulefan83 Show Client Percentage added by lama
 	enableClientPerc = ini.GetBool(_T("EnableClientPerc"), false); 
 //eMulefan83 Show Client Percentage added by lama	
@@ -2810,6 +2809,15 @@ _stprintf(UpdateURLIPFilter,_T("%s"),ini.GetString(_T("UpdateURLIPFilter"),_T("h
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
 _stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/fakes.dat")));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);//MORPH - Added by SiRoB, Optionnal funnynick display
+// Morph: PowerShare
+	m_iPowershareMode=ini.GetInt(_T("PowershareMode"),2);
+	hideOS=ini.GetInt(_T("HideOvershares"),0/*5*/);
+	selectiveShare=ini.GetBool(_T("SelectiveShare"),false);
+	ShareOnlyTheNeed=ini.GetBool(_T("ShareOnlyTheNeed"),false);
+	PowerShareLimit=ini.GetInt(_T("PowerShareLimit"),0);
+	// <--- Morph: PowerShare
+	m_iSpreadbarSetStatus = ini.GetInt(_T("SpreadbarSetStatus"), 1);
+
 m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_uScoreRatioThres = m_iCreditSystem == 2 ? 3 : 1; // Credit System	
 	LPBYTE pData = NULL;
@@ -2846,7 +2854,7 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
     m_iDynUpNumberOfPings = ini.GetInt(_T("USSNumberOfPings"), 1);
 	// ZZ:UploadSpeedSense <--
 
-    m_bA4AFSaveCpu = ini.GetBool(_T("A4AFSaveCpu"), false); // ZZ:DownloadManager
+   m_bA4AFSaveCpu = ini.GetBool(_T("A4AFSaveCpu"), false, _T("eMule")); // ZZ:DownloadManager
 
 	m_bRunAsUser = ini.GetBool(_T("RunAsUnprivilegedUser"), false);
 	m_bPreferRestrictedOverUser = ini.GetBool(_T("PreferRestrictedOverUser"), false);
@@ -3315,7 +3323,8 @@ void CPreferences::SetMaxGraphUploadRate(int in){
 
 bool CPreferences::IsDynUpEnabled()	{
 	return m_bDynUpEnabled || maxGraphUploadRate == UNLIMITED;
-}// eF-Mod :: InvisibleMode
+}
+// eF-Mod :: InvisibleMode
 void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key) 
 { 
     m_bInvisibleMode = on; 

@@ -22,7 +22,6 @@
 #include "UpDownClient.h"
 #include "Packets.h"
 #include "SafeFile.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -42,7 +41,6 @@ CFriend::CFriend(void)
 	m_LinkedClient = 0;
 	md4cpy(m_abyUserhash, sm_abyNullHash);
 	m_dwHasHash = 0;
-
     m_friendSlot = false;
 }
 

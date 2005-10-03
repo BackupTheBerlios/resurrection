@@ -21,6 +21,36 @@
 #define	MP_COPYFEEDBACK			10197
 #define MP_COPYFEEDBACK_US		10198
 //MORPH END   - Added by IceCream, copy feedback feature
+//<<-- ADDED STORMIT - Morph: PowerShare //
+#define MP_POWERSHARE_DEFAULT	10150
+#define MP_POWERSHARE_OFF       10151
+#define MP_POWERSHARE_ON        10152
+#define MP_POWERSHARE_AUTO      10153
+ //<<-- ADDED STORMIT - Morph: PowerShare //
+#define MP_POWERSHARE_LIMITED   10154
+#define MP_POWERSHARE_LIMIT     10155
+#define MP_POWERSHARE_LIMIT_SET 10156
+ //<<-- ADDED STORMIT - Morph: PowerShare //
+#define MP_SPREADBAR_DEFAULT	10160
+#define MP_SPREADBAR_OFF		10161
+#define MP_SPREADBAR_ON			10162
+#define MP_SPREADBAR_RESET		10163
+
+//<<-- ADDED STORMIT - SLUGFILLER: hideOS - wistily SOTN - //
+#define MP_HIDEOS_DEFAULT       10170
+#define MP_HIDEOS_SET           10171
+#define MP_SELECTIVE_CHUNK      10180
+#define MP_SELECTIVE_CHUNK_0    10181
+#define MP_SELECTIVE_CHUNK_1    10182
+#define MP_SHAREONLYTHENEED     10190
+#define MP_SHAREONLYTHENEED_0   10191
+#define MP_SHAREONLYTHENEED_1   10192
+//<<-- ADDED STORMIT - SLUGFILLER: hideOS - wistily SOTN - //
+// <--- Morph: PowerShare
+ //<<-- ADDED STORMIT - Morph: PowerShare //
+
+
+
 #define MP_CANCEL				10201
 #define MP_STOP					10202
 #define MP_PAUSE				10203
@@ -35,7 +65,6 @@
 #define MP_HM_SEARCH			10212
 #define MP_HM_FILES				10213
 #define MP_HM_MSGS				10214
-#define MP_HM_IRC				10215
 #define MP_HM_STATS				10216
 #define MP_HM_PREFS				10217
 #define MP_HM_OPENINC			10218
@@ -77,10 +106,6 @@
 #define MP_VIEW1_ONQUEUE		10258
 #define MP_VIEW1_DOWNLOADING	10259
 #define MP_VIEW1_CLIENTS		10260
-//TKB release upload report
-#define	MP_COPYUPREPORT		    10297
-#define	MP_COPYUPREPORT2		10298
-//TKB release upload report
 #define MP_PRIOVERYLOW			10300
 #define MP_PRIOLOW				10301
 #define MP_PRIONORMAL			10302
@@ -132,6 +157,10 @@
 #define MP_UNSHAREDIRSUB		10349
 #define MP_SEARCHRELATED		10350
 #define MP_SEARCHAUTHOR			10351
+//Telp Super Release
+#define MP_RELEASESET			10352
+#define MP_RELEASEREMOVE		10353
+//Telp Super Release
 // quick-speed changer
 #define MP_QS_U10				10501
 #define MP_QS_U20				10502
@@ -169,22 +198,6 @@
 #define	MP_PREVIEW_APP_MIN		11200	// reserve 50 entries for preview apps
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
 
-#define Irc_Version				"(SMIRCv00.68)"
-#define Irc_Join				10240
-#define Irc_Close				10241
-#define Irc_Priv				10242
-#define Irc_AddFriend			10243
-#define	Irc_SendLink			10244
-#define Irc_SetSendLink			10245
-#define Irc_Kick				10246
-#define Irc_Ban					10247
-#define Irc_KB					10248
-#define Irc_Slap				10249
-
-//Note: reserve at least 50 ID's (Irc_OpCommands-Irc_OpCommands+49).
-#define Irc_OpCommands			10250
-//Note: reserve at least 100 ID's (Irc_ChanCommands-Irc_ChanCommands+99).
-#define Irc_ChanCommands		Irc_OpCommands+50
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 #define MP_DROPLOWTOLOWIPSRCS		17001
 #define MP_DROPUNKNOWNERRORBANNEDSRCS	17002
@@ -199,15 +212,17 @@
 #define MP_DROP_ASKING			11010
 //Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 #define MP_SIVKA_FILE_SETTINGS	17011 //Sivka AutoHL added by lama
-#define MP_SHOWUPLOADFLAG		18010
-#define MP_SHOWCLIENTFLAG		18011
-#define MP_SHOWQUEUEFLAG		18012
 //KTS+ webcache
 #define MP_PRIOWCRELEASE		20000//jp webcache release
 //KTS- webcache
-//Xman PowerRelease
-#define MP_PRIOPOWER			11011
-#define MP_POWERSHARE_ON       11012
-#define MP_POWERSHARE_OFF       11013
-
+#define MP_ADDTOFRIEND                 20001
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+#define MP_GETFRIENDED2KLINK		15008
+#define MP_GETHTMLFRIENDED2KLINK	15009
+#define MP_GETEMFRIENDMETFROMURL	15010
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]
+//KTS+ Whois
+#define MP_WHOIS				15400
+#define MP_WHOIS2				15401
+//KTS- Whois
 

@@ -620,6 +620,10 @@ void CStatisticsDlg::RepaintMeters()
 	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(14), 3);		// Upload current (excl. overhead)
 	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(13), 4);		// Upload friend slots
 
+	// friends line
+	m_UploadOMeter.SetPlotColor( thePrefs.GetStatsColor(13) ,4) ;
+	// current upload without overhead included
+	m_UploadOMeter.SetPlotColor( thePrefs.GetStatsColor(14) ,3) ;
 	m_Statistics.SetBackgroundColor(thePrefs.GetStatsColor(0));
 	m_Statistics.SetGridColor(thePrefs.GetStatsColor(1));
 	m_Statistics.SetPlotColor(thePrefs.GetStatsColor(8), 0);
@@ -2418,8 +2422,13 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("%s: %u "), GetResString(IDS_CLIENTLIST), totalclient);
 		stattree.SetItemText(cligen[5], cbuffer);
 
-		int SIclients=myStats[12]+myStats[13];
-		cbuffer.Format(_T("%s: %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (SIclients>0)?((double)100*myStats[12] / SIclients):0, myStats[13] , (SIclients>0)?((double)100*myStats[13] / SIclients ):0);
+		// WiZarD Fix
+		//int SIclients=myStats[12]+myStats[13];
+		//cbuffer.Format(_T("%s: %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (SIclients>0)?((double)100*myStats[12] / SIclients):0, myStats[13] , (SIclients>0)?((double)100*myStats[13] / SIclients ):0);
+		//KTS+
+		uint32 otherclient = totalclient-myStats[12]-myStats[13]; //this includes IS_IDNEEDED and clients without credits
+		cbuffer.Format(_T("%s: %u (%.1f%%) : %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (totalclient)?((double)100*myStats[12] / totalclient):0, myStats[13] , (totalclient)?((double)100*myStats[13] / totalclient ):0, otherclient, (totalclient)?((double)100*otherclient/totalclient):0); 
+		//KTS-
 		stattree.SetItemText(cligen[3], cbuffer);
 
 		cbuffer.Format(_T("%s: %u (%.1f%%)"), GetResString(IDS_IDLOW), myStats[14] , (totalclient>0)?((double)100*myStats[14] / totalclient):0);
@@ -2428,6 +2437,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		if( !totalclient )
 			totalclient = 1;
 
+		forceUpdate = true;//KTS fix client ?
 		// CLIENTS -> CLIENT SOFTWARE SECTION
 		if (forceUpdate || stattree.IsExpanded(hclisoft)) 
 		{
@@ -2444,6 +2454,11 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			if (forceUpdate || stattree.IsExpanded(clisoft[0]) || cli_lastCount[0] == 0) 
 			{
 				uint32 verCount = 0;
+				
+				//MORPH START - Added by SiRoB, Slugfiller: modid Add by Equal
+				CRBMap<uint16, CRBMap<CString, uint32>* > clientMods;
+				theApp.clientlist->GetModStatistics(&clientMods);
+				//MORPH END  - Added by SiRoB, Slugfiller: modid Add by Equal
 				
 				//--- find top 4 eMule client versions ---
 				uint32 currtopcnt = 0;
@@ -2511,6 +2526,52 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					else
 						stattree.SetItemText(cli_versions[MAX_SUB_CLIENT_VERSIONS*0+i], cbuffer);
 
+					//MORPH START - Added by SIRoB, modID Slugfiller: modid Add by Equal
+					CRBMap<CString, uint32> *versionMods;
+
+					if (clientMods.Lookup(topver, versionMods)) {
+						POSITION mpos = versionMods->GetHeadPosition();
+						if (stattree.ItemHasChildren(cli_versions[i])){
+							HTREEITEM hChild; 
+							hChild = stattree.GetChildItem(cli_versions[i]);
+							while( hChild != NULL && mpos != NULL )
+							{
+								CString name;
+								uint32 count;
+								versionMods->GetNextAssoc(mpos, name, count);
+								if (name.IsEmpty())
+									name = "Official eMule";
+								cbuffer.Format(_T("%s: %i (%1.1f%%)"), name, count, (double)count/topcnt*100);
+								stattree.SetItemText(hChild, cbuffer);
+								hChild = stattree.GetNextSiblingItem( hChild );
+							}
+							while (hChild != NULL){
+								HTREEITEM hTemp = hChild;
+								hChild = stattree.GetNextSiblingItem( hChild );
+								stattree.DeleteItem(hTemp);
+							}
+						}
+						while (mpos != NULL){
+							CString name;
+							uint32 count;
+							versionMods->GetNextAssoc(mpos, name, count);
+							if (name.IsEmpty())
+								name = "Official eMule";
+							cbuffer.Format(_T("%s: %i (%1.1f%%)"), name, count, (double)count/topcnt*100);
+							stattree.InsertItem(cbuffer, cli_versions[i]);
+						}
+					}
+					else if (stattree.ItemHasChildren(cli_versions[i])){
+						HTREEITEM hChild; 
+						hChild = stattree.GetChildItem(cli_versions[i]);
+						while( hChild != NULL) {
+							HTREEITEM hTemp = hChild;
+							hChild = stattree.GetNextSiblingItem( hChild );
+							stattree.DeleteItem(hTemp);
+						}
+					}
+					//MORPH END   - Added by SiRoB, modID Slugfiller: modid Add by Equal
+
 					verCount++;
 				}
 				if (verCount > MAX_SUB_CLIENT_VERSIONS/2) 
@@ -2528,6 +2589,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					}
 				}
 				cli_lastCount[0] = verCount;
+                theApp.clientlist->ReleaseModStatistics(&clientMods);	//MORPH - Added by SiRoB, Slugfiller: modid Add by Equal
 			} // End Clients -> Client Software -> eMule Section
 
 

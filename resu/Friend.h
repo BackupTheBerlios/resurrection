@@ -37,7 +37,6 @@ public:
 	uint32	m_dwLastChatted;
 	uint32	m_dwHasHash;
 	CString m_strName;
-
     CUpDownClient* GetLinkedClient() const { return m_LinkedClient; };
     void SetLinkedClient(CUpDownClient* linkedClient);
 

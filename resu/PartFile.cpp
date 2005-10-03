@@ -326,6 +326,10 @@ void CPartFile::Init()
     lastSwapForSourceExchangeTick = ::GetTickCount();
 	//m_DeadSourceList.Init(false);
     m_Valid_FQS_QRS_Count = 0;	//Sivka: AutoHL added by lama
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	m_nVirtualCompleteSourcesCount = 0;
+	InChangedSharedStatusBar = false;
+//<<-- ADDED STORMIT - Morph: PowerShare //
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	m_LastRemovedTimeNNS = ::GetTickCount();
 	m_LastRemovedTimeFQ  = ::GetTickCount();
@@ -531,6 +535,13 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	SetPath(in_directory);
 	m_fullname.Format(_T("%s\\%s"), GetPath(), m_partmetfilename);
 	
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	// SLUGFILLER: Spreadbars
+	CMap<uint16,uint16,uint32,uint32> spread_start_map;
+	CMap<uint16,uint16,uint32,uint32> spread_end_map;
+	CMap<uint16,uint16,uint32,uint32> spread_count_map;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 	// readfile data form part.met file
 	CSafeBufferedFile metFile;
 	CFileException fexpMet;
@@ -714,6 +725,15 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 						delete newtag;
 					    break;
 				    }
+					//Telp Super Release
+					case FT_RELEASE:{
+						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt())
+							SetReleaseFile(newtag->GetInt());
+						delete newtag;
+						break;
+					}
+					//Telp Super Release
 				    case FT_KADLASTPUBLISHSRC:{
 						ASSERT( newtag->IsInt() );
 						if (newtag->IsInt())
@@ -852,14 +872,32 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 								if (newtag->GetName()[0] == FT_GAPEND)
 									gap->end = newtag->GetInt() - 1;
 							}
-							//Ackronic START - Aggiunto da Aenarion[ITA] - PowerShare
-							/*delete newtag;
-                        } else if(newtag->GetNameID() == 0 && CmpED2KTagName(newtag->GetName(), FT_POWERSHARE) == 0) {
-                            if (newtag->IsInt())
-                                SetPowerShared(newtag->GetInt() == 1);*/
-							//Ackronic END - Aggiunto da Aenarion[ITA] - PowerShare
 						    delete newtag;
+
+//<<-- ADDED STORMIT - Morph: PowerShare ////////////////////////
+						// SLUGFILLER: Spreadbars
+						} else if(!newtag->GetNameID() && newtag->IsInt() && newtag->GetName()){
+							uint16 spreadkey = atoi(&newtag->GetName()[1]);
+							if (newtag->GetName()[0] == FT_SPREADSTART)
+								spread_start_map.SetAt(spreadkey, newtag->GetInt());
+							else if (newtag->GetName()[0] == FT_SPREADEND)
+								spread_end_map.SetAt(spreadkey, newtag->GetInt());
+							else if (newtag->GetName()[0] == FT_SPREADCOUNT)
+								spread_count_map.SetAt(spreadkey, newtag->GetInt());
+							else if(strcmp(newtag->GetName(), FT_POWERSHARE) == 0)
+								SetPowerShared((newtag->GetInt()<=3)?newtag->GetInt():-1);
+							else if(strcmp(newtag->GetName(), FT_POWERSHARE_LIMIT) == 0)
+								SetPowerShareLimit((newtag->GetInt()<=200)?newtag->GetInt():-1);
+							else if(strcmp(newtag->GetName(), FT_HIDEOS) == 0)
+								SetHideOS((newtag->GetInt()<=10)?newtag->GetInt():-1);
+							else if(strcmp(newtag->GetName(), FT_SELECTIVE_CHUNK) == 0)
+								SetSelectiveChunk(newtag->GetInt()<=1?newtag->GetInt():-1);
+							else if(strcmp(newtag->GetName(), FT_SHAREONLYTHENEED) == 0)
+								SetShareOnlyTheNeed(newtag->GetInt()<=1?newtag->GetInt():-1);
+							delete newtag;
+							break;
 					    }
+//<<-- ADDED STORMIT - Morph: PowerShare ////////////////////////////////
 
 					    else
 						    taglist.Add(newtag);
@@ -869,6 +907,24 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 			else
 				delete newtag;
 		}
+
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	// SLUGFILLER: Spreadbars - Now to flush the map into the list
+		for (POSITION pos = spread_start_map.GetStartPosition(); pos != NULL; ){
+			uint16 spreadkey;
+			uint32 spread_start;
+			uint32 spread_end;
+			uint32 spread_count;
+			spread_start_map.GetNextAssoc(pos, spreadkey, spread_start);
+			if (!spread_end_map.Lookup(spreadkey, spread_end))
+				continue;
+			if (!spread_count_map.Lookup(spreadkey, spread_count))
+				continue;
+			if (!spread_count || spread_start >= spread_end)
+				continue;
+			statistic.AddBlockTransferred(spread_start, spread_end, spread_count);	// All tags accounted for
+		}
+//<<-- ADDED STORMIT - Morph: PowerShare //
 
 		// load the hashsets from the hybridstylepartmet
 		if (isnewstyle && !getsizeonly && (metFile.GetPosition()<metFile.GetLength()) ) {
@@ -1226,6 +1282,11 @@ bool CPartFile::SavePartFile()
 			tagDlPreview.WriteTagToFile(&file);
 			uTagCount++;
 		}
+		//Telp Super Release
+		CTag releasetag(FT_RELEASE, IsReleaseFile());
+		releasetag.WriteTagToFile(&file);
+		uTagCount++;
+		//Telp Super Release
 
 		// statistics
 		if (statistic.GetAllTimeTransferred()){
@@ -1281,6 +1342,61 @@ bool CPartFile::SavePartFile()
 			uTagCount++;
 		}
 		
+//<<-- ADDED STORMIT - Morph: PowerShare //
+		if (GetHideOS()>=0){
+			CTag hideostag(FT_HIDEOS, GetHideOS());
+			hideostag.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		if (GetSelectiveChunk()>=0){
+			CTag selectivechunktag(FT_SELECTIVE_CHUNK, GetSelectiveChunk());
+			selectivechunktag.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		if (GetShareOnlyTheNeed()>=0){
+			CTag shareonlytheneedtag(FT_SHAREONLYTHENEED, GetShareOnlyTheNeed());
+			shareonlytheneedtag.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		if (GetPowerSharedMode()>=0){
+			CTag powersharetag(FT_POWERSHARE, GetPowerSharedMode());
+			powersharetag.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		if (GetPowerShareLimit()>=0){
+			CTag powersharelimittag(FT_POWERSHARE_LIMIT, GetPowerShareLimit());
+			powersharelimittag.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		// SLUGFILLER: Spreadbars
+		{
+			char* namebuffer = new char[10];
+			char* number = &namebuffer[1];
+			uint16 i_pos = 0;
+			for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos; ){
+				uint32 count = statistic.spreadlist.GetValueAt(pos);
+				if (!count) {
+					statistic.spreadlist.GetNext(pos);
+					continue;
+				}
+				uint32 start = statistic.spreadlist.GetKeyAt(pos);
+				statistic.spreadlist.GetNext(pos);
+				ASSERT(pos != NULL);	// Last value should always be 0
+				uint32 end = statistic.spreadlist.GetKeyAt(pos);
+				itoa(i_pos,number,10);
+				namebuffer[0] = FT_SPREADSTART;
+				CTag(namebuffer,start).WriteTagToFile(&file);
+				namebuffer[0] = FT_SPREADEND;
+				CTag(namebuffer,end).WriteTagToFile(&file);
+				namebuffer[0] = FT_SPREADCOUNT;
+				CTag(namebuffer,count).WriteTagToFile(&file);
+				uTagCount+=3;
+				i_pos++;
+			}
+			delete[] namebuffer;
+		}
+		// <--- Morph: Power Share
+
 		for (int j = 0; j < taglist.GetCount(); j++){
 			if (taglist[j]->IsStr() || taglist[j]->IsInt()){
 				taglist[j]->WriteTagToFile(&file);
@@ -1310,6 +1426,29 @@ bool CPartFile::SavePartFile()
 			
 			i_pos++;
 		}
+		//KTS+ Hideos
+		i_pos = 0;
+		for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos; ){
+			uint32 count = statistic.spreadlist.GetValueAt(pos);
+			if (!count) {
+				statistic.spreadlist.GetNext(pos);
+				continue;
+			}
+			uint32 start = statistic.spreadlist.GetKeyAt(pos);
+			statistic.spreadlist.GetNext(pos);
+			ASSERT(pos != NULL);	// Last value should always be 0
+			uint32 end = statistic.spreadlist.GetKeyAt(pos);
+			itoa(i_pos,number,10);
+			namebuffer[0] = FT_SPREADSTART;
+			CTag(namebuffer,start).WriteTagToFile(&file);
+			namebuffer[0] = FT_SPREADEND;
+			CTag(namebuffer,end).WriteTagToFile(&file);
+			namebuffer[0] = FT_SPREADCOUNT;
+			CTag(namebuffer,count).WriteTagToFile(&file);
+			uTagCount+=3;
+			i_pos++;
+		}
+		//KTS- Hideos
 
 		file.Seek(uTagCountFilePos, CFile::begin);
 		file.WriteUInt32(uTagCount);
@@ -1773,13 +1912,31 @@ void CPartFile::UpdateCompletedInfos(uint32 uTotalGaps)
 	}
 }
 
-void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const
+//<<-- ADDED STORMIT - Morph: PowerShare - Reduce ShareStatusBar CPU consumption
+void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) /*const*/
 {
 	if( !IsPartFile() )
 	{
 		CKnownFile::DrawShareStatusBar( dc, rect, onlygreyrect, bFlat );
 		return;
 	}
+	int iWidth=rect->right - rect->left;
+	if (iWidth <= 0)	return;
+	int iHeight=rect->bottom - rect->top;
+	if (m_bitmapSharedStatusBar == (HBITMAP)NULL)
+		VERIFY(m_bitmapSharedStatusBar.CreateBitmap(1, 1, 1, 8, NULL)); 
+	CDC cdcStatus;
+	HGDIOBJ hOldBitmap;
+	cdcStatus.CreateCompatibleDC(dc);
+	if(!InChangedSharedStatusBar || lastSize!=iWidth || lastonlygreyrect!=onlygreyrect || lastbFlat!=bFlat){
+		InChangedSharedStatusBar = true;
+		lastSize=iWidth;
+		lastonlygreyrect=onlygreyrect;
+		lastbFlat=bFlat;
+		m_bitmapSharedStatusBar.DeleteObject(); 
+		m_bitmapSharedStatusBar.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
+		m_bitmapSharedStatusBar.SetBitmapDimension(iWidth,  iHeight); 
+		hOldBitmap = cdcStatus.SelectObject(m_bitmapSharedStatusBar);
 
 	const COLORREF crNotShared = RGB(224, 224, 224);
 	s_ChunkBar.SetFileSize(GetFileSize());
@@ -1830,6 +1987,13 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 	}
 	s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat); 
 } 
+	else
+		hOldBitmap = cdcStatus.SelectObject(m_bitmapSharedStatusBar);
+	dc->BitBlt(rect->left,rect->top,iWidth,iHeight,&cdcStatus,0,0,SRCCOPY);
+	cdcStatus.SelectObject(hOldBitmap);
+} 
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 {
 	COLORREF crProgress;
@@ -2019,26 +2183,59 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	}
 }
 
-void CPartFile::WritePartStatus(CSafeMemFile* file) const
+//<<-- ADDED STORMIT - Morph: PowerShare //
+// SLUGFILLER: hideOS
+void CPartFile::WritePartStatus(CSafeMemFile* file, CUpDownClient* client) /*const*/
 {
-	UINT uED2KPartCount = GetED2KPartCount();
-	file->WriteUInt16(uED2KPartCount);
+	// SLUGFILLER: hideOS
+	CArray<uint32, uint32> partspread;
+	UINT parts;
+	uint8 hideOS = HideOSInWork();
+	if (hideOS && client) {
+		parts = CalcPartSpread(partspread, client);
+	} else {	// simpler to set as 0 than to create another loop...
+		parts = GetED2KPartCount();
+		partspread.SetSize(parts);
+		for (uint16 i = 0; i < parts; i++)
+			partspread[i] = 0;
+		hideOS = 1;
+	}
+	// SLUGFILLER: hideOS
+	//MORPH START - Added by SiRoB, See chunk that we hide by HideOS feature
+	if (hideOS && client){
+		if (client->m_abyUpPartStatusHidden){
+			delete[] client->m_abyUpPartStatusHidden;
+			client->m_abyUpPartStatusHidden = NULL;
+		}
+		client->m_abyUpPartStatusHidden = new uint8[parts];
+		MEMZERO(client->m_abyUpPartStatusHidden,parts);
+	}
+	//MORPH END   - Added by SiRoB, See chunk that we hide by HideOS feature
 	
-	UINT uPart = 0;
-	while (uPart != uED2KPartCount)
-	{
+	file->WriteUInt16(parts);
+	UINT done = 0;
+	while (done != parts){
 		uint8 towrite = 0;
-		for (UINT i = 0; i < 8; i++)
-		{
-			if (uPart < GetPartCount() && IsComplete(uPart*PARTSIZE, (uPart + 1)*PARTSIZE - 1, true))
+		for (UINT i = 0; i < 8; i++){
+			if (partspread[done] < hideOS)	// SLUGFILLER: hideOS
+			{//MORPH - Added by SiRoB, See chunk that we hide
+				if (IsComplete(done*PARTSIZE,((done+1)*PARTSIZE)-1, false))	// SLUGFILLER: SafeHash
 				towrite |= (1 << i);
-			uPart++;
-			if (uPart == uED2KPartCount)
+			//MORPH START - Added by SiRoB, See chunk that we hide
+			}else
+				if (hideOS && client)
+					client->m_abyUpPartStatusHidden[done] = 1;
+			//MORPH END   - Added by SiRoB, See chunk that we hide
+			done++;
+			if (done == parts)
 				break;
 		}
 		file->WriteUInt8(towrite);
 	}
 }
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
+
 void CPartFile::WriteCompleteSourcesCount(CSafeMemFile* file) const
 {
 	file->WriteUInt16(m_nCompleteSourcesCount);
@@ -2760,6 +2957,16 @@ void CPartFile::UpdatePartsInfo()
 		}
 		m_nCompleteSourcesTime = time(NULL) + (60);
 	}
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	m_nVirtualCompleteSourcesCount = (uint16)-1;
+	for (uint16 i = 0; i < partcount; i++){
+		if(m_nVirtualCompleteSourcesCount > m_SrcpartFrequency[i])
+			m_nVirtualCompleteSourcesCount = m_SrcpartFrequency[i];
+	}
+
+	UpdatePowerShareLimit(m_nCompleteSourcesCountHi<200, (lastseencomplete!=NULL && m_nCompleteSourcesCountHi==1) || m_nVirtualCompleteSourcesCount==1 || (m_nCompleteSourcesCountHi==0 && m_nVirtualCompleteSourcesCount>0),m_nCompleteSourcesCountHi>((GetPowerShareLimit()>=0)?GetPowerShareLimit():thePrefs.GetPowerShareLimit()));
+	InChangedSharedStatusBar = false;
+//<<-- ADDED STORMIT - Morph: PowerShare //	
 	UpdateDisplayedInfo();
 }	
 

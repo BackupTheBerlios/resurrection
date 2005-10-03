@@ -414,7 +414,7 @@ void CUpDownClient::SendFileRequest()
 		    socket->SendPacket(packet, true);
 		}
 	
-		if (IsEmuleClient())
+		if( IsEmuleClient() && GetRemoteQueueRank()==0) // Spanish ne reset pas si en reask 
 		{
 			SetRemoteQueueFull(true);
 			SetRemoteQueueRank(0);

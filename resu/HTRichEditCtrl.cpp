@@ -58,8 +58,7 @@ CHTRichEditCtrl::CHTRichEditCtrl()
 
 CHTRichEditCtrl::~CHTRichEditCtrl()
 {
-	if (m_hArrowCursor != NULL)
-		VERIFY( ::DestroyCursor(m_hArrowCursor) );
+	// SLUGFILLER: noDestroyCursor - Shared cursors mustn't be destroyed 
 }
 
 void CHTRichEditCtrl::Localize(){

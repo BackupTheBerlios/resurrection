@@ -1807,6 +1807,23 @@ void CemuleApp::CreateBackwardDiagonalBrush()
 		VERIFY( m_brushBackwardDiagonal.CreateBrushIndirect(&logBrush) );
 	}
 }
+// Commander - Added: FriendLinks [emulEspaña] - Start
+
+bool CemuleApp::IsEd2kFriendLinkInClipboard()
+{
+	static const CHAR _szEd2kFriendLink[] = "ed2k://|friend|";
+	return IsEd2kLinkInClipboard(_szEd2kFriendLink, ARRSIZE(_szEd2kFriendLink)-1);
+}
+// Commander - Added: FriendLinks [emulEspaña] - End
+void CemuleApp::UpdateDesktopColorDepth()
+{
+	g_bLowColorDesktop = (GetDesktopColorDepth() <= 8);
+#ifdef _DEBUG
+	if (!g_bLowColorDesktop)
+		g_bLowColorDesktop = (GetProfileInt(_T("eMule"), _T("LowColorRes"), 0) != 0);
+#endif
+}
+
 //Start Optimizer Spe64
 void CemuleApp::OptimizerInfo(void)
 {
@@ -1883,11 +1900,3 @@ if (!emuledlg)
 		}
 //End Optimizer Spe64
 
-void CemuleApp::UpdateDesktopColorDepth()
-{
-	g_bLowColorDesktop = (GetDesktopColorDepth() <= 8);
-#ifdef _DEBUG
-	if (!g_bLowColorDesktop)
-		g_bLowColorDesktop = (GetProfileInt(_T("eMule"), _T("LowColorRes"), 0) != 0);
-#endif
-	}

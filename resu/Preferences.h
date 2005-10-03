@@ -90,19 +90,6 @@ public:
 	static IP2CountryNameSelection	m_iIP2CountryNameMode;
 	static bool		m_bIP2CountryShowFlag;
 	//KTS- IP to Country
-	//KTS+ ShowUploadFlag
-	static bool		m_bShowUploadFlag;
-	static bool		m_bShowClientFlag;
-	static bool		m_bShowQueueFlag;
-
-	static bool		ShowUploadFlag()							{return m_bShowUploadFlag;}
-	static bool		ShowClientFlag()							{return m_bShowClientFlag;}
-	static bool		ShowQueueFlag()								{return m_bShowQueueFlag;}
-
-	static void		SetShowUploadFlag(bool in)					{m_bShowUploadFlag = in;}
-	static void		SetShowClientFlag(bool in)					{m_bShowClientFlag = in;}
-	static void		SetShowQueueFlag(bool in)					{m_bShowQueueFlag = in;}
-	//KTS- ShowUploadFlag
 
 	//Start Download Color
 	static	bool	EnableDownloadInColor;
@@ -601,6 +588,17 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 
 	//preview
 	static	bool	m_bPreviewEnabled;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	static uint8	m_iPowershareMode; //MORPH - Added by SiRoB, Avoid misusing of powersharing
+//<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	static uint8	hideOS;
+	static uint8	selectiveShare;
+//<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	static uint8	ShareOnlyTheNeed;
+	static uint8	PowerShareLimit;
+        // <--- Morph: PowerShare
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	static uint8	m_iSpreadbarSetStatus;
 // [ionix] WiZaRd - AntiNickThief 
 	static bool		m_bAntiNickThief;
 	static uint8	m_bClientBanTime; 
@@ -1525,6 +1523,15 @@ static LPSYSTEMTIME   GetIPfilterVersion()				{return &m_IPfilterVersion;}
 	static	void	SetNotifierSendMail(bool nv)		{m_bNotifierSendMail = nv;}
 	static  void	ImportOldTableSetup();
 	static  void	IniCopy(CString si, CString di);
+// Morph: PowerShare
+	static	uint8  GetPowerShareMode()	{return m_iPowershareMode;} //MORPH - Added by SiRoB, Avoid misusing of powersharing
+	static	uint8	GetHideOvershares()		{return hideOS;}
+	static	uint8	IsSelectiveShareEnabled()	{return selectiveShare;}
+	static	uint8	GetShareOnlyTheNeed()	{return ShareOnlyTheNeed;}
+	static	uint8	GetPowerShareLimit() {return PowerShareLimit;}
+        // <--- Morph: PowerShare
+static	uint8	GetSpreadbarSetStatus()	{return m_iSpreadbarSetStatus;}
+	static	void	EstimateMaxUploadCap(uint32 nCurrentUpload);
 //==>- Sivka - Aggressive Client Handling [WiZaRd]
 	//Variables
 	static uint8  m_uiSivkaTimeCount;
@@ -1591,8 +1598,6 @@ static LPSYSTEMTIME   GetIPfilterVersion()				{return &m_IPfilterVersion;}
 	static  uint16		m_uiAutoHLUpdateTimer; 
 	static  uint16		GetAutoHLUpdateTimer()		{return m_uiAutoHLUpdateTimer;} 
 	//<<< WiZaRd - AutoHL added by lama
-	static	void	EstimateMaxUploadCap(uint32 nCurrentUpload);
-
 
 protected:
 	static	CString appdir;

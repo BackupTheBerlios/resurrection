@@ -34,7 +34,6 @@
 #include "kademlia/net/KademliaUDPListener.h"
 #include "UploadQueue.h"
 #include "ToolTipCtrlX.h"
-#include "PartFile.h" //Xman PowerRelease
 // IP-to-Country +
 #include "IP2Country.h"
 // IP-to-Country -
@@ -437,7 +436,11 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				case 9:
 					Sbuffer = client->DbgGetFullClientSoftVer();
-					break;
+						//Telp Super Release
+					if (file && file->IsReleaseFile())
+						Sbuffer += _T(" [") + GetResString(IDS_RELEASEFILE) + _T("]");
+					//Telp Super Release
+                                        break;
 					// >>> bobo RQR DL
 
 				case 10: 
@@ -453,7 +456,6 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			}
 			if (iColumn != 7 && iColumn != 0)
 				dc.DrawText(Sbuffer, Sbuffer.GetLength(), &cur_rec, DLC_DT_TEXT);
-			//dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
 			cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}
@@ -501,19 +503,17 @@ void CUploadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	CTitleMenu ClientMenu;
 	ClientMenu.CreatePopupMenu();
 	ClientMenu.AddMenuTitle(GetResString(IDS_CLIENTS), true);
-	//KTS+ ShowUploadFlag
-	if(theApp.ip2country->ShowCountryFlag()){
-		ClientMenu.AppendMenu(MF_STRING,MP_SHOWUPLOADFLAG, _T("Show Upload Flag") );
-		if(thePrefs.ShowUploadFlag())
-			ClientMenu.CheckMenuItem(MP_SHOWUPLOADFLAG,MF_CHECKED);
-		else
-			ClientMenu.CheckMenuItem(MP_SHOWUPLOADFLAG,MF_UNCHECKED);
-	}
-	ClientMenu.AppendMenu(MF_SEPARATOR); 
-	//KTS- ShowUploadFlag
+ClientMenu.AppendMenu(MF_SEPARATOR);
 	ClientMenu.AppendMenu(MF_STRING | (client ? MF_ENABLED : MF_GRAYED), MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+		//KTS+ Whois
+			ClientMenu.AppendMenu(MF_SEPARATOR);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS2, _T("WHOIS query (basic)"), _T("SEARCHPARAMS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS2);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS, _T("WHOIS query (more info)"), _T("SEARCHRESULTS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS);
+			//KTS- Whois
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
 	//Spe64	
@@ -547,6 +547,21 @@ BOOL CUploadListCtrl::OnCommand(WPARAM wParam,LPARAM lParam ){
 			case MP_SHOWLIST:
 				client->RequestSharedFileList();
 				break;
+			   //KTS+ Whois
+			case MP_WHOIS:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.whois.sc/"));
+				_tcscat(address, ipstr(client->GetConnectIP()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						  }
+			case MP_WHOIS2:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.searchbug.com/peoplefinder/location-by-ip-address.aspx?ipaddress="));
+				_tcscat(address, ipstr(client->GetConnectIP()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						   }
 			case MP_MESSAGE:
 				theApp.emuledlg->chatwnd->StartSession(client);
 				break;

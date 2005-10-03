@@ -517,7 +517,71 @@ CED2KLink* CED2KLink::CreateLinkFromUrl(const TCHAR* uri)
 					return new CED2KServerLink(strServer, strPort);
 			}
 		}
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+		else if ( strTok == _T("friend") )
+		{
+			CString sNick = strURI.Tokenize(_T("|"), iPos);
+			if ( !sNick.IsEmpty() )
+			{
+				CString sHash = strURI.Tokenize(_T("|"), iPos);
+				if ( !sHash.IsEmpty() && strURI.Tokenize(_T("|"), iPos) == _T("/"))
+					return new CED2KFriendLink(sNick, sHash);
+			}
+		}
+		else if ( strTok == _T("friendlist") )
+		{
+			CString sURL = strURI.Tokenize(_T("|"), iPos);
+			if ( !sURL.IsEmpty() && strURI.Tokenize(_T("|"), iPos) == _T("/") )
+				return new CED2KFriendListLink(sURL);
+		}
+		// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 	}
 
 	throw GetResString(IDS_ERR_NOSLLINK);
 }
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+CED2KFriendLink::CED2KFriendLink(LPCTSTR userName, LPCTSTR userHash)
+{
+	if ( _tcslen(userHash) != 32 )
+		throw GetResString(IDS_ERR_ILLFORMEDHASH);
+
+	m_sUserName = userName;
+
+	for (int idx = 0; idx < 16; ++idx)
+	{
+		m_hash[idx] = FromHexDigit(*userHash++) * 16;
+		m_hash[idx] += FromHexDigit(*userHash++);
+	}
+}
+
+CED2KFriendLink::CED2KFriendLink(LPCTSTR userName, uchar userHash[])
+{
+	m_sUserName = userName;
+	MEMCOPY(m_hash, userHash, 16*sizeof(uchar));
+}
+
+void CED2KFriendLink::GetLink(CString& lnk) const
+{
+	lnk = _T("ed2k://|friend|");
+	lnk += m_sUserName + _T("|");
+	for (int idx = 0; idx < 16; ++idx)
+	{
+		unsigned int ui1 = m_hash[idx] / 16;
+		unsigned int ui2 = m_hash[idx] % 16;
+		lnk += static_cast<TCHAR>( ui1 < 10 ? (_T('0')+ui1) : (_T('A')+(ui1-10)) );
+		lnk += static_cast<TCHAR>( ui2 < 10 ? (_T('0')+ui2) : (_T('A')+(ui2-10)) );
+	}
+	lnk += _T("|/");
+}
+
+CED2KFriendListLink::CED2KFriendListLink(LPCTSTR address)
+{
+	m_address = address;
+}
+
+void CED2KFriendListLink::GetLink(CString& lnk) const
+{
+	lnk.Format(_T("ed2k://|friendlist|%s|/"), m_address);
+}
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]
+

@@ -403,10 +403,11 @@ public:
 						return (iPart>=m_nUpPartCount || !m_abyUpPartStatus) ? false : m_abyUpPartStatus[iPart]!=0;
 					}
 	uint8*			GetUpPartStatus() const							{ return m_abyUpPartStatus; }
-	bool			GetPowerShared() const;//Ackronic - Aggiunto da Aenarion[ITA] - PowerShare 
 	float           GetCombinedFilePrioAndCredit();
 
-	
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	bool			GetPowerShared() const;
+//<<-- ADDED STORMIT - Morph: PowerShare //
 
 	//download
 	uint32			GetAskedCountDown() const						{ return m_cDownAsked; }
@@ -557,12 +558,7 @@ public:
 	CTypedPtrList<CPtrList, CPartFile*> m_OtherRequests_list;
 	CTypedPtrList<CPtrList, CPartFile*> m_OtherNoNeeded_list;
 	uint16			m_lastPartAsked;
-	DWORD			m_dwWouldHaveGottenUploadSlotIfNotLowIdTick;//Ackronic - Aggiunto da Aenarion[ITA] - PowerShare
 	bool			m_bAddNextConnect;
-	//MORPH START - Added by SiRoB, See chunk that we hide
-	uint8*			m_abyUpPartStatusHidden;
-	bool			m_bUpPartStatusHiddenBySOTN;
- 	//MORPH END   - Added by SiRoB, See chunk that we hide
 	//added by sivka [Maella/sivka: -ReAsk SRCs after IP Change-]
 	void	SetLastAskedTime(DWORD in) { if(m_dwLastAskedTime>in) m_dwLastAskedTime-=in; else m_dwLastAskedTime=0; }
 
@@ -580,6 +576,13 @@ public:
     CEMSocket*		GetFileUploadSocket(bool log = false);
 	*/
 	CClientReqSocket* GetFileUploadSocket(bool log = false);
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	uint8*			m_abyUpPartStatusHidden; //MORPH - Added by SiRoB, See chunk that we hide
+	bool			m_bUpPartStatusHiddenBySOTN; //MORPH - Added by SiRoB, See chunk that we hide
+	bool	IsSecure() const;
+        // <--- Morph: PowerShare
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 //KTS+ Webcache
 ///////////////////////////////////////////////////////////////////////////
 // WebCache client
@@ -837,6 +840,10 @@ protected:
 	CTypedPtrList<CPtrList, Requested_Block_Struct*> m_DoneBlocks_list;
 	CTypedPtrList<CPtrList, Requested_File_Struct*>	 m_RequestedFiles_list;
 
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	bool	m_bPowerShared;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 	//////////////////////////////////////////////////////////
 	// Download
 	//
@@ -916,7 +923,6 @@ protected:
 
 	CTypedPtrList<CPtrList, Pending_Block_Struct*>	 m_PendingBlocks_list;
 	CTypedPtrList<CPtrList, Requested_Block_Struct*> m_DownloadBlocks_list;
-
     bool    m_bSourceExchangeSwapped; // ZZ:DownloadManager
     DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
     bool    DoSwap(CPartFile* SwapTo, bool bRemoveCompletely, LPCTSTR reason); // ZZ:DownloadManager
@@ -943,10 +949,6 @@ private:
 // IP-to-Country -
 	bool     m_bAntiUploadBanThird;
      // <== Anti Uploader Ban - Stulle
-	//>>> PowerShare
-public:
-	bool IsPowerShared() const;
-	//<<< PowerShare 
 // Mondgott :: Show RedSmurfIconOnClientDetect
 public: 
 	bool GetRedSmurfClient() const { return m_bRedSmurfClient;}

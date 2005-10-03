@@ -252,6 +252,7 @@ void CClientReqSocket::Delete_Timed(){
 		delete this;
 }
 
+//Xman
 // - Maella -Code Fix-
 void CClientReqSocket::Safe_Delete()
 {
@@ -493,7 +494,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						data.WriteHash16(reqfile->GetFileHash());
 						if (reqfile->IsPartFile())
 							((CPartFile*)reqfile)->WritePartStatus(&data);
-						else if (!reqfile->HideOvershares(&data, client)) //Xman PowerRelease//Ackronic - PowerRelease
+						else
 							data.WriteUInt16(0);
 						Packet* packet = new Packet(&data);
 						packet->opcode = OP_FILESTATUS;
@@ -827,7 +828,16 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						DebugRecv("OP_AskSharedFiles", client);
 					theStats.AddDownDataOverheadOther(size);
 
-
+					//KTS+
+					// Dark :: Flood Ask Protection ("Geaiez")					
+					if ( client->GetClientSoft() == SO_MLDONKEY	||(_tcsnicmp(client->GetUserName(), _T("geaiez"),5)==0))
+					{
+					    client->Ban();
+						/*if(thePrefs.IsLogLeecher())
+							AddModLogLine(false, _T("Ban :  %s (%s), Banreason: Flood AskShareFiles"), client->GetUserName(), ipstr(client->GetConnectIP()));
+						*/break;
+					}
+					//KTS-
 					CPtrList list;
 					if (thePrefs.CanSeeShares()==vsfaEverybody || (thePrefs.CanSeeShares()==vsfaFriends && client->IsFriend()))
 					{
@@ -1262,7 +1272,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								data_out.WriteUInt8(OP_FILESTATUS);
 								if (reqfile->IsPartFile())
 									((CPartFile*)reqfile)->WritePartStatus(&data_out);
-								else if (!reqfile->HideOvershares(&data_out, client))//Ackronic - PowerRelease
+								else
 									data_out.WriteUInt16(0);
 								break;
 							}
@@ -1984,7 +1994,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 							{
 								if (reqfile->IsPartFile())
 									((CPartFile*)reqfile)->WritePartStatus(&data_out);
-								else if (!reqfile->HideOvershares(&data_out, sender))//Xman PowerRelease//Ackronic START - PowerRelease
+								else
 									data_out.WriteUInt16(0);
 							}
 							data_out.WriteUInt16(theApp.uploadqueue->GetWaitingPosition(sender));

@@ -28,6 +28,10 @@
 #include "ListenSocket.h"
 #include "MenuCmds.h"
 #include "ChatWnd.h"
+#include "log.h"
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+#include "ED2KLink.h"
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -57,7 +61,9 @@ void CFriendListCtrl::Init()
 {
 	SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	SetName(_T("FriendListCtrl"));
-
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+	ModifyStyle(LVS_SINGLESEL,0);
+	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 	RECT rcWindow;
 	GetWindowRect(&rcWindow);
 	InsertColumn(0, GetResString(IDS_QL_USERNAME), LVCFMT_LEFT, rcWindow.right - rcWindow.left - 4, 0);
@@ -119,6 +125,11 @@ void CFriendListCtrl::UpdateFriend(int iItem, const CFriend* pFriend)
 
 void CFriendListCtrl::AddFriend(const CFriend* pFriend)
 {
+	// avoid crash at shutdown 
+           if (!theApp.emuledlg->IsRunning()) 
+                   return; 
+    // avoid crash at shutdown 
+
 	int iItem = InsertItem(LVIF_TEXT|LVIF_PARAM,GetItemCount(),pFriend->m_strName,0,0,0,(LPARAM)pFriend);
 	if (iItem >= 0)
 		UpdateFriend(iItem, pFriend);
@@ -127,6 +138,11 @@ void CFriendListCtrl::AddFriend(const CFriend* pFriend)
 
 void CFriendListCtrl::RemoveFriend(const CFriend* pFriend)
 {
+	// avoid crash at shutdown 
+           if (!theApp.emuledlg->IsRunning()) 
+                   return; 
+    // avoid crash at shutdown 
+
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)pFriend;
@@ -138,6 +154,11 @@ void CFriendListCtrl::RemoveFriend(const CFriend* pFriend)
 
 void CFriendListCtrl::RefreshFriend(const CFriend* pFriend)
 {
+	// avoid crash at shutdown 
+           if (!theApp.emuledlg->IsRunning()) 
+                   return; 
+    // avoid crash at shutdown 
+
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)pFriend;
@@ -164,8 +185,17 @@ void CFriendListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.AppendMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	ClientMenu.AppendMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((cur_friend==NULL || (cur_friend && cur_friend->GetLinkedClient() && !cur_friend->GetLinkedClient()->GetViewSharedFilesSupport())) ? MF_GRAYED : MF_ENABLED), MP_SHOWLIST, GetResString(IDS_VIEWFILES) , _T("VIEWFILES"));
+		//KTS+
+    CUpDownClient* pClientLinked = (cur_friend?cur_friend->GetLinkedClient():0);//LSD UNBAN
+	ClientMenu.AppendMenu(MF_STRING | ((pClientLinked && pClientLinked->IsEd2kClient() && pClientLinked->IsBanned()) ? MF_ENABLED : MF_GRAYED), MP_UNBAN, GetResString(IDS_UNBAN));//LSD UNBAN
+	pClientLinked = 0;//LSD UNBAN
+	//KTS-
+ClientMenu.AppendMenu(MF_SEPARATOR);
+	ClientMenu.AppendMenu(MF_STRING | (theApp.IsEd2kFriendLinkInClipboard() ? MF_ENABLED : MF_GRAYED), MP_PASTE, GetResString(IDS_PASTE), _T("PASTELINK"));
+	ClientMenu.AppendMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), MP_GETFRIENDED2KLINK, GetResString(IDS_GETFRIENDED2KLINK), _T("ED2KLINK"));
+	ClientMenu.AppendMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), MP_GETHTMLFRIENDED2KLINK, GetResString(IDS_GETHTMLFRIENDED2KLINK), _T("ED2KLINK"));
+	ClientMenu.AppendMenu(MF_SEPARATOR);
 	ClientMenu.AppendMenu(MF_STRING, MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
-
     ClientMenu.EnableMenuItem(MP_FRIENDSLOT, (cur_friend)?MF_ENABLED : MF_GRAYED);
 	ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (cur_friend && cur_friend->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);
 
@@ -238,6 +268,79 @@ BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				theApp.friendlist->RemoveAllFriendSlots();
 				if( !IsAlready )
                     cur_friend->SetFriendSlot(true);
+                else
+                    cur_friend->SetFriendSlot(false);
+			
+			break;
+		}
+
+case MP_PASTE:
+			{
+				CString link = theApp.CopyTextFromClipboard();
+				link.Trim();
+				if ( link.IsEmpty() )
+					break;
+
+				try{
+					CED2KLink* pLink = CED2KLink::CreateLinkFromUrl(link);
+
+					if (pLink && pLink->GetKind() == CED2KLink::kFriend )
+					{
+						// Better with dynamic_cast, but no RTTI enabled in the project
+						CED2KFriendLink* pFriendLink = static_cast<CED2KFriendLink*>(pLink);
+						uchar userHash[16];
+						pFriendLink->GetUserHash(userHash);
+
+						if ( ! theApp.friendlist->IsAlreadyFriend(userHash) )
+							theApp.friendlist->AddFriend(userHash, 0U, 0U, 0U, 0U, pFriendLink->GetUserName(), 1U);
+						else
+						{
+							CString msg;
+							msg.Format(GetResString(IDS_USER_ALREADY_FRIEND), pFriendLink->GetUserName());
+							AddLogLine(true, msg);
+						}
+					}
+				}
+				catch(CString strError){
+					AfxMessageBox(strError);
+				}
+			}
+			break;
+		case MP_GETFRIENDED2KLINK:
+			{
+				CString sCompleteLink;
+				if ( cur_friend && cur_friend->m_dwHasHash )
+				{
+					CString sLink;
+					CED2KFriendLink friendLink(cur_friend->m_strName, cur_friend->m_abyUserhash);
+					friendLink.GetLink(sLink);
+					if ( !sCompleteLink.IsEmpty() )
+						sCompleteLink.Append(_T("\r\n"));
+					sCompleteLink.Append(sLink);
+				}
+
+				if ( !sCompleteLink.IsEmpty() )
+					theApp.CopyTextToClipboard(sCompleteLink);
+			
+			break;
+			}
+		case MP_GETHTMLFRIENDED2KLINK:
+			{
+				CString sCompleteLink;
+
+				if ( cur_friend && cur_friend->m_dwHasHash )
+				{
+					CString sLink;
+					CED2KFriendLink friendLink(cur_friend->m_strName, cur_friend->m_abyUserhash);
+					friendLink.GetLink(sLink);
+					sLink = _T("<a href=\"") + sLink + _T("\">") + StripInvalidFilenameChars(cur_friend->m_strName, true) + _T("</a>");
+					if ( !sCompleteLink.IsEmpty() )
+						sCompleteLink.Append(_T("\r\n"));
+					sCompleteLink.Append(sLink);
+				}
+
+				if ( !sCompleteLink.IsEmpty() )
+					theApp.CopyTextToClipboard(sCompleteLink);
 			}
 			break;
 		}
@@ -327,3 +430,15 @@ void CFriendListCtrl::UpdateList()
 	theApp.emuledlg->chatwnd->UpdateFriendlistCount(theApp.friendlist->GetCount());
 	SortItems(SortProc, MAKELONG(GetSortItem(), (GetSortAscending() ? 0 : 0x0001)));
 }
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+bool CFriendListCtrl::AddEmfriendsMetToList(const CString& strFile)
+{
+	ShowWindow(SW_HIDE);
+	bool ret = theApp.friendlist->AddEmfriendsMetToList(strFile);
+	theApp.friendlist->ShowFriends();
+	UpdateList();
+	ShowWindow(SW_SHOW);
+	return ret;
+}
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]
+

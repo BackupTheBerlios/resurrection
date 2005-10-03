@@ -33,7 +33,8 @@
 #include "OtherFunctions.h"
 #include "Log.h"
 #include "StringConversion.h"
-
+#include "opcodes.h"
+#include "Statistics.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

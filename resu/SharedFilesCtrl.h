@@ -47,12 +47,20 @@ protected:
 	CTitleMenu		m_SharedFilesMenu;
 	CTitleMenu		m_CollectionsMenu;
 	CMenu			m_PrioMenu;
-    CTitleMenu		m_PowershareMenu;
 	bool			sortstat[4];
 	CImageList		m_ImageList;
 	CDirectoryItem*	m_pDirectoryFilter;
 	CFont		m_fontBold;//Ackronic
 	volatile uint32 nAICHHashing;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	CMenu       m_PowershareMenu; //MORPH - Added by SiRoB, ZZ Upload System
+	CMenu		m_HideOSMenu; //MORPH - Added by SiRoB, HIDEOS
+	CMenu		m_SelectiveChunkMenu; //MORPH - Added by SiRoB, HIDEOS
+	CMenu		m_ShareOnlyTheNeedMenu; //MORPH - Added by SiRoB, SHARE_ONLY_THE_NEED
+	CMenu		m_PowerShareLimitMenu; //MORPH - Added by SiRoB, POWERSHARE Limit
+        // <--- Morph: PowerShare
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	CMenu		m_SpreadbarMenu;
 
 	static int CALLBACK SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	void OpenFile(const CKnownFile* file);

@@ -49,4 +49,8 @@ protected:
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnLvnColumnclick(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+public:
+	bool	AddEmfriendsMetToList(const CString& strFile);
+	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 };

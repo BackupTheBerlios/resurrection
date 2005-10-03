@@ -105,6 +105,10 @@
 //KTS- IP to Country
 
 #include "fakecheck.h" //MORPH - Added by SiRoB
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+#include "Friend.h"
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -451,7 +455,6 @@ BOOL CemuleDlg::OnInitDialog()
 	transferwnd->Create(IDD_TRANSFER);
 	statisticswnd->Create(IDD_STATISTICS);
 	kademliawnd->Create(IDD_KADEMLIAWND);
-	//ircwnd->Create(IDD_IRC); removed irc [lama]
 
 	// with the top rebar control, some XP themes look better with some additional lite borders.. some not..
 	//serverwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
@@ -461,7 +464,6 @@ BOOL CemuleDlg::OnInitDialog()
 	//transferwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
 	//statisticswnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
 	//kademliawnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//ircwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
 
 	// optional: restore last used main window dialog
 	if (thePrefs.GetRestoreLastMainWndDlg()){
@@ -631,7 +633,6 @@ BOOL CemuleDlg::OnInitDialog()
 		sharedfileswnd,
 		searchwnd,
 		chatwnd,
-		//ircwnd, removed irc [lama]
 		statisticswnd
 	};
 	for (int i = 0; i < ARRSIZE(apWnds); i++)
@@ -1552,6 +1553,34 @@ void CemuleDlg::ProcessED2KLink(LPCTSTR pszData)
 					AddLogLine(true,GetResString(IDS_SERVERADDED), pSrv->GetListName());
 			}
 			break;
+	// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+		case CED2KLink::kFriend:
+			{
+				// Better with dynamic_cast, but no RTTI enabled in the project
+				CED2KFriendLink* pFriendLink = static_cast<CED2KFriendLink*>(pLink);
+				uchar userHash[16];
+				pFriendLink->GetUserHash(userHash);
+
+				if ( ! theApp.friendlist->IsAlreadyFriend(userHash) )
+					theApp.friendlist->AddFriend(userHash, 0U, 0U, 0U, 0U, pFriendLink->GetUserName(), 1U);
+				else
+				{
+					CString msg;
+					msg.Format(GetResString(IDS_USER_ALREADY_FRIEND), pFriendLink->GetUserName());
+					AddLogLine(true, msg);
+				}
+			}
+			break;
+		case CED2KLink::kFriendList:
+			{
+				// Better with dynamic_cast, but no RTTI enabled in the project
+				CED2KFriendListLink* pFrndLstLink = static_cast<CED2KFriendListLink*>(pLink);
+				CString sAddress = pFrndLstLink->GetAddress(); 
+				if ( !sAddress.IsEmpty() )
+					this->chatwnd->UpdateEmfriendsMetFromURL(sAddress);
+			}
+			break;
+			// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 		default:
 			break;
 		}
@@ -1816,8 +1845,6 @@ void CemuleDlg::OnClose()
 			thePrefs.SetLastMainWndDlgID(IDD_STATISTICS);
 		else if (activewnd->IsKindOf(RUNTIME_CLASS(CKademliaWnd)))
 			thePrefs.SetLastMainWndDlgID(IDD_KADEMLIAWND);
-		//else if (activewnd->IsKindOf(RUNTIME_CLASS(CIrcWnd)))removed irc [lama]
-		//	thePrefs.SetLastMainWndDlgID(IDD_IRC); 
 		else{
 			ASSERT(0);
 			thePrefs.SetLastMainWndDlgID(0);

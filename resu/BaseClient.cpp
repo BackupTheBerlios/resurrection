@@ -145,7 +145,6 @@ void CUpDownClient::Init()
 	m_nUpPartCount = 0;
 	m_abyPartStatus = 0;
 	m_abyUpPartStatus = 0;
-	m_abyUpPartStatusHidden = 0; //MORPH - Added by SiRoB, See chunk that we hide
 	m_nDownloadState = DS_NONE;
 	m_dwUploadTime = 0;
 	m_nTransferredDown = 0;
@@ -252,6 +251,7 @@ void CUpDownClient::Init()
 	SetLastBuddyPingPongTime();
 	m_fSentOutOfPartReqs = 0;
 	m_bCollectionUploadSlot = false;
+        m_abyUpPartStatusHidden = 0; //<<-- ADDED STORMIT - Morph: PowerShare //
     // Mondgott :: Show RedSmurfIconOnClientDetect
 	m_bRedSmurfClient = false; 
     // Mondgott :: Show RedSmurfIconOnClientDetect
@@ -329,12 +329,11 @@ CUpDownClient::~CUpDownClient(){
 		delete[] m_abyUpPartStatus;
 		m_abyUpPartStatus = NULL;
 	}
-	//MORPH START - Added by SiRoB, See chunk that we hide
-	if (m_abyUpPartStatusHidden){
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	if (m_abyUpPartStatusHidden)
 		delete[] m_abyUpPartStatusHidden;
-		m_abyUpPartStatusHidden = NULL;
-	}
-	//MORPH END   - Added by SiRoB, See chunk that we hide
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 	ClearUploadBlockRequests();
 
 	for (POSITION pos = m_DownloadBlocks_list.GetHeadPosition();pos != 0;)
@@ -1275,9 +1274,15 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 		// ensure that all possible block requests are removed from the partfile
 		ClearDownloadBlockRequests();
 		if(GetDownloadState() == DS_CONNECTED){
+		    //MORPH START - Added by SiRoB, Don't kill source if it's the only one complet source, it's a friend or a proxy
+			if(reqfile && m_bCompleteSource && reqfile->m_nCompleteSourcesCountLo == 1  || IsFriend() || IsProxy())
+				SetDownloadState(DS_ONQUEUE);
+			else {
+			//MORPH END   - Added by SiRoB, Don't kill source if it's the only one complet source or it's a friend
 			//theApp.clientlist->m_globDeadSourceList.AddDeadSource(this);
 			theApp.downloadqueue->RemoveSource(this);
 	    }
+	}
 	}
 
 	// we had still an AICH request pending, handle it
@@ -1697,6 +1702,31 @@ void CUpDownClient::ConnectionEstablished()
 		case US_WAITCALLBACK:
 			if (theApp.uploadqueue->IsDownloading(this))
 			{
+			// Pawcio: PowerShare
+			CKnownFile* reqfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+			if (reqfile){
+				CSafeMemFile data(16+16);
+				data.WriteHash16(reqfile->GetFileHash());
+				bool send = true;
+				if (reqfile->IsPartFile()){
+					((CPartFile*)reqfile)->WritePartStatus(&data, this);	// SLUGFILLER: hideOS
+					send = reqfile->GetHideOS()>=0 ? reqfile->GetHideOS() !=0: thePrefs.GetHideOvershares()!=0;
+				}
+				else if (!reqfile->ShareOnlyTheNeed(&data, this)) // Wistly SOTN
+					if (!reqfile->HideOvershares(&data, this))	// Slugfiller: HideOS
+						send = false;
+				if (send){
+					Packet* packet = new Packet(&data);
+					packet->opcode = OP_FILESTATUS;
+					theStats.AddUpDataOverheadFileRequest(packet->size);
+					socket->SendPacket(packet,true);
+				}
+				else {
+					BYTE* tmp = data.Detach();
+					free(tmp);
+				}
+			}
+			// Pawcio: PowerShare
 				SetUploadState(US_UPLOADING);
 				if (thePrefs.GetDebugClientTCPLevel() > 0)
 					DebugSend("OP__AcceptUploadReq", this);
@@ -2944,6 +2974,8 @@ void CUpDownClient::Check4BadMod()
 	                StrStrI(m_strModVersion,_T("ZX v3.7"))|| //Lama (Snake Mod) 
 			StrStrI(m_strModVersion,_T("ZX v4.0"))|| //Lama (Snake Mod) 
 			StrStrI(m_strModVersion,_T("ZX v4.1"))|| // [lama - snake mod]
+			StrStrI(m_strModVersion,_T("ZX v4.5"))|| // [lama - snake mod]
+	                StrStrI(m_strModVersion,_T("Arabella"))|| // [lama - arabella mod]
 			m_strModVersion.IsEmpty() == false && StrStrI(m_strClientSoftware,_T("edonkey"))||
 			((GetVersion()>589) && (GetSourceExchangeVersion()>0) && (GetClientSoft()==51)) //LSD, edonkey user with eMule property
 			)

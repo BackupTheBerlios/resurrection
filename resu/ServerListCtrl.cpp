@@ -436,7 +436,12 @@ void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 	ServerMenu.AppendMenu(MF_SEPARATOR);
 	ServerMenu.AppendMenu(MF_ENABLED | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
-
+			//KTS+ Whois
+			ServerMenu.AppendMenu(MF_SEPARATOR);
+			ServerMenu.AppendMenu(MF_STRING,MP_WHOIS2, _T("WHOIS query (basic)"), _T("SEARCHPARAMS") );
+			ServerMenu.AppendMenu(MF_STRING,MP_WHOIS, _T("WHOIS query (more info)"), _T("SEARCHRESULTS") );
+			ServerMenu.SetDefaultItem(MP_WHOIS);
+			//KTS- Whois
 	GetPopupMenuPos(*this, point);
 	ServerMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 
@@ -480,6 +485,9 @@ BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 	{
 		if (((CServer*)GetItemData(item)) != NULL)
 		{
+						//KTS+ Whois
+			CServer* my_server = (CServer*)GetItemData(item);
+			//KTS- Whois
 			switch (wParam){
 			case MP_CONNECTTO:
 				{
@@ -505,6 +513,22 @@ BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					theApp.emuledlg->ShowConnectionState();
 					return TRUE;
 				}
+			//KTS+ Whois
+			case MP_WHOIS:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.whois.sc/"));
+				_tcscat(address, ipstr(my_server->GetIP()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						  }
+			case MP_WHOIS2:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.searchbug.com/peoplefinder/location-by-ip-address.aspx?ipaddress="));
+				_tcscat(address, ipstr(my_server->GetIP()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						   }
+						   //KTS- Whois
 			case MPG_DELETE:
 			case MP_REMOVE:
 				{

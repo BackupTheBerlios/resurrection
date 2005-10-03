@@ -19,6 +19,9 @@
 #include "StatisticFile.h"
 #include "AbstractFile.h"
 #include <list>
+//KTS+ Hideos
+#include "SafeFile.h"
+//KTS- Hideos
 
 class CxImage;
 class CUpDownClient;
@@ -27,7 +30,6 @@ class CFileDataIO;
 class CAICHHashTree;
 class CAICHHashSet;
 class CCollection;
-class CSafeMemFile;//Ackronic - Aggiunto da Aenarion[ITA] - PowerRelease
 
 typedef CTypedPtrList<CPtrList, CUpDownClient*> CUpDownClientPtrList;
 class CKnownFile : public CAbstractFile
@@ -57,6 +59,9 @@ public:
 	virtual bool CreateFromFile(LPCTSTR directory, LPCTSTR filename, LPVOID pvProgressParam); // create date, hashset and tags from a file
 	virtual bool LoadFromFile(CFileDataIO* file);	//load date, hashset and tags from a .met file
 	bool	WriteToFile(CFileDataIO* file);
+	//MORPH START - Added by [ionix], Import Parts [SR13]
+	bool	SR13_ImportParts();
+	//MORPH END   - Added by [ionix], Import Parts [SR13]
 	bool	CreateAICHHashSetOnly();
 
 	// last file modification time in (DST corrected, if NTFS) real UTC format
@@ -87,19 +92,20 @@ public:
 	bool	IsAutoUpPriority(void) const { return m_bAutoUpPriority; }
 	void	SetAutoUpPriority(bool NewAutoUpPriority) { m_bAutoUpPriority = NewAutoUpPriority; }
 	void	UpdateAutoUpPriority();
+//Telp Super Release
+	bool	IsReleaseFile(void) const { return m_bReleaseFile; }
+	void	SetReleaseFile(bool bReleaseFile);
+//Telp Super Release
 	// This has lost it's meaning here.. This is the total clients we know that want this file..
 	// Right now this number is used for auto priorities..
 	// This may be replaced with total complete source known in the network..
 	uint32	GetQueuedCount() { return m_ClientUploadList.GetCount();}
 	bool	LoadHashsetFromFile(CFileDataIO* file, bool checkhash);
+	bool	HideOvershares(CSafeMemFile* file, CUpDownClient* client); //<<-- ADDED STORMIT - SLUGFILLER: hideOS //
 	void	AddUploadingClient(CUpDownClient* client);
 	void	RemoveUploadingClient(CUpDownClient* client);
 	virtual void	UpdatePartsInfo();
-	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const;
-	//Ackronic START- Aggiunto da Aenarion[ITA] - PowerRelease
-	bool	HideOvershares(CSafeMemFile* file, CUpDownClient* client); //Xman PowerRelease
-	uint16 GetOnUploadqueue() const		{return onuploadqueue;}
-	//Ackronic END- Aggiunto da Aenarion[ITA] - PowerRelease
+	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat); /*const;*/
 	// comment
 	void	SetFileComment(LPCTSTR pszComment);
 
@@ -148,7 +154,19 @@ public:
 	CUpDownClientPtrList m_ClientUploadList;
 	CArray<uint16, uint16> m_AvailPartFrequency;
 	CCollection* m_pCollection;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	uint16 m_nVirtualCompleteSourcesCount;
 	bool ShareOnlyTheNeed(CSafeMemFile* file, CUpDownClient* client);//wistily Share only the need
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	//KTS+ Hideos
+	CArray<uint16> m_PartSentCount;
+	void	SetHideOS(int newValue) {m_iHideOS = newValue;};
+	int		GetHideOS() const {return m_iHideOS;}
+	void	SetSelectiveChunk(int newValue) {m_iSelectiveChunk = newValue;};
+	int		GetSelectiveChunk() const {return m_iSelectiveChunk;}
+uint8	HideOSInWork() const;
+	void	SetSpreadbarSetStatus(int newValue) {m_iSpreadbarSetStatus = newValue;}
+	int		GetSpreadbarSetStatus() const {return m_iSpreadbarSetStatus;}
 
 #ifdef _DEBUG
 	// Diagnostic Support
@@ -158,31 +176,57 @@ public:
 //MORPH START - Added by SiRoB, copy feedback feature
 	CString GetFeedback(bool isUS = false);
 	//MORPH END   - Added by SiRoB, copy feedback feature
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	void    SetPowerShared(int newValue) {m_powershared = newValue;};
+	bool    GetPowerShared() const;
+	void	SetShareOnlyTheNeed(int newValue) {m_iShareOnlyTheNeed = newValue;};
+	int		GetShareOnlyTheNeed() const {return m_iShareOnlyTheNeed;}
+	int		GetPowerSharedMode() const {return m_powershared;}
+	bool	GetPowerShareAuthorized() const {return m_bPowerShareAuthorized;}
+	bool	GetPowerShareAuto() const {return m_bPowerShareAuto;}
+	void	SetPowerShareLimit(int newValue) {m_iPowerShareLimit = newValue;};
+	int		GetPowerShareLimit() const {return m_iPowerShareLimit;}
+	bool	GetPowerShareLimited() const {return m_bPowerShareLimited;}
+	void	UpdatePowerShareLimit(bool authorizepowershare,bool autopowershare, bool limitedpowershare) {m_bPowerShareAuthorized = authorizepowershare;m_bPowerShareAuto = autopowershare;m_bPowerShareLimited = limitedpowershare;}
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 protected:
 	//preview
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);
 	bool	LoadTagsFromFile(CFileDataIO* file);
 	bool	LoadDateFromFile(CFileDataIO* file);
+public: // [ionix] for SR13
 	void	CreateHash(CFile* pFile, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
 	bool	CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
 	bool	CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
 	virtual void	UpdateFileRatingCommentAvail();
-	uint32	*CalcPartSpread();	//Ackronic - Aggiunto da Aenarion[ITA] - PowerRelease
-
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	uint16	CalcPartSpread(CArray<uint32, uint32>& partspread, CUpDownClient* client); // Morph: PowerShare // SLUGFILLER: hideOS
 
 	CArray<uchar*, uchar*>	hashlist;
 	CString					m_strDirectory;
 	CString					m_strFilePath;
 	CAICHHashSet*			m_pAICHHashSet;
+ //<<-- ADDED STORMIT - Morph: PowerShare //
+ 	//MORPH START - Added by SiRoB,  SharedStatusBar CPU Optimisation
+	bool	InChangedSharedStatusBar;
+	CDC 	m_dcSharedStatusBar;
+	CBitmap m_bitmapSharedStatusBar;
+	CBitmap *m_pbitmapOldSharedStatusBar;
+	int	lastSize;
+	bool	lastonlygreyrect;
+	bool	lastbFlat;
+	//MORPH END - Added by SiRoB,  SharedStatusBar CPU Optimisation
+//<<-- ADDED STORMIT - Morph: PowerShare //
 
 private:
-	uint16 onuploadqueue;//Ackronic - Aggiunto da Aenarion[ITA] - PowerRelease
 	static CBarShader s_ShareStatusBar;
 	uint16	m_iPartCount;
 	uint16	m_iED2KPartCount;
 	uint16	m_iED2KPartHashCount;
 	uint8	m_iUpPriority;
 	bool	m_bAutoUpPriority;
+	bool	m_bReleaseFile;	//Telp Super Release
 	bool	m_PublishedED2K;
 	uint32	kadFileSearchID;
 	uint32	m_lastPublishTimeKadSrc;
@@ -190,13 +234,18 @@ private:
 	uint32	m_lastBuddyIP;
 	Kademlia::WordList wordlist;
 	UINT	m_uMetaDataVer;
-	uint16 hideos;			//Ackronic - Aggiunto da Aenarion[ITA] - PowerRelease && hideos
 
-	//>>> WiZaRd::PowerShare
-private:
-	bool	m_bIsPowerShared;
-public:
-	bool	IsPowerShared() const;
-	void	SetPowerShared(const bool& b);
-	//<<< WiZaRd::PowerShare
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	int		m_iHideOS;
+	int		m_iSelectiveChunk;
+	int		m_iShareOnlyTheNeed;
+	int		m_powershared;
+	bool	m_bPowerShareAuthorized;
+	bool	m_bPowerShareAuto;
+	int		m_iPowerShareLimit;
+	bool	m_bPowerShareLimited;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+int		m_iSpreadbarSetStatus;
+bool	m_bHideOSAuthorized;
+
 };

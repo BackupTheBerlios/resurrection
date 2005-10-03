@@ -49,6 +49,7 @@
 // IP-to-Country -
 #include "Clientlist.h"//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 #include "fakecheck.h" // [ionix] - Fakecheck
+#include "SR13-ImportParts.h"//MORPH - Added by [ionix], Import Parts [SR13]
 
 
 #ifdef _DEBUG
@@ -404,6 +405,7 @@ void CDownloadListCtrl::RemoveSource(CUpDownClient* source, CPartFile* owner)
 			it++;
 		}
 	}
+	theApp.emuledlg->transferwnd->downloadclientsctrl.RemoveClient(source); //WiZaRd - FiX
 }
 
 bool CDownloadListCtrl::RemoveFile(const CPartFile* toremove)
@@ -445,6 +447,10 @@ void CDownloadListCtrl::UpdateItem(void* toupdate)
 {
 	if (!theApp.emuledlg->IsRunning())
 		return;
+	//MORPH START - SiRoB, Don't Refresh item if not needed
+	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd)
+		return;
+	//MORPH END   - SiRoB, Don't Refresh item if not needed
 
 	// Retrieve all entries matching the source
 	std::pair<ListItems::const_iterator, ListItems::const_iterator> rangeIt = m_ListItems.equal_range(toupdate);
@@ -523,11 +529,13 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			CRect rcDraw(lpRect);
 			int iImage = theApp.GetFileTypeSystemImageIdx(lpPartFile->GetFileName());
 			if (theApp.GetSystemImageList() != NULL)
-				::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc->GetSafeHdc(), rcDraw.left, rcDraw.top, ILD_NORMAL|ILD_TRANSPARENT);
-			rcDraw.left += theApp.GetSmallSytemIconSize().cx;
+				{ 
+                    ::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc->GetSafeHdc(), rcDraw.left-2, rcDraw.top+1, ILD_TRANSPARENT); 
+                    rcDraw.left += theApp.GetSmallSytemIconSize().cx; //WiZaRd - only tab on draw  
+				}
 
 			if (thePrefs.ShowRatingIndicator() && (lpPartFile->HasComment() || lpPartFile->HasRating())){
-				m_ImageList.Draw(dc, lpPartFile->UserRating()+14, rcDraw.TopLeft(), ILD_NORMAL);
+				m_ImageList.Draw(dc, lpPartFile->UserRating()+16, rcDraw.TopLeft(), ILD_NORMAL); // [ionix] - Changed 14 -> 16
 				rcDraw.left += 16;
 			}
 
@@ -597,10 +605,37 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 
 				if (thePrefs.GetUseDwlPercentage()) {
 					// HoaX_69: BEGIN Display percent in progress bar
-					COLORREF oldclr = dc->SetTextColor(RGB(255,255,255));
+					COLORREF oldclr = dc->SetTextColor(RGB(0,0,0)); //MORPH - Changed by SIRoB, Turn into black pen
 					int iOMode = dc->SetBkMode(TRANSPARENT);
 					buffer.Format(_T("%.1f%%"), lpPartFile->GetPercentCompleted());
-					dc->DrawText(buffer, buffer.GetLength(), &rcDraw, (DLC_DT_TEXT & ~DT_LEFT) | DT_CENTER);
+					//MORPH START - Changed by SiRoB, Bold Percentage :) and right justify
+					CFont *pOldFont = dc->SelectObject(&m_fontBold);
+					
+#define	DrawPercentText	dc->DrawText(buffer, buffer.GetLength(), &rcDraw, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
+					DrawPercentText;
+					rcDraw.left+=1;rcDraw.right+=1;
+					DrawPercentText;
+					rcDraw.left+=1;rcDraw.right+=1;
+					DrawPercentText;
+					
+					rcDraw.top+=1;rcDraw.bottom+=1;
+					DrawPercentText;
+					rcDraw.top+=1;rcDraw.bottom+=1;
+					DrawPercentText;
+					
+					rcDraw.left-=1;rcDraw.right-=1;
+					DrawPercentText;
+					rcDraw.left-=1;rcDraw.right-=1;
+					DrawPercentText;
+					
+					rcDraw.top-=1;rcDraw.bottom-=1;
+					DrawPercentText;
+					
+					rcDraw.left++;rcDraw.right++;
+					dc->SetTextColor(RGB(255,255,255));
+					DrawPercentText;
+					dc->SelectObject(pOldFont); //MORPH - Added by SiRoB, Bold Percentage :)
+					//MORPH END   - Changed by SiRoB, Bold Percentage :) and right justify
 					dc->SetBkMode(iOMode);
 					dc->SetTextColor(oldclr);
 					// HoaX_69: END
@@ -980,14 +1015,16 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 		}
 
 		case 7:		// prio
-			if (lpUpDownClient->GetDownloadState()==DS_ONQUEUE){
-				if (lpUpDownClient->IsRemoteQueueFull()){
+			if (lpUpDownClient->GetDownloadState()==DS_ONQUEUE)
+			{
+				if( lpUpDownClient->IsRemoteQueueFull() )
+				{
 					buffer = GetResString(IDS_QUEUEFULL);
 					dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 				}
 				else
 				{
-					if ( lpUpDownClient->GetRemoteQueueRank()) // >>> bobo - qrverlauf added by lama
+					if ( lpUpDownClient->GetRemoteQueueRank()) // >>> bobo - qrverlauf
 					{
 						COLORREF crOldTxtColor;
 						int	m_iDifference = lpUpDownClient->GetDiffQR();
@@ -1007,34 +1044,32 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			}
 			else
 				dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
-            break;	// <<< bobo - qrverlauf  added by lama
+            break;	// <<< bobo - qrverlauf 
 
 		case 8:	{	// status
-			if (lpCtrlItem->type == AVAILABLE_SOURCE){
+			if (lpCtrlItem->type == AVAILABLE_SOURCE)
 				buffer = lpUpDownClient->GetDownloadStateDisplayString();
-			}
-			else {
+			else 
+			{
 				buffer = GetResString(IDS_ASKED4ANOTHERFILE);
 
 // ZZ:DownloadManager -->
-                if(thePrefs.IsExtControlsEnabled()) {
-                    if(lpUpDownClient->IsInNoNeededList(lpCtrlItem->owner)) {
+                if(thePrefs.IsExtControlsEnabled()) 
+				{
+                    if(lpUpDownClient->IsInNoNeededList(lpCtrlItem->owner)) 
                         buffer += _T(" (") + GetResString(IDS_NONEEDEDPARTS) + _T(")");
-                    } else if(lpUpDownClient->GetDownloadState() == DS_DOWNLOADING) {
+                    else if(lpUpDownClient->GetDownloadState() == DS_DOWNLOADING) 
                         buffer += _T(" (") + GetResString(IDS_TRANSFERRING) + _T(")");
-                   } else if(lpUpDownClient->IsSwapSuspended(lpUpDownClient->GetRequestFile())) {
+                    else if(lpUpDownClient->IsSwapSuspended(lpUpDownClient->GetRequestFile())) 
                         buffer += _T(" (") + GetResString(IDS_SOURCESWAPBLOCKED) + _T(")");
-                    }
            
-                    if (lpUpDownClient && lpUpDownClient->GetRequestFile() && lpUpDownClient->GetRequestFile()->GetFileName()){
+                    if (lpUpDownClient && lpUpDownClient->GetRequestFile() && lpUpDownClient->GetRequestFile()->GetFileName())
                         buffer.AppendFormat(_T(": \"%s\""),lpUpDownClient->GetRequestFile()->GetFileName());
                     }
                 }
-			}
 		
-            if(thePrefs.IsExtControlsEnabled() && !lpUpDownClient->m_OtherRequests_list.IsEmpty()) {
+            if(thePrefs.IsExtControlsEnabled() && !lpUpDownClient->m_OtherRequests_list.IsEmpty()) 
                 buffer.Append(_T("*"));
-            }
           // ZZ:DownloadManager <--
 
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
@@ -1056,10 +1091,10 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				buffer = lpUpDownClient->GetWebCacheName();
 				if (lpUpDownClient->IsBehindOurWebCache())
 					dc->SetTextColor(RGB(0, 180, 0)); //if is behind our webcache display green
-				else if (buffer != "")
+					else if (buffer != _T(""))
 					dc->SetTextColor(RGB(255, 0, 0)); // if webcache info is there but not our own set red
 				else
-					buffer = "no proxy set";	// if no webcache info colour is black
+						buffer = _T("no proxy set");	// if no webcache info colour is black
 			}
 			else
 				buffer = "";
@@ -1447,6 +1482,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
             int iFilesGetPreviewParts = 0;
             int iFilesPreviewType = 0;
 			int iFilesToPreview = 0;
+//Telp Super Release
+			bool bReleaseFileSelected = false;
+			bool bNonReleaseFileSelected = false;
+			//Telp Super Release		
 			UINT uPrioMenuItem = 0;
 			const CPartFile* file1 = NULL;
 			POSITION pos = GetFirstSelectedItemPosition();
@@ -1469,7 +1508,6 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
                 iFilesGetPreviewParts += pFile->GetPreviewPrio() ? 1 : 0;
                 iFilesPreviewType += pFile->IsPreviewableFileType() ? 1 : 0;
 				iFilesToPreview += pFile->IsReadyForPreview() ? 1 : 0;
-
 				UINT uCurPrioMenuItem = 0;
 				if (pFile->IsAutoDownPriority())
 					uCurPrioMenuItem = MP_PRIOAUTO;
@@ -1486,6 +1524,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 					uPrioMenuItem = uCurPrioMenuItem;
                 else if (uPrioMenuItem != uCurPrioMenuItem)
 					uPrioMenuItem = 0;
+//Telp Super Release
+				if (pFile->IsReleaseFile())
+					bReleaseFileSelected = true;
+				else
+					bNonReleaseFileSelected = true;
+				//Telp Super Release
 
 				bFirstItem = false;
 			}
@@ -1493,7 +1537,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);//Ackronic - Aggiunto da Aenarion[ITA] - Drop
-			// enable commands if there is at least one item which can be used for the action
+						//Telp Super Release
+			m_PrioMenu.EnableMenuItem(MP_RELEASESET, bNonReleaseFileSelected ? MF_ENABLED : MF_GRAYED);
+			m_PrioMenu.EnableMenuItem(MP_RELEASEREMOVE, bReleaseFileSelected ? MF_ENABLED : MF_GRAYED);
+			//Telp Super Release
+
+// enable commands if there is at least one item which can be used for the action
 			m_FileMenu.EnableMenuItem(MP_CANCEL, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_STOP, iFilesToStop > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PAUSE, iFilesToPause > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1522,16 +1571,19 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 				m_FileMenu.SetDefaultItem((UINT)-1);
 			m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, (iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED);
 
-			int total;
-		    m_FileMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_ENABLED); // Sivka: AutoHL added by lama
-			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
+			//MORPH START - Added by [ionix], Import Parts [SR13]
+			m_FileMenu.EnableMenuItem(MP_SR13_ImportParts, (iSelectedItems == 1 && iFilesNotDone == 1) ? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem(MP_SR13_InitiateRehash, (iSelectedItems == 1 && iFilesNotDone == 1) ? MF_ENABLED : MF_GRAYED);
+			//MORPH END   - Added by [ionix], Import Parts [SR13]
 
+			int total;
+			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, (/*thePrefs.IsExtControlsEnabled() &&*/ iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED); // [ionix] - AutoHL
 			if (m_SourcesMenu && thePrefs.IsExtControlsEnabled()) {
 				m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, MF_ENABLED);
 				m_SourcesMenu.EnableMenuItem(MP_ADDSOURCE, (iSelectedItems == 1 && iFilesToStop == 1) ? MF_ENABLED : MF_GRAYED);
-				m_SourcesMenu.EnableMenuItem(MP_SETSOURCELIMIT, (iFilesNotDone == iSelectedItems) ? MF_ENABLED : MF_GRAYED);
-				m_SourcesMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_ENABLED); // Sivka: AutoHL added by lama
 			}
+			m_SourcesMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_ENABLED); // Sivka: AutoHL
 
 			m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
@@ -1578,6 +1630,13 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			ClientMenu.AppendMenu(MF_STRING, MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 			ClientMenu.SetDefaultItem(MP_DETAIL);
 			ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+		//KTS+ Whois
+			ClientMenu.AppendMenu(MF_SEPARATOR);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS2, _T("WHOIS query (basic)"), _T("SEARCHPARAMS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS2);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS, _T("WHOIS query (more info)"), _T("SEARCHRESULTS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS);
+			//KTS- Whois
 			ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 			ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
 			//-->Spe64	
@@ -1625,9 +1684,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, MF_GRAYED);
 		//MORPH END   - Added by SiRoB, copy feedback feature
 		m_FileMenu.EnableMenuItem(MP_PREVIEW, MF_GRAYED);
+		//MORPH START - Added by [ionix], Import Parts [SR13]
+		m_FileMenu.EnableMenuItem(MP_SR13_ImportParts,MF_GRAYED);
+		m_FileMenu.EnableMenuItem(MP_SR13_InitiateRehash,MF_GRAYED);
+		//MORPH END   - Added by [ionix], Import Parts [SR13]
 		m_FileMenu.EnableMenuItem(MP_METINFO, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, MF_GRAYED);
-		m_FileMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_GRAYED); // Sivka: AutoHL added by lama
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
         m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
@@ -1755,6 +1817,26 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						SetRedraw(true);
 					}
 					break;
+			//Telp Super Release
+				case MP_RELEASESET:
+					SetRedraw(false);
+					while (!selectedList.IsEmpty()){
+						CPartFile* partfile = selectedList.GetHead();
+						partfile->SetReleaseFile(true);
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_RELEASEREMOVE:
+					SetRedraw(false);
+					while (!selectedList.IsEmpty()){
+						CPartFile* partfile = selectedList.GetHead();
+						partfile->SetReleaseFile(false);
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				//Telp Super Release
 				}
 				case MP_PRIOHIGH:
 					SetRedraw(false);
@@ -2095,6 +2177,23 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				case MP_SHOWLIST:
 					client->RequestSharedFileList();
 					break;
+				//MORPH END   - Added by SIRoB, Friend Addon
+									 //KTS+ Whois
+				case MP_WHOIS:{
+					TCHAR address[256];
+					_tcscpy(address, _T("http://www.whois.sc/"));
+					_tcscat(address, ipstr(client->GetConnectIP()));
+					ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+					break;
+							  }
+				case MP_WHOIS2:{
+					TCHAR address[256];
+					_tcscpy(address, _T("http://www.searchbug.com/peoplefinder/location-by-ip-address.aspx?ipaddress="));
+					_tcscat(address, ipstr(client->GetConnectIP()));
+					ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+					break;
+							   }
+							   //KTS- Whois
 				case MP_MESSAGE:
 					theApp.emuledlg->chatwnd->StartSession(client);
 					break;
@@ -2574,10 +2673,13 @@ void CDownloadListCtrl::CreateMenues(){
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));
+	//Telp Super Release
+	m_PrioMenu.AppendMenu(MF_SEPARATOR);
+	m_PrioMenu.AppendMenu(MF_STRING,MP_RELEASESET, GetResString(IDS_RELEASESET));
+	m_PrioMenu.AppendMenu(MF_STRING,MP_RELEASEREMOVE, GetResString(IDS_RELEASEREMOVE));
+	//Telp Super Release
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
 
-	// Add file commands
-	//
 	m_FileMenu.AppendMenu(MF_STRING, MP_PAUSE, GetResString(IDS_DL_PAUSE), _T("PAUSE"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_STOP, GetResString(IDS_DL_STOP), _T("STOP"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_RESUME, GetResString(IDS_DL_RESUME), _T("RESUME"));
@@ -2592,7 +2694,6 @@ void CDownloadListCtrl::CreateMenues(){
 	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, GetResString(IDS_DROP_HQS), _T("DROP"));
 	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, GetResString(IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP), _T("DROP"));
         //Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-        m_SourcesMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS)/*, _T("RestoreWindow")*/);
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_OPEN, GetResString(IDS_DL_OPEN), _T("OPENFILE"));
 	if (thePrefs.IsExtControlsEnabled() && !thePrefs.GetPreviewPrio())
@@ -2600,13 +2701,14 @@ void CDownloadListCtrl::CreateMenues(){
 	m_FileMenu.AppendMenu(MF_STRING, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_METINFO, GetResString(IDS_DL_INFO), _T("FILEINFO"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_VIEWFILECOMMENTS, GetResString(IDS_CMT_SHOWALL), _T("FILECOMMENTS"));
-        m_FileMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS), _T("RestoreWindow")); // (AutoHL) added by lama
-	m_FileMenu.AppendMenu(MF_STRING, MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
-	m_FileMenu.AppendMenu(MF_STRING, MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_DE), _T("COPY"));
+        	//MORPH START - Added by [ionix], Import Parts [SR13]
+	m_FileMenu.AppendMenu(MF_STRING,MP_SR13_ImportParts, GetResString(IDS_IMPORTPARTS), _T("FILEIMPORTPARTS"));
+ 	m_FileMenu.AppendMenu(MF_STRING,MP_SR13_InitiateRehash, GetResString(IDS_INITIATEREHASH), _T("FILEINITIATEREHASH"));
+	//MORPH END   - Added by [ionix], Import Parts [SR13]
         m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_CLEARCOMPLETED, GetResString(IDS_DL_CLEAR), _T("CLEARCOMPLETE"));
 
-	// Add (extended user mode) 'Source Handling' sub menu
+	// Add (extended user mode) 'Source Handling' sub menu - [ionix] - but only for standart settings
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
 		m_SourcesMenu.CreateMenu();
@@ -2616,18 +2718,20 @@ void CDownloadListCtrl::CreateMenues(){
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_SourcesMenu.m_hMenu, GetResString(IDS_A4AF));
 	}
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
-
-	// Add 'Copy & Paste' commands
 	if (thePrefs.GetShowCopyEd2kLinkCmd())
 		m_FileMenu.AppendMenu(MF_STRING, MP_GETED2KLINK, GetResString(IDS_DL_LINK1), _T("ED2KLINK"));
 	else
 		m_FileMenu.AppendMenu(MF_STRING, MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
+	//MORPH START - Added by IceCream, copy feedback feature
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+	//MORPH END   - Added by IceCream, copy feedback feature
 }
 
-CString CDownloadListCtrl::getTextList()
-{
+CString CDownloadListCtrl::getTextList() {
 	CString out;
 
 	for (ListItems::iterator it = m_ListItems.begin(); it != m_ListItems.end(); it++)

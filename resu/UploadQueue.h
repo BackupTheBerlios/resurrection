@@ -18,6 +18,7 @@
 
 class CUpDownClient;
 typedef CTypedPtrList<CPtrList, CUpDownClient*> CUpDownClientPtrList;
+class CKnownFile;	//Telp Super Release
 
 class CUploadQueue
 {
@@ -32,7 +33,6 @@ public:
 	bool	RemoveFromWaitingQueue(CUpDownClient* client,bool updatewindow = true);
 	bool	IsOnUploadQueue(CUpDownClient* client)	const {return (waitinglist.Find(client) != 0);}
 	bool	IsDownloading(CUpDownClient* client)	const {return (uploadinglist.Find(client) != 0);}
-
     void    UpdateDatarates();
 	uint32	GetDatarate();
     uint32  GetToNetworkDatarate();
@@ -55,6 +55,12 @@ public:
 	CUpDownClient*	GetWaitingClientByIP_UDP(uint32 dwIP, uint16 nUDPPort);
 	CUpDownClient*	GetWaitingClientByIP(uint32 dwIP);
 	CUpDownClient*	GetNextClient(const CUpDownClient* update);
+	//Telp Super Release
+	void	FillReleaseSlot();
+	void	CountReleaseSlot(const CKnownFile* file);
+	void	EmptyReleaseSlot(const CKnownFile* file);
+	void	ReleaseSlotNotifyChangeFile(CUpDownClient* client, const CKnownFile* oldfile, const CKnownFile* newfile);
+	//Telp Super Release
 
 	//KTS+ webcache
 	CUpDownClient*	FindClientByWebCacheUploadId(const uint32 id); // Superlexx - webcache
@@ -103,6 +109,7 @@ private:
 	uint32	datarate;   //datarate sent to network (including friends)
     uint32  friendDatarate; // datarate of sent to friends (included in above total)
 	// By BadWolf - Accurate Speed Measurement
+	uint32	releaseslots;	//Telp Super Release
 	UINT_PTR h_timer;
 	uint32	successfullupcount;
 	uint32	failedupcount;

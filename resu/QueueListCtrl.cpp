@@ -259,6 +259,11 @@ void CQueueListCtrl::RefreshClient(const CUpDownClient* client)
 	if (!theApp.emuledlg->IsRunning())
 		return;
 
+	//MORPH START - SiRoB, Don't Refresh item if not needed
+	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd || theApp.emuledlg->transferwnd->queuelistctrl.IsWindowVisible() == false )
+		return;
+	//MORPH END   - SiRoB, Don't Refresh item if not needed
+
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)client;
@@ -398,10 +403,6 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 1:
 					if(file)
 						Sbuffer = file->GetFileName();
-						//Xman PowerRelease
-						//if(file->GetUpPriority()==PR_POWER)
-						//	dc.SetBkColor(RGB(255,225,225));
-						//Xman end
 					else
 						Sbuffer = _T("?");
 					break;
@@ -432,14 +433,22 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							case PR_VERYHIGH : {
 								Sbuffer = GetResString(IDS_PRIORELEASE);
 								break; }
-						   //Xman PowerRelease
-							case PR_POWER:
-								Sbuffer = GetResString(IDS_POWERRELEASE);
-								break;
-							//Xman end
 							default:
 								Sbuffer.Empty();
 						}
+		// Morph: PowerShare
+						if(file->GetPowerShared()) {
+							CString tempString = GetResString(IDS_POWERSHARE_PREFIX);
+							tempString.Append(_T(" "));
+							tempString.Append(Sbuffer);
+							Sbuffer.Empty(); //MORPH - HotFix by SiRoB, ZZ Upload System
+							Sbuffer = tempString;
+						}
+						// Morph: PowerShare
+						//Telp Super Release
+						if (file->IsReleaseFile())
+							Sbuffer += _T(" [") + GetResString(IDS_RELEASEFILE) + _T("]");
+						//Telp Super Release
 					}
 					else
 						Sbuffer = _T("?");
@@ -456,7 +465,11 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					else
 						Sbuffer.Format(_T("%i"),client->GetScore(false));
-					break;
+						//Telp Super Release
+					if (file && file->IsReleaseFile())
+						Sbuffer += _T(" [") + GetResString(IDS_RELEASEFILE) + _T("]");
+					//Telp Super Release
+                                        break;
 				case 5:
 					Sbuffer.Format(_T("%i"),client->GetAskedCount());
 					break;
@@ -514,7 +527,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					   }
 					//KTS- webcache
 		   	}
-			if( iColumn != 9 && iColumn != 0)
+				if( iColumn != 9 && iColumn != 0&& iColumn != 13) //JP Webcache added Column 13
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 			//dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
 			cur_rec.left += GetColumnWidth(iColumn);
@@ -563,19 +576,16 @@ void CQueueListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	CTitleMenu ClientMenu;
 	ClientMenu.CreatePopupMenu();
 	ClientMenu.AddMenuTitle(GetResString(IDS_CLIENTS), true);
-	//KTS+ ShowUploadFlag
-	if(theApp.ip2country->ShowCountryFlag()){
-		ClientMenu.AppendMenu(MF_STRING,MP_SHOWQUEUEFLAG, _T("Show Queue Flag") );
-		if(thePrefs.ShowQueueFlag())
-			ClientMenu.CheckMenuItem(MP_SHOWQUEUEFLAG,MF_CHECKED);
-		else
-			ClientMenu.CheckMenuItem(MP_SHOWQUEUEFLAG,MF_UNCHECKED);
-	}
-	ClientMenu.AppendMenu(MF_SEPARATOR); 
-	//KTS- ShowUploadFlag
 	ClientMenu.AppendMenu(MF_STRING | (client ? MF_ENABLED : MF_GRAYED), MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+			//KTS+ Whois
+			ClientMenu.AppendMenu(MF_SEPARATOR);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS2, _T("WHOIS query (basic)"), _T("SEARCHPARAMS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS2);
+			ClientMenu.AppendMenu(MF_STRING,MP_WHOIS, _T("WHOIS query (more info)"), _T("SEARCHRESULTS") );
+			ClientMenu.SetDefaultItem(MP_WHOIS);
+			//KTS- Whois
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->IsBanned()) ? MF_ENABLED : MF_GRAYED), MP_UNBAN, GetResString(IDS_UNBAN));
@@ -611,6 +621,22 @@ BOOL CQueueListCtrl::OnCommand(WPARAM wParam,LPARAM lParam )
 			case MP_SHOWLIST:
 				client->RequestSharedFileList();
 				break;
+					//KTS+ Whois
+			case MP_WHOIS:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.whois.sc/"));
+				_tcscat(address, ipstr(client->GetConnectIP()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						  }
+			case MP_WHOIS2:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.searchbug.com/peoplefinder/location-by-ip-address.aspx?ipaddress="));
+				_tcscat(address, ipstr(client->GetConnectIP()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						   }
+						   //KTS- Whois
 			case MP_MESSAGE:
 				theApp.emuledlg->chatwnd->StartSession(client);
 				break;
@@ -657,6 +683,7 @@ case MP_FRIENDSLOT:
 }
 		}
 	}
+
 	return true;
 } 
 
@@ -722,25 +749,44 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 		}
 		
+				  // Morph: PowerShare
 		case 2: {
+			// Morph: PowerShare
 			CKnownFile* file1 = theApp.sharedfiles->GetFileByID(item1->GetUploadFileID());
 			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
-			if( (file1 != NULL) && (file2 != NULL))
-				iResult=((file1->GetUpPriority()==PR_VERYLOW) ? -1 : file1->GetUpPriority()) - ((file2->GetUpPriority()==PR_VERYLOW) ? -1 : file2->GetUpPriority());
-			else if( file1 == NULL )
+			if (!file1 && !file2)
+				iResult= 0;
+			else if (!file1)
+				iResult= -1;
+			else if (!file2)
+				iResult= 1;
+			if (file1->GetPowerShared() == false && file2->GetPowerShared() == true)
+				iResult= -1;			
+			else if (file1->GetPowerShared() == true && file2->GetPowerShared() == false)
 				iResult=1;
 			else
+				if(file1->GetUpPriority() == PR_VERYLOW && file2->GetUpPriority() != PR_VERYLOW)
 				iResult=-1;
-			break;
+				else if (file1->GetUpPriority() != PR_VERYLOW && file2->GetUpPriority() == PR_VERYLOW)
+					iResult= 1;
+				else
+					iResult= file1->GetUpPriority()-file2->GetUpPriority();
 		}
 		case 102:{
 			CKnownFile* file1 = theApp.sharedfiles->GetFileByID(item1->GetUploadFileID());
 			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
-			if( (file1 != NULL) && (file2 != NULL))
-				iResult=((file2->GetUpPriority()==PR_VERYLOW) ? -1 : file2->GetUpPriority()) - ((file1->GetUpPriority()==PR_VERYLOW) ? -1 : file1->GetUpPriority());
-			else if( file1 == NULL )
+			if (!file1 && !file2)
+				iResult= 0;
+			else if (!file1)
+				iResult= 1;
+			else if (!file2)
+				iResult= -1;
+			if (file2->GetPowerShared() == false && file1->GetPowerShared() == true)
+				iResult= -1;			
+			else if (file2->GetPowerShared() == true && file1->GetPowerShared() == false)
 				iResult=1;
 			else
+				if(file2->GetUpPriority() == PR_VERYLOW && file1->GetUpPriority() != PR_VERYLOW )
 				iResult=-1;
 			break;
 		}
@@ -752,13 +798,28 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			iResult=CompareUnsigned(item2->GetScore(false,false,true), item1->GetScore(false,false,true));
 			break;
 
+		// Morph: PowerShare
 		case 4: 
-			iResult=CompareUnsigned(item1->GetScore(false), item2->GetScore(false));
-			break;
-		case 104: 
-			iResult=CompareUnsigned(item2->GetScore(false), item1->GetScore(false));
-			break;
+			//return CompareUnsigned(item1->GetScore(false), item2->GetScore(false));
+		case 104: { 
+			//return CompareUnsigned(item2->GetScore(false), item1->GetScore(false));
+			int result = 0;
+			if(item1->GetPowerShared() == true && item2->GetPowerShared() == false)
+				result = 1;
+			else if(item1->GetPowerShared() == false && item2->GetPowerShared() == true)
+				iResult = -1;
+			else
+				iResult = 0;
 
+			if(result == 0)
+			iResult=CompareUnsigned(item1->GetScore(false), item2->GetScore(false));
+
+			if(lParamSort == 4)
+				iResult= result;
+			else
+				iResult= -result;
+		 }
+		// <--- Morph: PowerShare
 		case 5: 
 			iResult=item1->GetAskedCount() - item2->GetAskedCount();
 			break;

@@ -176,6 +176,10 @@ BOOL CClientDetailPage::OnSetActive()
 		if (client->GetUploadState() != US_NONE && client->Credits()!=NULL){
 			if (!client->GetFriendSlot()){
 				buffer.Format(_T("%u"),client->GetScore(false,client->IsDownloading(),false));
+				//Telp Super Release
+			if (file && file->IsReleaseFile())
+				buffer += _T(" [") + GetResString(IDS_RELEASEFILE) + _T("]");
+			//Telp Super Release
 				GetDlgItem(IDC_DSCORE)->SetWindowText(buffer);
 			}
 			else

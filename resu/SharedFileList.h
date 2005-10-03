@@ -68,6 +68,9 @@ public:
 	void	DeletePartFileInstances() const;
 	bool	IsUnsharedFile(const uchar* auFileHash) const;
 	void	CopySharedFileMap(CMap<CCKey,const CCKey&,CKnownFile*,CKnownFile*> &Files_Map);
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	void	UpdatePartsInfo(); // Morph: PowerShare
+//<<-- ADDED STORMIT - Morph: PowerShare //
 
 	CMutex	m_mutWriteList;
 private:

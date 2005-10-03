@@ -26,6 +26,9 @@
 #include "MemDC.h"
 #define DLC_DT_TEXT (DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX|DT_END_ELLIPSIS)
 //KTS- IP to Country
+//KTS+ Whois
+#include "MenuCmds.h"
+//KTS- Whois
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -216,6 +219,28 @@ void CKadContactListCtrl::ContactRef(const Kademlia::CContact* contact)
 
 BOOL CKadContactListCtrl::OnCommand(WPARAM wParam,LPARAM lParam)
 {
+int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
+	if (iSel != -1){
+		Kademlia::CContact* client = (Kademlia::CContact*)GetItemData(iSel);
+		switch (wParam){
+			//KTS+ Whois
+			case MP_WHOIS:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.whois.sc/"));
+				_tcscat(address, ipstr(client->getIPAddress()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						  }
+			case MP_WHOIS2:{
+				TCHAR address[256];
+				_tcscpy(address, _T("http://www.searchbug.com/peoplefinder/location-by-ip-address.aspx?ipaddress="));
+				_tcscat(address, ipstr(client->getIPAddress()));
+				ShellExecute(NULL, NULL, address, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+				break;
+						   }
+						   //KTS- Whois
+		}
+	}
 	return TRUE;
 }
 
@@ -414,3 +439,21 @@ void CKadContactListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SetTextColor(crOldTextColor);
 }
 //KTS- IP to Country
+//KTS+ Whois
+void CKadContactListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
+	//Kademlia::CContact* client = (iSel != -1) ? (Kademlia::CContact*)GetItemData(iSel) : NULL;//fix
+
+	CTitleMenu ClientMenu;
+	ClientMenu.CreatePopupMenu();
+	ClientMenu.AddMenuTitle(_T("KadContact"), true);
+	ClientMenu.AppendMenu(MF_STRING,MP_WHOIS2, _T("WHOIS query (basic)"), _T("SEARCHPARAMS") );
+	ClientMenu.SetDefaultItem(MP_WHOIS2);
+	ClientMenu.AppendMenu(MF_STRING,MP_WHOIS, _T("WHOIS query (more info)"), _T("SEARCHRESULTS") );
+	ClientMenu.SetDefaultItem(MP_WHOIS);
+
+	GetPopupMenuPos(*this, point);
+	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+}
+//KTS- Whois

@@ -61,28 +61,46 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 	COLORREF crNextSending;
 	COLORREF crBoth;
 	COLORREF crSending;
+//4-ShareOnlyTheNeed
+//3-HideOS
+	COLORREF crBuffer;
 	//MORPH START - Added by SiRoB, See chunk that we hide
 	COLORREF crHiddenPartBySOTN;
+	COLORREF crHiddenPartByHideOS;
 	//MORPH END   - Added by SiRoB, See chunk that we hide
-
+//3-HideOS
+//4-ShareOnlyTheNeed
     if(GetSlotNumber() <= theApp.uploadqueue->GetActiveUploadsCount() ||
        (GetUploadState() != US_UPLOADING && GetUploadState() != US_CONNECTING) ) {
         crNeither = RGB(224, 224, 224);
 	    crNextSending = RGB(255,208,0);
 	    crBoth = bFlat ? RGB(0, 0, 0) : RGB(104, 104, 104);
 	    crSending = RGB(0, 150, 0);
+//4-ShareOnlyTheNeed
+//3-HideOS
+		crBuffer = RGB(255, 100, 100);
 		//MORPH START - Added by SiRoB, See chunk that we hide
 		crHiddenPartBySOTN = RGB(192, 96, 255);
+		crHiddenPartByHideOS = RGB(96, 192, 255);
 		//MORPH END   - Added by SiRoB, See chunk that we hide
+//3-HideOS
+//4-ShareOnlyTheNeed
+
     } else {
         // grayed out
         crNeither = RGB(248, 248, 248);
 	    crNextSending = RGB(255,244,191);
 	    crBoth = bFlat ? RGB(191, 191, 191) : RGB(191, 191, 191);
 	    crSending = RGB(191, 229, 191);
+//4-ShareOnlyTheNeed
+//3-HideOS
+		crBuffer = RGB(255, 216, 216);
 		//MORPH START - Added by SiRoB, See chunk that we hide
 		crHiddenPartBySOTN = RGB(224, 128, 255);
+		crHiddenPartByHideOS = RGB(128, 224, 255);
 		//MORPH END   - Added by SiRoB, See chunk that we hide
+ //3-HideOS
+//4-ShareOnlyTheNeed
     }
 
 	// wistily: UpStatusFix
@@ -99,23 +117,23 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 	    s_UpStatusBar.SetHeight(rect->bottom - rect->top); 
 	    s_UpStatusBar.SetWidth(rect->right - rect->left); 
 	    s_UpStatusBar.Fill(crNeither); 
-	    if (!onlygreyrect && m_abyUpPartStatus) { 
-		    for (uint32 i = 0;i < m_nUpPartCount;i++)
+                // Morph: PowerShare
+		if (!onlygreyrect && m_abyUpPartStatus && currequpfile) { 
+			uint32 i;
+			const COLORREF crHiddenPartBySOTN = RGB(192, 96, 255);
+			const COLORREF crHiddenPartByHideOS = RGB(96, 192, 255);
+			for (i = 0;i < m_nUpPartCount;i++)
 			    if(m_abyUpPartStatus[i])
 				    s_UpStatusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),crBoth);
-			////MORPH START - Added by SiRoB, See chunk that we hide
-			//	else if (m_abyUpPartStatusHidden)
-			//		if (m_abyUpPartStatusHidden[i])
-			//			s_UpStatusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),m_bUpPartStatusHiddenBySOTN?crHiddenPartBySOTN:crHiddenPartByHideOS);
-			////MORPH END   - Added by SiRoB, See chunk that we hide
-			//for (i;i < currequpfile->GetED2KPartCount();i++)
-			////MORPH START - Added by SiRoB, See chunk that we hide
-			//	 if (m_abyUpPartStatusHidden)
-			//		if (m_abyUpPartStatusHidden[i])
-			//			s_UpStatusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),m_bUpPartStatusHiddenBySOTN?crHiddenPartBySOTN:crHiddenPartByHideOS);
-			////MORPH END   - Added by SiRoB, See chunk that we hide
-			
+				else if (m_abyUpPartStatusHidden)
+					if (m_abyUpPartStatusHidden[i])
+						s_UpStatusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),m_bUpPartStatusHiddenBySOTN?crHiddenPartBySOTN:crHiddenPartByHideOS);
+			for (i;i < currequpfile->GetED2KPartCount();i++)
+				 if (m_abyUpPartStatusHidden)
+					if (m_abyUpPartStatusHidden[i])
+						s_UpStatusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),m_bUpPartStatusHiddenBySOTN?crHiddenPartBySOTN:crHiddenPartByHideOS);
 	    }
+                // <--- Morph: PowerShare
 	    const Requested_Block_Struct* block;
 	    if (!m_BlockRequests_queue.IsEmpty()){
 		    block = m_BlockRequests_queue.GetHead();
@@ -156,6 +174,8 @@ void CUpDownClient::SetUploadState(EUploadState eNewState)
 			m_fSentOutOfPartReqs = 0;
 
 		// don't add any final cleanups for US_NONE here
+	// Morph: PowerShare
+	if (eNewState!=US_UPLOADING) m_bPowerShared = GetPowerShared();
 		m_nUploadState = eNewState;
 		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
 	}
@@ -188,16 +208,6 @@ int CUpDownClient::GetFilePrioAsNumber() const {
 	// high prio file, but then asks for something completely different.
 	int filepriority = 10; // standard
 	switch(currequpfile->GetUpPriority()){
-		//Ackronic START - PowerRelease
-		//Xman PowerRelease
-		case PR_POWER:
-			if(currequpfile->statistic.GetAllTimeTransferred() < 100 * 1024 * 1024 || (currequpfile->statistic.GetAllTimeTransferred() < currequpfile->GetFileSize()*1.5))
-				filepriority=200;
-			else
-				filepriority=100;
-			break;
-		//Xman end
-			//Ackronic END - PowerRelease
 		case PR_VERYHIGH:
 			filepriority = 18;
 			break;
@@ -350,15 +360,30 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 //		return false;
 //	}
 //}
-//>>> PowerShare
-bool CUpDownClient::IsPowerShared() const
+// Morph: PowerShare
+bool CUpDownClient::IsSecure() const
 {
-	CKnownFile* upreqfile = theApp.sharedfiles->GetFileByID((uchar*)GetUploadFileID());
-	if (upreqfile && upreqfile->IsPowerShared())
-		return true;
+	if(	!credits || /*!theApp.clientcredits->CryptoAvailable() ||*/ // Pawcio: PowerShare
+		credits->GetCurrentIdentState(GetIP()) != IS_IDENTIFIED	) {
 	return false;
 }
-//<<< PowerShare 
+	return true;
+}
+
+bool CUpDownClient::GetPowerShared() const {
+	//MORPH START - Changed by SiRoB, Keep PowerShare State when client have been added in uploadqueue
+	//if(!IsSecure()) return false; // Pawcio Changed also Overnet, Shareaza ... users can benefit from PowerShare
+
+	bool bPowerShared;
+	if (GetUploadFileID() != NULL && theApp.sharedfiles->GetFileByID(GetUploadFileID()) != NULL) {
+		bPowerShared = theApp.sharedfiles->GetFileByID(GetUploadFileID())->GetPowerShared();
+	} else {
+		bPowerShared = false;
+	}
+	return bPowerShared;
+	//MORPH END   - Changed by SiRoB, Keep PowerShare State when client have been added in uploadqueue
+}
+// <--- Morph: PowerShare
 class CSyncHelper
 {
 public:
@@ -486,11 +511,8 @@ void CUpDownClient::CreateNextBlockPackage(){
 				CreateStandartPackets(filedata,togo,currentblock,bFromPF);
 			
 			// file statistic
-//Ackronic START - Aggiunto da Aenarion[ITA] - Feature Share
-		//	srcfile->statistic.AddTransferred(togo);
-			//srcfile->statistic.AddTransferred(currentblock->StartOffset, togo);
-			srcfile->statistic.AddTransferred(currentblock->StartOffset, togo); ////Ackronic START - PowerRelease
-//Ackronic END - Aggiunto da Aenarion[ITA] - Feature Share
+                                        // Morph: PowerShare // Slugfiller: SpreadBars
+			srcfile->statistic.AddTransferred(currentblock->StartOffset, togo);
 
             m_addedPayloadQueueSession += togo;
 
@@ -525,8 +547,16 @@ void CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 	if (m_abyUpPartStatus)
 	{
 		delete[] m_abyUpPartStatus;
-		m_abyUpPartStatus = NULL;
+		m_abyUpPartStatus = NULL;	// added by jicxicmic
 	}
+        // Morph: PowerShare
+	if (m_abyUpPartStatusHidden)
+	{
+		delete[] m_abyUpPartStatusHidden;
+		m_abyUpPartStatusHidden = NULL;
+	}
+        // <--- Morph: PowerShare
+
 	m_nUpPartCount = 0;
 	m_nUpCompleteSourcesCount= 0;
 	if (GetExtendedRequestsVersion() == 0)
@@ -764,6 +794,7 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 
 	if (newreqfile == oldreqfile)
 		return;
+theApp.uploadqueue->ReleaseSlotNotifyChangeFile(this, oldreqfile, newreqfile);	//Telp Super Release
 
 	// clear old status
 	if (m_abyUpPartStatus) 
@@ -774,8 +805,9 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 	m_nUpPartCount = 0;
 	m_nUpCompleteSourcesCount= 0;
 
-	if (newreqfile)
-	{
+	if (newreqfile){
+		// Morph: PowerShare
+		m_bPowerShared = newreqfile->GetPowerShared();
 		newreqfile->AddUploadingClient(this);
 		md4cpy(requpfileid, newreqfile->GetFileHash());
 	}
@@ -1062,42 +1094,37 @@ void CUpDownClient::AddRequestCount(const uchar* fileid)
 // ==> Anti Uploader Ban - Stulle
 bool CUpDownClient::AntiUploaderBanActive()
 {
-// credits->GetDownloadedTotal() <== data amount the other client gave us
-// credits->GetUploadedTotal() <== data amount the other client got from us
+// Credits()->GetDownloadedTotal() <== data amount the other client gave us
+// Credits()->GetUploadedTotal(); <== data amount the other client got from us
 
 	if (thePrefs.GetAntiUploaderBanLimit() != 0){
-		if (credits->GetUploadedTotal() > credits->GetDownloadedTotal()) // we don't want a negative result!
-			return false;
-		else
-		{
 		switch (thePrefs.GetAntiUploaderBanCase())	{
 
 			case CS_1:{
-					if ((credits->GetDownloadedTotal()) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
+				if ((Credits()->GetDownloadedTotal()) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
 					m_iAntiUploaderBan = 1;
 				else
 					m_iAntiUploaderBan = 0;
 					  } break;
 
 			case CS_2:{
-					if (((credits->GetDownloadedTotal())-(credits->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
+				if (((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
 					m_iAntiUploaderBan = 1;
 				else
 					m_iAntiUploaderBan = 0;
 					  } break;
 
 			case CS_3:{
-					if (((credits->GetDownloadedTotal())-(credits->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20)){
+				if (((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20)){
 					SetAntiUploadBanThird(true);
 					m_iAntiUploaderBan = 1; }
-					else if ((((credits->GetDownloadedTotal())-(credits->GetUploadedTotal())) > 0) && GetAntiUploadBanThird())
+				else if ((((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) > 0) && GetAntiUploadBanThird())
 					m_iAntiUploaderBan = 1;
 				else { 
 					SetAntiUploadBanThird(false);
 					m_iAntiUploaderBan = 0; }
 					  } break;
 		}
-			}
 		if (m_iAntiUploaderBan == 1)
 			return true;
 		else return false;

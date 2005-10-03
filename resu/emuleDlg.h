@@ -31,7 +31,6 @@ namespace Kademlia {
 };
 
 class CChatWnd;
-class CIrcWnd;
 class CKademliaWnd;
 class CKnownFileList; 
 class CMainFrameDropTarget;
@@ -128,7 +127,6 @@ public:
 	CChatWnd*		chatwnd;
 	CMuleStatusBarCtrl* statusbar;
 	CStatisticsDlg*  statisticswnd;
-	CIrcWnd*		ircwnd;
 	CTaskbarNotifier* m_wndTaskbarNotifier;
 	CReBarCtrl		m_ctlMainTopReBar;
 //==> Toolbar [shadow2004]

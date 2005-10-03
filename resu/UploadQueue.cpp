@@ -47,6 +47,7 @@
 #include "Kademlia/Kademlia/Prefs.h"
 #include "Log.h"
 #include "collection.h"
+#include "partfile.h" // Pawcio: PowerShare
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,6 +70,7 @@ CUploadQueue::CUploadQueue()
 	if (thePrefs.GetVerbose() && !h_timer)
 		AddDebugLogLine(true,_T("Failed to create 'upload queue' timer - %s"),GetErrorMessage(GetLastError()));
 	datarate = 0;
+	releaseslots = 0;	//Telp Super Release
 	counter=0;
 	successfullupcount = 0;
 	failedupcount = 0;
@@ -104,19 +106,15 @@ CUploadQueue::CUploadQueue()
 CUpDownClient* CUploadQueue::FindBestClientInQueue()
 {
 	POSITION toadd = 0;
+	POSITION toaddPS = 0; // Pawcio: PowerShare
 	POSITION toaddlow = 0;
+	POSITION toaddlowPS = 0; // Pawcio: PowerShare
 	uint32	bestscore = 0;
+	uint32	bestscorePS = 0; // Pawcio: PowerShare
 	uint32  bestlowscore = 0;
+	uint32  bestlowscorePS = 0; // Pawcio: PowerShare
     CUpDownClient* newclient = NULL;
     CUpDownClient* lowclient = NULL;
-//>>> PowerShare
-	POSITION toaddPS = 0;
-	POSITION toaddlowPS = 0;
-	uint32 bestscorePS = 0;
-	uint32 bestlowscorePS = 0;
-	CUpDownClient* newclientPS = NULL;
-	CUpDownClient* lowclientPS = NULL;
-//<<< PowerShare 
 
 	POSITION pos1, pos2;
 	for (pos1 = waitinglist.GetHeadPosition();( pos2 = pos1 ) != NULL;)
@@ -132,49 +130,49 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 			RemoveFromWaitingQueue(pos2,true);
 			continue;
 		}
-
+        else
+        {
 		// finished clearing
 		uint32 cur_score = cur_client->GetScore(false);
-//>>> PowerShare
-		//here we separate the function and determine the best NORMAL and best PowerShare client
-		if( cur_client->IsPowerShared() )
-		{
-			if ( cur_score > bestscorePS)
-			{
+
+			// Pawcio: PowerShare
+			if (cur_client->GetPowerShared()){
 				// cur_client is more worthy than current best client that is ready to go (connected).
-				if(!cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected())) 
+				if ( cur_score > bestscorePS)
 				{
+					if(!cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected())) {
 					// this client is a HighID or a lowID client that is ready to go (connected)
 					// and it is more worthy
 					bestscorePS = cur_score;
 					toaddPS = pos2;
-					newclientPS = waitinglist.GetAt(toaddPS);
+						// newclient = waitinglist.GetAt(toadd); // Pawcio: BC
 				}
-				else if(!cur_client->m_bAddNextConnect)
-				{
+					else if( !cur_client->m_bAddNextConnect) {
 					// this client is a lowID client that is not ready to go (not connected)
 
 					// now that we know this client is not ready to go, compare it to the best not ready client
 					// the best not ready client may be better than the best ready client, so we need to check
 					// against that client
-					if (cur_score > bestlowscorePS)
+						if (cur_score > bestlowscore)
 					{
 						// it is more worthy, keep it
-						bestlowscorePS = cur_score;
+							bestlowscore = cur_score;
 						toaddlowPS = pos2;
-						lowclientPS = waitinglist.GetAt(toaddlowPS);
+							// lowclient = waitinglist.GetAt(toaddlow); // Pawcio: BC
 					}
 				}
 			}
+				else {
+					// cur_client is more worthy. Save it.
 		}
-		else //else make default selection...
-		{
-//<<< PowerShare 
+		}
+			else {
+				// <--- Pawcio: PowerShare
+                // cur_client is more worthy than current best client that is ready to go (connected).
 			if ( cur_score > bestscore)
 			{
 				// cur_client is more worthy than current best client that is ready to go (connected).
-				if(!cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected())) 
-				{
+                if(!cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected())) {
 					// this client is a HighID or a lowID client that is ready to go (connected)
 					// and it is more worthy
 					bestscore = cur_score;
@@ -197,35 +195,23 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 					}
 				}
 			} 
-		}//>>> PowerShare 
+		}
+	}
 	}
 
-//>>> PowerShare
-	//Prefer the PS clients in any case:
-	if (bestlowscorePS > bestscorePS && lowclientPS)
-		lowclientPS->m_bAddNextConnect = true;
-	else
-//<<< PowerShare 
-		if (bestlowscore > bestscore && lowclient)
-			lowclient->m_bAddNextConnect = true;
-
-//>>> PowerShare
-	//Prefer the PS clients in any case:
-	if (!toadd && !toaddPS)
-	// if (!toadd)
-//<<< PowerShare 
-		return NULL;
-//>>> PowerShare
-	//Prefer the PS clients in any case:
-	if(toaddPS)
+	// Pawcio: PowerShare
+	if (bestlowscorePS > bestscorePS && toaddlowPS ){
+		waitinglist.GetAt(toaddlowPS)->m_bAddNextConnect = true;
+    }
+	else if (bestlowscore > bestscore && toaddlow && !toaddPS )
 	{
-		AddDebugLogLine(false, _T("Giving prio to PS client!"));
-		return waitinglist.GetAt(toaddPS);
+		waitinglist.GetAt(toaddlow)->m_bAddNextConnect = true;
 	}
-	else
-		return waitinglist.GetAt(toadd);
-	// return waitinglist.GetAt(toadd);
-//<<< PowerShare 
+	if (!toaddPS && !toadd)
+		return NULL;
+
+	return waitinglist.GetAt(toaddPS ? toaddPS : toadd); 
+	// <--- Pawcio: PowerShare
 }
 
 void CUploadQueue::InsertInUploadingList(CUpDownClient* newclient) 
@@ -238,23 +224,22 @@ void CUploadQueue::InsertInUploadingList(CUpDownClient* newclient)
     newclient->SetSlotNumber(uploadinglist.GetCount());
 }
 
-bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd)
-{
+bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	CUpDownClient* newclient = NULL;
 	// select next client or use given client
 	if (!directadd)
 	{
         newclient = FindBestClientInQueue();
-	}
-	else 
-		newclient = directadd;
-
 	if(newclient)
 	{
 		RemoveFromWaitingQueue(newclient, true);
 		theApp.emuledlg->transferwnd->ShowQueueCount(waitinglist.GetCount());
 	}
+	}
 	else
+		newclient = directadd;
+
+    if(newclient == NULL) 
         return false;
 
 	if (!thePrefs.TransferFullChunks())
@@ -280,6 +265,31 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd)
 	}
 	else
 	{
+		// Pawcio: PowerShare
+		CKnownFile* reqfile = theApp.sharedfiles->GetFileByID(newclient->GetUploadFileID());
+		if (reqfile){
+			CSafeMemFile data(16+16);
+			data.WriteHash16(reqfile->GetFileHash());
+			bool send = true;
+			if (reqfile->IsPartFile()){
+				((CPartFile*)reqfile)->WritePartStatus(&data, newclient);	// SLUGFILLER: hideOS
+				send = reqfile->GetHideOS()>=0 ? reqfile->GetHideOS()!=0 : thePrefs.GetHideOvershares()!=0;
+			}
+			else if (!reqfile->ShareOnlyTheNeed(&data, newclient)) // Wistly SOTN
+				if (!reqfile->HideOvershares(&data, newclient))	// Slugfiller: HideOS
+					send = false;
+			if (send){
+				Packet* packet = new Packet(&data);
+				packet->opcode = OP_FILESTATUS;
+				theStats.AddUpDataOverheadFileRequest(packet->size);
+				newclient->socket->SendPacket(packet,true);
+			}
+			else {
+				BYTE* tmp = data.Detach();
+				free(tmp);
+			}
+		}
+		// Pawcio: PowerShare
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 			DebugSend("OP__AcceptUploadReq", newclient);
 		Packet* packet = new Packet(OP_ACCEPTUPLOADREQ,0);
@@ -298,6 +308,10 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd)
 	CKnownFile* reqfile = theApp.sharedfiles->GetFileByID((uchar*)newclient->GetUploadFileID());
 	if (reqfile)
 		reqfile->statistic.AddAccepted();
+			//Telp Super Release
+		if (reqfile->IsReleaseFile())
+			releaseslots++;
+		//Telp Super Release	
 	theApp.emuledlg->transferwnd->uploadlistctrl.AddClient(newclient);
 
 	return true;
@@ -763,7 +777,8 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		client->socket->SendPacket(packet,true);
 		return;
 	}
-	if (waitinglist.IsEmpty() && AcceptNewClient())
+	if ((waitinglist.IsEmpty() && AcceptNewClient())
+|| (releaseslots < 1 && reqfile && reqfile->IsReleaseFile()))	//Telp Super Release		
 	{
 		AddUpNextClient(_T("Direct add with empty queue."), client);
 	}
@@ -827,14 +842,50 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
             CKnownFile* requestedFile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
             if(requestedFile != NULL) {
                 requestedFile->UpdatePartsInfo();
+				//Telp Super Release
+				if (requestedFile && requestedFile->IsReleaseFile()){
+					if (releaseslots > 0)	// Just making sure
+						releaseslots--;
+					FillReleaseSlot();
+				}
+				//Telp Super Release
             }
 			theApp.clientlist->AddTrackClient(client); // Keep track of this client
 			client->SetUploadState(US_NONE);
 			client->ClearUploadBlockRequests();
 			client->SetCollectionUploadSlot(false);
+		if (client->socket){ 
+			// Pawcio: PowerShare
+			if (requestedFile){
+				CSafeMemFile data(16+16);
+				data.WriteHash16(requestedFile->GetFileHash());
+				bool send = true;
+				if (requestedFile->IsPartFile()){
+					((CPartFile*)requestedFile)->WritePartStatus(&data);	// SLUGFILLER: hideOS
+			send = requestedFile->GetHideOS()>=0 ? requestedFile->GetHideOS()!=0 : thePrefs.GetHideOvershares()!=0;
 
-            m_iHighestNumberOfFullyActivatedSlotsSinceLastCall = 0;
+				}
+				else {
+					if (!requestedFile->ShareOnlyTheNeed(&data, client)) // Wistly SOTN
+						if (!requestedFile->HideOvershares(&data, client))	// Slugfiller: HideOS
+							send = false;
+					data.WriteUInt16(0);
+				}
+				if (send){
+					Packet* packet = new Packet(&data);
+					packet->opcode = OP_FILESTATUS;
+					theStats.AddUpDataOverheadFileRequest(packet->size);
+					client->socket->SendPacket(packet,true);
+				}
+				else {
+					BYTE* tmp = data.Detach();
+					free(tmp);
+				}
+			}
+			// Pawcio: PowerShare
+		}
 			
+            m_iHighestNumberOfFullyActivatedSlotsSinceLastCall = 0;
 
 			result = true;
         } else {
@@ -858,7 +909,12 @@ bool CUploadQueue::RemoveFromWaitingQueue(CUpDownClient* client, bool updatewind
 		RemoveFromWaitingQueue(pos,updatewindow);
 		if (updatewindow)
 			theApp.emuledlg->transferwnd->ShowQueueCount(waitinglist.GetCount());
+		// Super Release
+		if (client->m_bAddNextConnect) {
 		client->m_bAddNextConnect = false;
+			FillReleaseSlot();
+		}
+		// Super Release
 		return true;
 	}
 	else
@@ -877,7 +933,12 @@ void CUploadQueue::UpdateMaxClientScore()
 {
 	m_imaxscore=0;
 	for(POSITION pos = waitinglist.GetHeadPosition(); pos != 0; ) {
-		uint32 score = waitinglist.GetNext(pos)->GetScore(true, false);
+		// Pawcio: PowerShare
+		CUpDownClient* client = waitinglist.GetNext(pos);
+		if (client->GetPowerShared())
+			continue;
+		// <--- Pawcio: PowerShare
+		uint32 score = client->GetScore(true, false);
 		if(score > m_imaxscore )
 			m_imaxscore=score;
 	}
@@ -1145,10 +1206,12 @@ void CUploadQueue::UpdateDatarates() {
 }
 
 uint32 CUploadQueue::GetDatarate() {
+    UpdateDatarates(); //spanish
     return datarate;
 }
 
 uint32 CUploadQueue::GetToNetworkDatarate() {
+    UpdateDatarates(); //spanish
     if(datarate > friendDatarate) {
         return datarate - friendDatarate;
     } else {
@@ -1201,6 +1264,83 @@ void CUploadQueue::ReSortUploadSlots(bool force) {
         theApp.uploadBandwidthThrottler->Pause(false);
     }
 }
+//Telp Super Release
+void CUploadQueue::FillReleaseSlot() {
+	uint32 futureslots = 0;
+	// Count future slots
+	for (POSITION pos = waitinglist.GetHeadPosition(); pos != NULL;){
+		CUpDownClient* cur_client =	waitinglist.GetNext(pos);
+		if ( !cur_client->m_bAddNextConnect )
+			continue;
+		CKnownFile* curfile = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+		if ( !curfile || !curfile->IsReleaseFile() )
+			continue;
+		futureslots++;
+	}
+	while (releaseslots+futureslots < 1){	// Why "while"? In case I decide to change 1 to something else.
+		// try to replace release slot
+		uint32 bestscore = 0;
+		CUpDownClient* toadd = NULL;
+		for (POSITION pos = waitinglist.GetHeadPosition(); pos != NULL;){
+			CUpDownClient* cur_client =	waitinglist.GetNext(pos);
+			if ( cur_client->m_bAddNextConnect )
+				continue;
+			CKnownFile* curfile = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+			if ( !curfile || !curfile->IsReleaseFile() )
+				continue;
+		    uint32 cur_score = cur_client->GetScore(false, false, false);	// SLUGFILLER: randQueue
+			if ( cur_score > bestscore ){
+				bestscore = cur_score;
+				toadd = cur_client;
+			}
+		}
+		if (toadd) {
+			if (toadd->HasLowID()) {
+				futureslots++;
+				toadd->m_bAddNextConnect = true;
+			}
+			else {
+				RemoveFromWaitingQueue(toadd, true);
+				AddUpNextClient(_T("Push"),toadd);
+			}
+		}
+		else
+			break;
+	}
+}
+
+void CUploadQueue::CountReleaseSlot(const CKnownFile* file) {
+	for (POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL;){
+		CUpDownClient* cur_client =	uploadinglist.GetNext(pos);
+		CKnownFile* curfile = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+		if (curfile == file)
+			releaseslots++;		// new release slot used
+	}
+}
+
+void CUploadQueue::EmptyReleaseSlot(const CKnownFile* file) {
+	for (POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL && releaseslots > 0;){
+		CUpDownClient* cur_client =	uploadinglist.GetNext(pos);
+		CKnownFile* curfile = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+		if (curfile == file)
+			releaseslots--;		// no longer release file, no longer release slot
+	}
+}
+
+void CUploadQueue::ReleaseSlotNotifyChangeFile(CUpDownClient* client, const CKnownFile* oldfile, const CKnownFile* newfile) {
+	if (!IsDownloading(client)) {
+		if ( client->m_bAddNextConnect )
+			FillReleaseSlot();
+		return;
+	}
+	if (releaseslots > 0 && oldfile && oldfile->IsReleaseFile())
+		releaseslots--;
+	if (newfile && newfile->IsReleaseFile())
+		releaseslots++;
+	FillReleaseSlot();		// make room for next one
+}
+//Telp Super Release
+
 //KTS+ webcache
 CUpDownClient*	CUploadQueue::FindClientByWebCacheUploadId(const uint32 id) // Superlexx - webcache - can be made more efficient
 {

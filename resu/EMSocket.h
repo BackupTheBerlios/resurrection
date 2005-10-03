@@ -104,6 +104,8 @@ private:
     uint32 GetNextFragSize(uint32 current, uint32 minFragSize);
     bool    HasSent() { return m_hasSent; }
 
+	//Xman Code Improvement
+	bool	isreadyforsending;
 	// Download (pseudo) rate control	
 	uint32	downloadLimit;
 	bool	downloadLimitEnable;

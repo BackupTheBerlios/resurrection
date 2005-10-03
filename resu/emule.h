@@ -224,6 +224,10 @@ protected:
 
 	uint32 m_dwPublicIP;
 	bool m_bAutoStart;
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+	public:
+		bool	IsEd2kFriendLinkInClipboard();
+		// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 	//Spe64 eWombat [WINSOCK2]
 	public: 
 	WSADATA				m_wsaData; 

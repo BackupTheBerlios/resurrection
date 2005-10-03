@@ -10,6 +10,7 @@
 // IP-to-Country +
 #include "IP2Country.h"
 // IP-to-Country -
+#include "SharedFileList.h" // Morph: PowerShare	
 #include "ClientCredits.h" //Credit Syst Spe64
 
 
@@ -55,6 +56,31 @@ m_htiClientPerc = NULL;
 //Telp Start push rare file
     m_htiEnablePushRareFile = NULL; 
 //Telp End push rare file
+//<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	m_iHideOS = 0;
+	m_iSelectiveShare = 0;
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+	m_htiUM = NULL;
+	m_htiSFM = NULL;
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	m_htiHideOS = NULL;	//MORPH - Added by SiRoB, SLUGFILLER: hideOS
+	m_htiSelectiveShare = NULL;	//MORPH - Added by SiRoB, SLUGFILLER: hideOS
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	m_htiShareOnlyTheNeed = NULL; //MORPH - Added by SiRoB, SHARE_ONLY_THE_NEED
+	m_htiPowerShareLimit = NULL; //MORPH - Added by SiRoB, POWERSHARE Limit
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+ //<<-- ADDED STORMIT - START - Added by SiRoB, Avoid misusing of powersharing	
+	m_htiPowershareMode = NULL;
+	m_htiPowershareDisabled = NULL;
+	m_htiPowershareActivated = NULL;
+	m_htiPowershareAuto = NULL;
+	m_htiPowershareLimited = NULL;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+	m_htiSpreadbar = NULL;
+
 
 // CreditSystem
 	m_htiCreditSystem = NULL;
@@ -78,7 +104,7 @@ m_htiClientPerc = NULL;
 	m_htiIP2CountryName_LONG = NULL;
 	m_htiIP2CountryShowFlag = NULL;
 	// IP-to-Country -
-// ==> Anti Uploader Ban - Stulle
+	// ==> Anti Uploader Ban - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
 	m_htiAntiCase1 = NULL;
 	m_htiAntiCase2 = NULL;
@@ -128,6 +154,8 @@ int iImgSecu = 8;
 		int iImgIP2Country = 8;
 		// IP-to-Country -
 int iImgCS = 8; // Creditsystems
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
 int iImgUM = 8; // default icon
 		int iImgDrop = 8;//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 		int iImgPS = 8;
@@ -142,6 +170,8 @@ CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 			iImgIP2Country = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL"))); 
 	         // IP-to-Country -	
 iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+			// Morph: PowerShare
 			iImgPS = piml->Add(CTempIconLoader(_T("Kadcontactlist")));
 			iImgSFM = piml->Add(CTempIconLoader(_T("Sharedfiles")));
 			// <--- Morph: PowerShare
@@ -167,7 +197,6 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_htiIP2CountryName_LONG = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_COUNTRYNAME_LONG), m_htiIP2CountryName, m_iIP2CountryName == IP2CountryName_LONG);
 		m_htiIP2CountryShowFlag = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_COUNTRYNAME_SHOWFLAG), m_htiIP2CountryName, m_bIP2CountryShowFlag);
 		// IP-to-Country -
-
 		//Telp Start payback first
 		m_htiPBF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACK_FIRST), m_AdditionalVipeR, m_bPBF);
 //Telp End payback first
@@ -199,8 +228,28 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_ctrlTreeOptions.Expand(m_htiDropSources, TVE_EXPAND);
 		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+//<<-- ADDED STORMIT -  Morph: PowerShared //
+		m_htiUM = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_UM), iImgUM, TVI_ROOT);
+m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
+		//<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+		m_htiSpreadbar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREADBAR_DEFAULT_CHECKBOX), m_htiUM, m_iSpreadbar);
+		m_htiHideOS = m_ctrlTreeOptions.InsertItem(GetResString(IDS_HIDEOVERSHARES), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiUM);
+		m_ctrlTreeOptions.AddEditBox(m_htiHideOS, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiSelectiveShare = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SELECTIVESHARE), m_htiHideOS, m_iSelectiveShare);
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+		m_htiSFM = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SFM), iImgSFM, TVI_ROOT);
+		m_ctrlTreeOptions.SetItemState(m_htiSFM, TVIS_BOLD, TVIS_BOLD);
+		m_htiShareOnlyTheNeed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHAREONLYTHENEED), m_htiSFM, m_iShareOnlyTheNeed);
+		m_htiPowershareMode = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_POWERSHARE), iImgPS, m_htiSFM);
+		m_htiPowershareDisabled = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiPowershareMode, m_iPowershareMode == 0);
+		m_htiPowershareActivated =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_ACTIVATED), m_htiPowershareMode, m_iPowershareMode == 1);
+		m_htiPowershareAuto =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_AUTO), m_htiPowershareMode, m_iPowershareMode == 2);
+		m_htiPowershareLimited =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_LIMITED), m_htiPowershareMode, m_iPowershareMode == 3);
+		m_htiPowerShareLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_POWERSHARE_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiPowershareLimited );
+
 		m_ctrlTreeOptions.Expand(m_htiHideOS, TVE_EXPAND);
 		
+		// <--- Morph: PowerShare
 		//Telp Start push small file
 	        m_htiEnablePushSmallFile = m_ctrlTreeOptions.InsertCheckBox(_T("Push Small Files"),m_htiSFM, m_bEnablePushSmallFile); //Hawkstar, push small file
 //Telp End push small file
@@ -245,7 +294,7 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiIP2CountryName, (int &)m_iIP2CountryName);
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiIP2CountryShowFlag, m_bIP2CountryShowFlag);
 	// IP-to-Country -
- 		DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiClientPerc, m_bEnableClientPerc);
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiClientPerc, m_bEnableClientPerc);
 //Telp Start payback First
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiPBF, m_bPBF);
 //Telp End payback First
@@ -277,6 +326,18 @@ DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // C
 		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiDropSourcesTimerHQR, m_iDropSourcesTimerHQR);
 		DDV_MinMaxInt(pDX, iMaxRemoveQRS, 2500, 100000);
 		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+//<<-- ADDED STORMIT -  Morph: PowerShared //
+	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiHideOS, m_iHideOS);
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	DDV_MinMaxInt(pDX, m_iHideOS, 0, INT_MAX);
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiSelectiveShare, m_iSelectiveShare);
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiShareOnlyTheNeed, m_iShareOnlyTheNeed);
+	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiPowerShareLimit, m_iPowerShareLimit);
+	DDV_MinMaxInt(pDX, m_iShareOnlyTheNeed, 0, INT_MAX);
+	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiPowershareMode, m_iPowershareMode);
+        // <--- Morph: PowerShare
+
 }
 
 /////////////////////////////////////////  OnInitDialog  ///////////////////////////////////////////////////////------
@@ -291,6 +352,7 @@ BOOL CPPgVipeR::OnInitDialog()
 
 m_iCreditSystem = thePrefs.GetCreditSystem(); // CreditSystem 
 
+m_iSpreadbar = thePrefs.GetSpreadbarSetStatus(); //SpreadBar
 //client percentage
 m_bEnableClientPerc = thePrefs.enableClientPerc;
 //Telp Start payback first
@@ -315,6 +377,17 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 	m_iDropSourcesTimerHQR = thePrefs.m_iDropSourcesTimerHQR;
     iMaxRemoveQRS = (int) thePrefs.GetMaxRemoveQRS();
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+//<<-- ADDED STORMIT -  Morph: PowerShared //
+	m_iPowershareMode = thePrefs.m_iPowershareMode;//MORPH - Added by SiRoB, Avoid misusing of powersharing
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	m_iHideOS = thePrefs.hideOS; //MORPH - Added by SiRoB, SLUGFILLER: hideOS
+	m_iSelectiveShare = thePrefs.selectiveShare; //MORPH - Added by SiRoB, SLUGFILLER: hideOS
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed; //MORPH - Added by SiRoB, SHARE_ONLY_THE_NEED
+	m_iPowerShareLimit = thePrefs.PowerShareLimit; //MORPH - Added by SiRoB, POWERSHARE Limit
+        // <--- Morph: PowerShare
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
+
 		// [ionix] - FunnyNick
 	m_bFunnyNickEnabled = thePrefs.DisplayFunnyNick();
 	m_iFunnyNickTag = thePrefs.GetFnTag();
@@ -344,6 +417,21 @@ void CPPgVipeR::Localize(void)
         if (m_htiEnablePushRareFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushRareFile, _T("Push Rare Files")); //Hawkstar, push rare file
 //Telp End push rare file
 
+//<<-- ADDED STORMIT -  Morph: PowerShared //
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+		if (m_htiHideOS) m_ctrlTreeOptions.SetEditLabel(m_htiHideOS, GetResString(IDS_HIDEOVERSHARES));//MORPH - Added by SiRoB, SLUGFILLER: hideOS
+		if (m_htiSelectiveShare) m_ctrlTreeOptions.SetItemText(m_htiSelectiveShare, GetResString(IDS_SELECTIVESHARE));//MORPH - Added by SiRoB, SLUGFILLER: hideOS
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+		if (m_htiShareOnlyTheNeed) m_ctrlTreeOptions.SetItemText(m_htiShareOnlyTheNeed, GetResString(IDS_SHAREONLYTHENEED));//MORPH - Added by SiRoB, SHARE_ONLY_THE_NEED
+		if (m_htiPowershareMode) m_ctrlTreeOptions.SetItemText(m_htiPowershareMode, GetResString(IDS_POWERSHARE));
+		if (m_htiPowershareDisabled) m_ctrlTreeOptions.SetItemText(m_htiPowershareDisabled, GetResString(IDS_POWERSHARE_DISABLED));
+		if (m_htiPowershareActivated) m_ctrlTreeOptions.SetItemText(m_htiPowershareActivated, GetResString(IDS_POWERSHARE_ACTIVATED));
+		if (m_htiPowershareAuto) m_ctrlTreeOptions.SetItemText(m_htiPowershareAuto, GetResString(IDS_POWERSHARE_AUTO));
+		if (m_htiPowershareLimited) m_ctrlTreeOptions.SetItemText(m_htiPowershareLimited, GetResString(IDS_POWERSHARE_LIMITED));
+		if (m_htiPowerShareLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPowerShareLimit, GetResString(IDS_POWERSHARE_LIMIT));
+                // <--- Morph: PowerShare
+ //<<-- ADDED STORMIT -  Morph: PowerShared //	
+	
 //CreditSystem+
 	 if (m_htiCreditSystem)  
 			m_ctrlTreeOptions.SetItemText(m_htiCreditSystem, GetResString(IDS_CREDIT_SYSTEM));
@@ -430,6 +518,17 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 	thePrefs.SetDropSourcesHQR(m_iDropSourcesHQR);
 	thePrefs.SetMaxRemoveQRS(iMaxRemoveQRS ? iMaxRemoveQRS : 5000);
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+	//<<-- ADDED STORMIT -  Morph: PowerShared //
+	thePrefs.m_iPowershareMode = m_iPowershareMode;//MORPH - Added by SiRoB, Avoid misusing of powersharing
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	thePrefs.hideOS = m_iHideOS;	//MORPH - Added by SiRoB, SLUGFILLER: hideOS
+	thePrefs.selectiveShare = m_iSelectiveShare; //MORPH - Added by SiRoB, SLUGFILLER: hideOS
+ //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+	thePrefs.ShareOnlyTheNeed = m_iShareOnlyTheNeed; //MORPH - Added by SiRoB, SHARE_ONLY_THE_NEED
+	thePrefs.PowerShareLimit = m_iPowerShareLimit;
+	theApp.sharedfiles->UpdatePartsInfo();
+        // <--- Morph: PowerShare
+ //<<-- ADDED STORMIT -  Morph: PowerShared //
 //Telp start payback first
 	thePrefs.m_bPBF = m_bPBF;
 //Telp end payback first
@@ -473,6 +572,7 @@ void CPPgVipeR::OnDestroy()
     m_htiEnablePushRareFile = NULL; //Hawkstar, push rare file
 //Telp End push rare file
 
+//<<-- ADDED STORMIT -  Morph: PowerShared //
 	m_htiUM = NULL;
 	m_htiSFM = NULL;
  //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
@@ -490,6 +590,14 @@ void CPPgVipeR::OnDestroy()
 	m_htiDropSourcesHQR = NULL;
     m_htiHqrBox = NULL;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+	m_htiPowerShareLimit = NULL; //MORPH - Added by SiRoB, POWERSHARE Limit
+	m_htiPowershareMode = NULL;
+	m_htiPowershareDisabled = NULL;
+	m_htiPowershareActivated = NULL;
+	m_htiPowershareAuto = NULL;
+	m_htiPowershareLimited = NULL;
+ //<<-- ADDED STORMIT -  Morph: PowerShared //	
+
 // IP-to-Country +
 	m_htiIP2CountryName = NULL;
 	m_htiIP2CountryName_DISABLE = NULL;

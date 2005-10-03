@@ -15,15 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#include "BarShader.h"//Ackronic - Aggiunto da Aenarion[ITA] - Feature Share
+#include "BarShader.h"
 
-//Xman PowerRelease
-struct Spread_Struct{
-	uint32 start;
-	uint32 end;
-	uint32 count;
-};
-//Xman end
+class CSafeMemFile; //KTS hideOS
+class CKnownFile;//KTS hideOS
+//KTS- Hideos 
+
 class CStatisticFile
 {
 	friend class CKnownFile;
@@ -37,19 +34,32 @@ public:
 		alltimerequested = 0;
 		alltimetransferred = 0;
 		alltimeaccepted = 0;
-	}
+//<<-- ADDED STORMIT - Morph: PowerShare, Reduce SpreadBar CPU consumption //
+		InChangedSpreadSortValue = false;
+		InChangedFullSpreadCount = false;
+		InChangedSpreadBar = false;
+		lastSpreadSortValue = 0;;
+		lastFullSpreadCount = 0;
+//<<-- ADDED STORMIT - Morph: PowerShare, Reduce SpreadBar CPU consumption //
 
+
+	}
 
 	void	MergeFileStats( CStatisticFile* toMerge );
 	void	AddRequest();
 	void	AddAccepted();
-
-	//Xman PowerRelease
-	~CStatisticFile();	
+	//KTS+ Spreadbars
 	void	AddTransferred(uint32 start, uint32 bytes);
 	void	AddBlockTransferred(uint32 start, uint32 end, uint32 count);
-	//Xman end
-
+	void	DrawSpreadBar(CDC* dc, RECT* rect, bool bFlat) /*const*/;
+	float	GetSpreadSortValue() /*const*/;
+	float	GetFullSpreadCount() /*const*/;
+//<<-- ADDED STORMIT - Morph: PowerShare - SLUGFILLER: Spreadbars //
+void	ResetSpreadBar();
+	//KTS- Spreadbars
+	//KTS+ Hideos
+	//bool	HideOvershares(CSafeMemFile* file, CUpDownClient* client); 
+	//KTS- Hideos
 
 	UINT	GetRequests() const				{return requested;}
 	UINT	GetAccepts() const				{return accepted;}
@@ -60,7 +70,19 @@ public:
 	CKnownFile* fileParent;
 
 private:
-	CTypedPtrList<CPtrList, Spread_Struct*> spreadlist; //Xman PowerRelease
+//<<-- ADDED STORMIT - Morph: PowerShare // SLUGFILLER: Spreadbars
+	CRBMap<uint64, uint64> spreadlist;
+	static CBarShader s_SpreadBar;
+	bool	InChangedSpreadSortValue;
+	bool	InChangedFullSpreadCount;
+	bool	InChangedSpreadBar;
+	CBitmap m_bitmapSpreadBar;
+	int		lastSize;
+	bool	lastbFlat;
+	float	lastSpreadSortValue;
+	float	lastFullSpreadCount;
+//<<-- ADDED STORMIT - Morph: PowerShare //
+
 	uint32 requested;
 	uint32 accepted;
 	uint64 transferred;

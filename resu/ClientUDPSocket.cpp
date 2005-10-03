@@ -343,14 +343,7 @@ bool CClientUDPSocket::ProcessPacket(const BYTE* packet, uint16 size, uint8 opco
 						if (reqfile->IsPartFile())
 							((CPartFile*)reqfile)->WritePartStatus(&data_out);
 						else
-							//Ackronic START - PowerRelease
-							{
-							//Xman PowerRelease
-							if (!reqfile->HideOvershares(&data_out, sender))
 								data_out.WriteUInt16(0);
-							//Xman end
-							}
-							//Ackronic END - PowerRelease
 					}
 					data_out.WriteUInt16(theApp.uploadqueue->GetWaitingPosition(sender));
 					if (thePrefs.GetDebugClientUDPLevel() > 0)

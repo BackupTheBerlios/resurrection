@@ -27,6 +27,13 @@
 #include "ClientCredits.h"
 #include "IconStatic.h"
 #include "UserMsgs.h"
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+#include "HttpDownloadDlg.h"
+#include "ED2KLink.h"
+#include "InputBox.h"
+#include "MenuCmds.h"
+#include "Log.h"
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 
 #include "IP2Country.h" //Commander - Added: IP2Country
 #ifdef _DEBUG
@@ -57,6 +64,9 @@ BEGIN_MESSAGE_MAP(CChatWnd, CResizableDialog)
 	ON_NOTIFY(LVN_ITEMACTIVATE, IDC_LIST2, OnLvnItemActivateFrlist)
 	ON_NOTIFY(NM_CLICK, IDC_LIST2, OnNMClickFrlist)
 	ON_STN_DBLCLK(IDC_FRIENDSICON, OnStnDblclickFriendsicon)
+	// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+	ON_BN_CLICKED(IDC_BTN_MENU, OnBnClickedBnmenu)
+	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 END_MESSAGE_MAP()
 
 CChatWnd::CChatWnd(CWnd* pParent /*=NULL*/)
@@ -118,7 +128,7 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 
 		// Client
 		if (pFriend->GetLinkedClient())
-			GetDlgItem(IDC_FRIENDS_CLIENTE_EDIT)->SetWindowText(pFriend->GetLinkedClient()->GetClientSoftVer());
+			GetDlgItem(IDC_FRIENDS_CLIENTE_EDIT)->SetWindowText(pFriend->GetLinkedClient()->DbgGetFullClientSoftVer());
 		else
 			GetDlgItem(IDC_FRIENDS_CLIENTE_EDIT)->SetWindowText(_T("?"));
 
@@ -190,7 +200,13 @@ BOOL CChatWnd::OnInitDialog()
 	inputtext.SetLimitText(MAX_CLIENT_MSG_LEN);
 	chatselector.Init();
 	m_FriendListCtrl.Init();
-
+	// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+	if ( theApp.m_fontSymbol.m_hObject )
+	{
+		GetDlgItem(IDC_BTN_MENU)->SetFont(&theApp.m_fontSymbol);
+		GetDlgItem(IDC_BTN_MENU)->SetWindowText(_T("6")); // show a down-arrow
+	}
+	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 	SetAllIcons();
 
 	CRect rcSpl;
@@ -472,3 +488,121 @@ void CChatWnd::OnStnDblclickFriendsicon()
 {
 	theApp.emuledlg->ShowPreferences(IDD_PPG_FILES);
 }
+// MORPH START - Added by Commander, Friendlinks [emulEspaña]
+BOOL CChatWnd::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam){ 
+		//KTS+ add friends
+				case MP_ADDTOFRIEND:{ 
+					const CChatItem* ci = chatselector.GetCurrentChatItem(); 
+					if (ci) 
+						theApp.friendlist->AddFriend(ci->client); 
+					break; 
+									} 
+									//KTS- add friends
+				case MP_GETFRIENDED2KLINK:
+					{
+						CString sLink;
+						CED2KFriendLink myLink(CPreferences::GetUserNick(), CPreferences::GetUserHash());
+						myLink.GetLink(sLink);
+						theApp.CopyTextToClipboard(sLink);
+					}
+					break;
+				case MP_GETHTMLFRIENDED2KLINK:
+					{
+						CString sLink;
+						CED2KFriendLink myLink(CPreferences::GetUserNick(), CPreferences::GetUserHash());
+						myLink.GetLink(sLink);
+						sLink = _T("<a href=\"") + sLink + _T("\">") + StripInvalidFilenameChars(CPreferences::GetUserNick(), true) + _T("</a>");
+						theApp.CopyTextToClipboard(sLink);
+					}
+					break;
+					//MORPH START - Added by Commander, Manual eMfriend.met download
+				case MP_GETEMFRIENDMETFROMURL: {
+
+					InputBox inp;
+					inp.SetLabels (GetResString (IDS_DOWNLOADEMFRIENDSMET),	GetResString (IDS_EMFRIENDSMETURL),_T(""));
+					inp.DoModal ();
+					CString url = inp.GetInput ();
+
+					if (!url.IsEmpty() && !inp.WasCancelled())
+						UpdateEmfriendsMetFromURL(url);
+											   } break;
+					//MORPH END - Added by Commander, Manual eMfriend.met download
+				default:
+					return CResizableDialog::OnCommand(wParam, lParam);
+					// MORPH END - Added by Commander, Friendlinks [emulEspaña]
+	}
+	return TRUE;
+}
+//Chat
+void CChatWnd::OnContextMenu(CWnd* pWnd, CPoint point)
+{ 
+	if (!chatselector.GetCurrentChatItem())
+		return;
+
+	CTitleMenu ChatMenu;
+	ChatMenu.CreatePopupMenu(); 
+	ChatMenu.AddMenuTitle(GetResString(IDS_CW_MESSAGES));
+	//Menu Color
+	ChatMenu.SetColor(RGB(0,0,255)); 
+	ChatMenu.SetGradientColor(RGB(0,230,150));
+	//Menu Color
+	ChatMenu.AppendMenu(MF_STRING, MP_REMOVE, GetResString(IDS_FD_CLOSE));
+	//KTS+ add friends
+	ChatMenu.AppendMenu(MF_STRING, MP_ADDTOFRIEND, GetResString(IDS_TO_FRIENDS) ); 
+	//KTS- add friends
+	ChatMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
+	VERIFY( ChatMenu.DestroyMenu() );
+}
+//Chat
+bool CChatWnd::UpdateEmfriendsMetFromURL(const CString& strURL)
+{
+	if ( strURL.IsEmpty() || strURL.Find(_T("://")) == -1 )	// not a valid URL
+	{
+		LogError(LOG_STATUSBAR, GetResString(IDS_INVALIDURL));
+		return false;
+	}
+
+	CString strTempFilename;
+	strTempFilename.Format(_T("%stemp-%d-emfriends.met"), thePrefs.GetConfigDir(), ::GetTickCount());
+
+	// step2 - try to download emfriends.met
+	CHttpDownloadDlg dlgDownload;
+	dlgDownload.m_sURLToDownload = strURL;
+	dlgDownload.m_sFileToDownloadInto = strTempFilename;
+	if ( dlgDownload.DoModal() != IDOK )
+	{
+		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FAILEDDOWNLOADEMFRIENDS), strURL);
+		return false;
+	}
+
+	// step3 - add content of emfriends.met to friendlist
+	m_FriendListCtrl.AddEmfriendsMetToList(strTempFilename);
+
+	_tremove(strTempFilename);
+	return true;
+}
+
+void CChatWnd::OnBnClickedBnmenu()
+{
+	CTitleMenu tmColumnMenu;
+	VERIFY ( tmColumnMenu.CreatePopupMenu() );
+	tmColumnMenu.AddMenuTitle(GetResString(IDS_FRIENDLINKMENUTITLE),true);
+	//Menu Color
+	tmColumnMenu.SetColor(RGB(0,0,255)); 
+	tmColumnMenu.SetGradientColor(RGB(0,230,150));
+	//Menu Color
+
+	VERIFY ( tmColumnMenu.AppendMenu(MF_STRING, MP_GETFRIENDED2KLINK, GetResString(IDS_GETMYFRIENDED2KLINK), _T("ED2KLINK")) );
+	VERIFY ( tmColumnMenu.AppendMenu(MF_STRING, MP_GETHTMLFRIENDED2KLINK, GetResString(IDS_GETMYHTMLFRIENDED2KLINK),_T("ED2KLINK")) );
+	VERIFY ( tmColumnMenu.AppendMenu(MF_SEPARATOR) ); 
+	VERIFY ( tmColumnMenu.AppendMenu(MF_STRING, MP_GETEMFRIENDMETFROMURL, GetResString(IDS_DOWNLOADEMFRIENDSMET),_T("WEB")) ); //MORPH - Added by Commander, Manual Download and load of emfriends.met
+
+	RECT rectBtn;
+	GetDlgItem(IDC_BTN_MENU)->GetWindowRect(&rectBtn);
+
+	tmColumnMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rectBtn.right, rectBtn.bottom, this);
+	VERIFY( tmColumnMenu.DestroyMenu() );
+}
+// MORPH END - Added by Commander, Friendlinks [emulEspaña]

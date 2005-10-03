@@ -128,7 +128,7 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 				break;
 		}
 
-		if (cur_client->Credits() != NULL)
+		if (cur_client && cur_client->Credits() != NULL) //Spanish;
 		{
 			switch (cur_client->Credits()->GetCurrentIdentState(cur_client->GetIP()))
 			{

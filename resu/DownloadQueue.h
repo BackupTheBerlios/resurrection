@@ -157,6 +157,9 @@ public:
 	void InitTempVariables(CPartFile* file);
 	void UpdateFileSettings(CPartFile* file);
         //Sivka: AutoHL added by lama
+//<<-- ADDED STORMIT - Morph: PowerShare //
+	bool	IsFilesPowershared(); // Morph: PowerShare
+//<<-- ADDED STORMIT - Morph: PowerShare //
 	void	DoQuickStart(); // [TPT] - changed by WiZaRd - QuickStart added by lama
 protected:
 	bool	SendNextUDPPacket();
