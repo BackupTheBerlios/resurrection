@@ -1088,7 +1088,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			case MP_COPYFEEDBACK_US:
 			{
 				CString feed;
-					feed.AppendFormat(_T("Upload Report von %s mit %s\r\n"),thePrefs.GetUserNick(),MOD_VERSION);
+					feed.AppendFormat(_T("[code]Upload Report von %s mit %s\r\n"),thePrefs.GetUserNick(),MOD_VERSION);
 				POSITION pos = selectedList.GetHeadPosition();
 				while (pos != NULL)
 				{

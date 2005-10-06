@@ -29,6 +29,8 @@
 
 #define CS_RETRYCONNECTTIME  30 // seconds
 
+
+
 class CServerList;
 class CUDPSocket;
 class CServerSocket;
@@ -87,4 +89,5 @@ private:
 	uint32	m_nLocalIP;
 
 	CMap<ULONG, ULONG, CServerSocket*, CServerSocket*> connectionattemps;
+	
 };

@@ -2111,7 +2111,14 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
 				//MORPH END - Added by IceCream, copy feedback feature
-
+//MORPH START - Added by [ionix], Import Parts [SR13]
+				case MP_SR13_ImportParts:
+					file->SR13_ImportParts();
+					break;
+				case MP_SR13_InitiateRehash:
+					SR13_InitiateRehash(file);
+					break;
+				//MORPH END   - Added by [ionix], Import Parts [SR13]
                                 //Sivka (AutoHL)
 				case MP_SIVKA_FILE_SETTINGS:
 					if(selectedCount == 1)

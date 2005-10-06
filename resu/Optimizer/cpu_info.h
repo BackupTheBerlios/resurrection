@@ -17,6 +17,8 @@
 //
 // eWombat [OnTheFly] Optimizer used to detect type and features of CPU
 
+#pragma once
+
 #ifndef _CPUINFO_H_
 #define _CPUINFO_H_
 
@@ -67,7 +69,7 @@
 #endif // _WIN32
 
 // Include generic C / C++ header files.
-#include <memory.h>
+//#include <memory.h>
 #include <stdlib.h>
 #include <stdio.h>
 

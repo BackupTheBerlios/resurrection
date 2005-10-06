@@ -36,6 +36,7 @@
 // MORPH END - Added by Commander, Friendlinks [emulEspaña]
 
 #include "IP2Country.h" //Commander - Added: IP2Country
+#include ".\chatwnd.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -67,6 +68,7 @@ BEGIN_MESSAGE_MAP(CChatWnd, CResizableDialog)
 	// MORPH START - Added by Commander, Friendlinks [emulEspaña]
 	ON_BN_CLICKED(IDC_BTN_MENU, OnBnClickedBnmenu)
 	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
+	ON_STN_CLICKED(IDC_FRIENDS_COUNTRY, OnStnClickedFriendsCountry)
 END_MESSAGE_MAP()
 
 CChatWnd::CChatWnd(CWnd* pParent /*=NULL*/)
@@ -118,6 +120,16 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 		else
 			GetDlgItem(IDC_FRIENDS_NAME_EDIT)->SetWindowText(_T("?"));
 
+		//QR Position - lama
+		if (pFriend->GetLinkedClient())
+		{
+		CString m_nRemoteQueueRank;
+		m_nRemoteQueueRank.Format(_T("%u"),pFriend->GetLinkedClient()->GetRemoteQueueRank());
+		GetDlgItem(IDC_FRIENDS_POSITION_EDIT)->SetWindowText(m_nRemoteQueueRank); 
+		}
+		else
+			GetDlgItem(IDC_FRIENDS_POSITION_EDIT)->SetWindowText(_T("?"));
+		//QR Position - lama
 		// Hash
 		if (pFriend->GetLinkedClient())
 			GetDlgItem(IDC_FRIENDS_USERHASH_EDIT)->SetWindowText(md4str(pFriend->GetLinkedClient()->GetUserHash()));
@@ -185,6 +197,7 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 	else
 	{
 		GetDlgItem(IDC_FRIENDS_NAME_EDIT)->SetWindowText(_T("-"));
+		GetDlgItem(IDC_FRIENDS_POSITION_EDIT)->SetWindowText(_T("-"));
 		GetDlgItem(IDC_FRIENDS_USERHASH_EDIT)->SetWindowText(_T("-"));
 		GetDlgItem(IDC_FRIENDS_CLIENTE_EDIT)->SetWindowText(_T("-"));
 		GetDlgItem(IDC_FRIENDS_IDENTIFICACION_EDIT)->SetWindowText(_T("-"));
@@ -239,6 +252,7 @@ BOOL CChatWnd::OnInitDialog()
 	AddAnchor(IDC_FRIENDSICON, TOP_LEFT);
 	AddAnchor(IDC_FRIENDS_LBL, TOP_LEFT);
 	AddAnchor(IDC_FRIENDS_NAME, BOTTOM_LEFT);
+	AddAnchor(IDC_FRIENDS_POSITION, BOTTOM_LEFT);//QR Position lama
 	AddAnchor(IDC_FRIENDS_USERHASH, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_CLIENT, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_IDENT, BOTTOM_LEFT);
@@ -259,6 +273,7 @@ void CChatWnd::DoResize(int delta)
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_LIST2), delta);
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_MSG), delta);
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_NAME_EDIT), delta);
+	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_POSITION_EDIT), delta);//QR Position lama
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_USERHASH_EDIT), delta);
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_CLIENTE_EDIT), delta);
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_IDENTIFICACION_EDIT), delta);
@@ -299,12 +314,14 @@ void CChatWnd::DoResize(int delta)
 	AddAnchor(IDC_MESSAGEICON, TOP_LEFT);
 
 	RemoveAnchor(IDC_FRIENDS_NAME_EDIT);
+	RemoveAnchor(IDC_FRIENDS_POSITION_EDIT);// QR Position lama
 	RemoveAnchor(IDC_FRIENDS_USERHASH_EDIT);
 	RemoveAnchor(IDC_FRIENDS_CLIENTE_EDIT);
 	RemoveAnchor(IDC_FRIENDS_IDENTIFICACION_EDIT);
 	RemoveAnchor(IDC_FRIENDS_SUBIDO_EDIT);
 	RemoveAnchor(IDC_FRIENDS_DESCARGADO_EDIT);
 	AddAnchor(IDC_FRIENDS_NAME_EDIT, BOTTOM_LEFT);
+	AddAnchor(IDC_FRIENDS_POSITION_EDIT, BOTTOM_LEFT);//QR Position lama
 	AddAnchor(IDC_FRIENDS_USERHASH_EDIT, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_CLIENTE_EDIT, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_IDENTIFICACION_EDIT, BOTTOM_LEFT);
@@ -436,6 +453,7 @@ void CChatWnd::Localize()
 	GetDlgItem(IDC_FRIENDS_IDENT)->SetWindowText(GetResString(IDS_CHAT_IDENT));
 	GetDlgItem(IDC_FRIENDS_CLIENT)->SetWindowText(GetResString(IDS_CD_CSOFT));
 	GetDlgItem(IDC_FRIENDS_NAME)->SetWindowText(GetResString(IDS_CD_UNAME));
+	GetDlgItem(IDC_FRIENDS_POSITION)->SetWindowText(GetResString(IDS_CD_UPOSITION));// QR Position lama
 	GetDlgItem(IDC_FRIENDS_USERHASH)->SetWindowText(GetResString(IDS_CD_UHASH));	
 
 	//MORPH START - New friend message window
@@ -606,3 +624,8 @@ void CChatWnd::OnBnClickedBnmenu()
 	VERIFY( tmColumnMenu.DestroyMenu() );
 }
 // MORPH END - Added by Commander, Friendlinks [emulEspaña]
+
+void CChatWnd::OnStnClickedFriendsCountry()
+{
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+}

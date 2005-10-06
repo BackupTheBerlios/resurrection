@@ -224,7 +224,7 @@
 				RelativePath="AICHSyncThread.cpp">
 			</File>
 			<File
-				RelativePath=".\AntiLeech.cpp">
+				RelativePath=".\AntiLeech\AntiLeech.cpp">
 			</File>
 			<File
 				RelativePath="ArchiveRecovery.cpp">
@@ -475,6 +475,9 @@
 				RelativePath=".\PPgAckronicII.cpp">
 			</File>
 			<File
+				RelativePath=".\AntiLeech\PPgAntiLeech.cpp">
+			</File>
+			<File
 				RelativePath="Preferences.cpp">
 			</File>
 			<File
@@ -719,7 +722,7 @@
 				RelativePath="AICHSyncThread.h">
 			</File>
 			<File
-				RelativePath=".\AntiLeech.h">
+				RelativePath=".\AntiLeech\AntiLeech.h">
 			</File>
 			<File
 				RelativePath="ArchiveRecovery.h">
@@ -888,6 +891,9 @@
 			</File>
 			<File
 				RelativePath=".\PPgAckronicII.h">
+			</File>
+			<File
+				RelativePath=".\AntiLeech\PPgAntiLeech.h">
 			</File>
 			<File
 				RelativePath="Preferences.h">
@@ -2224,10 +2230,16 @@
 				RelativePath="res\FileDonkey.ico">
 			</File>
 			<File
+				RelativePath=".\res\fileimportparts.ico">
+			</File>
+			<File
 				RelativePath="res\FileInfo.gif">
 			</File>
 			<File
 				RelativePath="res\FileInfo.ico">
+			</File>
+			<File
+				RelativePath=".\res\fileinitiaterehash.ico">
 			</File>
 			<File
 				RelativePath="res\FileOpen.ico">
@@ -2586,6 +2598,9 @@
 			</File>
 			<File
 				RelativePath="res\SplitWindow.ico">
+			</File>
+			<File
+				RelativePath=".\res\spooky.ico">
 			</File>
 			<File
 				RelativePath="res\Start.ico">

@@ -37,6 +37,7 @@ DECLARE_MESSAGE_MAP()
 	//sivka aggressive client handling
 	afx_msg void OnBnClickedSivkaBan(); 
     //sivka aggressive client handling
+	void OnBnClickedLeecherBox(); // [ionix] - LeecherBox
 	afx_msg void OnDestroy();
 
 

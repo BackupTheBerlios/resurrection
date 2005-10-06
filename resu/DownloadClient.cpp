@@ -41,6 +41,7 @@
 #include "SHAHashSet.h"
 #include "SharedFileList.h"
 #include "Log.h"
+#include "UploadQueue.h" // [ionix] - Wizard: AntiLeech
 #include "KnownFileList.h"
 //KTS+ webcache
 #include "WebCache/WebCacheSocket.h" // yonatan http

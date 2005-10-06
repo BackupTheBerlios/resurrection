@@ -52,6 +52,7 @@ m_wndSpe3.m_psp.dwFlags &= ~PSH_HASHELP;  //Spe64
   //KTS+ webcache
     m_wndWebcachesettings.m_psp.dwFlags &= ~PSH_HASHELP; 
     //KTS- webcache
+	//m_wndAntiLeech.m_psp.dwFlags &= ~PSH_HASHELP; //>>> AntiLeech Class
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -73,6 +74,7 @@ m_wndSpe3.m_psp.dwFlags &= ~PSH_HASHELP;  //Spe64
     CTreePropSheet::SetPageIcon(&m_wndNe, _T("CONTACT3")); //Added by Spe64  Pref2
 CTreePropSheet::SetPageIcon(&m_wndSpe3, _T("DOWNLOADFILES"));  //Spe64
 	CTreePropSheet::SetPageIcon(&m_wndWebcachesettings, _T("PREF_WEBCACHE"));
+	//CTreePropSheet::SetPageIcon(&m_wndAntiLeech, _T("DELETE")); //>>> AntiLeech Class
 
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CTreePropSheet::SetPageIcon(&m_wndDebug, _T("Preferences"));
@@ -95,6 +97,7 @@ AddPage(&m_wndVipeR);  //Added by Spe64  Pref1
     AddPage(&m_wndNe);//Added by Spe64  Pref2
     AddPage(&m_wndSpe3); //Added by Spe34 Pref3
     AddPage(&m_wndWebcachesettings); //MORPH - Added by SiRoB, WebCache 1.2f
+	//AddPage(&m_wndAntiLeech); //>>> AntiLeech Class
 
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	AddPage(&m_wndDebug);
@@ -171,6 +174,7 @@ void CPreferencesDlg::Localize()
  m_wndVipeR.Localize(); //Added by Spe64  Pref1
     m_wndNe.Localize(); //Added by Spe64  Pref2
      m_wndSpe3.Localize(); //Added by Spe64 Pr
+	//m_wndAntiLeech.Localize(); //>>> AntiLeech Class
 	m_wndWebcachesettings.Localize();
 	CTreeCtrl* pTree = GetPageTreeControl();
 	if (pTree)
@@ -191,7 +195,8 @@ void CPreferencesDlg::Localize()
         pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_VipeR))); //Spe64 Pref1
 		pTree->SetItemText(GetPageTreeItem(14), RemoveAmbersand(GetResString(IDS_PW_NE))); //Spe64 Pref2
 	    pTree->SetItemText(GetPageTreeItem(15), RemoveAmbersand(GetResString(IDS_PW_Spe3))); //Spe64 Pref3
-		pTree->SetItemText(GetPageTreeItem(16), RemoveAmbersand(GetResString(IDS_PW_WEBCACHE)));//KTS
+				//pTree->SetItemText(GetPageTreeItem(i++), RemoveAmbersand(_T("AntiLeech"))); //>>> AntiLeech Class
+pTree->SetItemText(GetPageTreeItem(16), RemoveAmbersand(GetResString(IDS_PW_WEBCACHE)));//KTS
 
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 		pTree->SetItemText(GetPageTreeItem(20), _T("Debug"));

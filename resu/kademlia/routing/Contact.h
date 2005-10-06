@@ -35,7 +35,6 @@ there client on the eMule forum..
 */
 #pragma once
 #include "../utils/UInt128.h"
-
 ////////////////////////////////////////
 namespace Kademlia {
 ////////////////////////////////////////
@@ -47,7 +46,6 @@ class CContact
 {
 	friend class CRoutingZone;
 	friend class CRoutingBin;
-
 public:
 
 	~CContact();
@@ -91,7 +89,6 @@ public:
 	time_t getExpireTime() const {return m_expires;}
 
 	time_t getLastTypeSet() const {return m_lastTypeSet;}
-
 private:
 	void initContact(); // Common var initialization goes here
 	CUInt128	m_clientID;

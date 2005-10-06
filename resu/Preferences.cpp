@@ -348,7 +348,6 @@ uint16  CPreferences::m_uiMaxAutoHL;
 bool    CPreferences::m_bUseAutoHL; 
 uint16  CPreferences::m_uiMaxSourcesHL; 
 //<<< WiZaRd - AutoHL added by lama
-
 // [TPT] - quick start added by lama
 bool	CPreferences::m_QuickStart;
 uint16  CPreferences::m_QuickStartMaxCon;
@@ -574,6 +573,7 @@ CString	CPreferences::m_strNotifierMailServer;
 CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
 bool	CPreferences::m_bWinaTransToolbar;
+
 //START adding by sivka (AutoHL) added by lama
 bool	CPreferences::m_EnableAutoHLTemp;
 uint16	CPreferences::m_AutoHL_TimerTemp;
@@ -1911,6 +1911,7 @@ void CPreferences::SavePreferences()
 	//eMulefan83 Show Client Percentage added by lama
 	ini.WriteBool(_T("EnableClientPerc"), enableClientPerc, _T("eMule")); 
 //eMulefan83 Show Client Percentage added by lama
+	
 // [TPT] - quick start added by lama
 	ini.WriteBool(_T("QuickStart"), m_QuickStart);   
 	ini.WriteInt(_T("QuickStartMaxCon"), m_QuickStartMaxCon);
@@ -2458,11 +2459,11 @@ void CPreferences::LoadPreferences()
 
 
 // [ionix] WiZaRd - AntiNickThief 
-	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), false);  
-	m_bClientBanTime=ini.GetInt(_T("ClientBanTime") ,20 ); // <- 20h Startwert
-	m_bAntiModIdFaker=ini.GetBool(_T("AntiModIDFaker"), false); 
-	m_bAntiLeecherMod=ini.GetBool(_T("AntiLeecherMod"), false); 
-	m_bLeecherSecureLog=ini.GetBool(_T("LeecherSecureLog"), false); 
+	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), true, _T("eMule"));  //WiZaRd
+	m_bClientBanTime=min(20, ini.GetInt(_T("ClientBanTime"), 20, _T("eMule") )); // <- 2h Startwert	
+	m_bAntiModIdFaker=ini.GetBool(_T("AntiModIDFaker"), true, _T("eMule")); //WiZaRd
+	m_bAntiLeecherMod=ini.GetBool(_T("AntiLeecherMod"), true, _T("eMule"));  //WiZaRd
+	m_bLeecherSecureLog=ini.GetBool(_T("LeecherSecureLog"), false, _T("eMule")); 
 	// [ionix] WiZaRd - AntiNickThief 
 	dontcompressavi=ini.GetBool(_T("DontCompressAvi"),false);
     m_bAllowMultipleInstances = ini.GetBool(_T("AllowMultipleInstances"), true); // [ionix] Multiple Instances added by lama
@@ -2559,9 +2560,7 @@ void CPreferences::LoadPreferences()
     m_bStartInvisible = ini.GetBool(_T("StartInvisible"), true); //>>> StartUp InvisibleMode Enhancement 
 	// eF-Mod end 
 
-	
-
-	// Barry - New properties...
+		// Barry - New properties...
 	m_bAutoConnectToStaticServersOnly = ini.GetBool(_T("AutoConnectStaticOnly"),false); 
 	autotakeed2klinks = ini.GetBool(_T("AutoTakeED2KLinks"),true); 
 	addnewfilespaused = ini.GetBool(_T("AddNewFilesPaused"),false); 
@@ -2577,6 +2576,7 @@ void CPreferences::LoadPreferences()
 	m_uiMaxSourcesHL = ini.GetInt(_T("MaxSourcesHL"), 7500); 
 	m_uiMaxAutoHL = max(m_uiMinAutoHL, m_uiMaxAutoHL); 
 //<<< WiZaRd - AutoHL added by lama
+	
 // [TPT] - quick start	added by lama
 	m_QuickStart=ini.GetBool(_T("QuickStart"),false);
 	m_QuickStartMaxCon=ini.GetInt(_T("QuickStartMaxCon"), 1201);

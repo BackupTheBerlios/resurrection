@@ -69,9 +69,9 @@ MEMCPY_AMD.CPP
 // Inline assembly syntax for use with Visual C++
 
 /////////////////////////////////////////////////////////////////////////////////////
-// katsyonak: Added MMX & SSE optimized memcpy - October 8, 2003		  //
+// katsyonak: Added MMX & SSE optimized MEMCOPY - October 8, 2003		  //
 //																		 //
-// katsyonak: Added AMD, MMX & SSE optimized memset - October 12, 2003  //
+// katsyonak: Added AMD, MMX & SSE optimized MEMSET - October 12, 2003  //
 //																	   //
 // Aw3/katsyonak: Added AMD, MMX & SSE optimized memzero - February 11, 2004  //
 ///////////////////////////////////////////////////////////////////////////////

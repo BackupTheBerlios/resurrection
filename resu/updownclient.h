@@ -19,6 +19,8 @@
 #include <map>//Ackronic - Aggiunto da Aenarion[ITA] - QuickStart
 #include "EMSocket.h"
 #include "Opcodes.h"
+#include "emule.h"
+#include "sharedfilelist.h"
 
 // ==> Anti Uploader Ban - Stulle
 enum AntiUploaderBanCaseSelection {
@@ -955,5 +957,8 @@ public:
 protected:
 	bool		m_bRedSmurfClient;
 // Mondgott :: Show RedSmurfIconOnClientDetect
+// [ionix] - Wizard: AntiLeech
+	CKnownFile*          GetUploadingFile() const  {return theApp.sharedfiles->GetFileByID(GetUploadFileID());}
+	// [ionix] - Wizard: AntiLeech
 };
 //#pragma pack()

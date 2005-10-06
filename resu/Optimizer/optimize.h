@@ -1,13 +1,15 @@
+#pragma once
+
 #include "memcpy_amd.h"
 
 
-//replacement for memcpy
+//replacement for MEMCOPY
 __inline void *MEMCOPY(void* dst, const void *src, size_t size)
 {
 	return(::memcpy_optimized(dst,src,size));
 }
 
-//replacement for memset
+//replacement for MEMSET
 __inline void *MEMSET(void* dst, int c, size_t size)
 {
 	return(::memset_optimized(dst,c,size));

@@ -24,6 +24,7 @@
 //KTS+ webcache
 #include "WebCache\PPgWebcachesettings.h" 
 //KTS- webcache
+//#include "./AntiLeech/PPgAntiLeech.h" //>>> AntiLeech Class
 
 class CPreferencesDlg : public CTreePropSheet
 {
@@ -55,6 +56,7 @@ CPPgSpe3	    m_wndSpe3; //Spe64 Pref 3
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif
+	//CPPgAntiLeech	m_wndAntiLeech; //>>> AntiLeech Class
 
 	void Localize();
 	void SetStartPage(UINT uStartPageID);

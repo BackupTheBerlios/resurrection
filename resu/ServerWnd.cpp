@@ -31,7 +31,6 @@
 #include "ServerList.h"
 #include "Sockets.h"
 #include "MuleStatusBarCtrl.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "NetworkInfoDlg.h"
 #include "Log.h"
 #include "UserMsgs.h"
@@ -62,7 +61,6 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_BN_CLICKED(IDC_ED2KCONNECT, OnBnConnect)
 	ON_WM_SYSCOLORCHANGE()
 	ON_BN_CLICKED(IDC_DD,OnDDClicked)
-	//ON_WM_HELPINFO() removed help [lama]
 	ON_EN_CHANGE(IDC_IPADDRESS, OnSvrTextChange)
 	ON_EN_CHANGE(IDC_SPORT, OnSvrTextChange)
 	ON_EN_CHANGE(IDC_SNAME, OnSvrTextChange)
@@ -252,7 +250,6 @@ BOOL CServerWnd::OnInitDialog()
 	AddAnchor(*logbox, MIDDLE_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*modlog, MIDDLE_LEFT, BOTTOM_RIGHT); //Added by Spe64 ModLog
 	AddAnchor(*debuglog, MIDDLE_LEFT, BOTTOM_RIGHT);
-
 	debug = true;
 	ToggleDebugWindow();
 
@@ -853,7 +850,7 @@ void CServerWnd::UpdateControlsState()
 		strLabel = GetResString(IDS_MAIN_BTN_CONNECT);
 	strLabel.Remove(_T('&'));
 	GetDlgItem(IDC_ED2KCONNECT)->SetWindowText(strLabel);
-}
+    } 
 
 void CServerWnd::OnBnConnect()
 {
@@ -887,12 +884,6 @@ void CServerWnd::ResetHistory()
 	m_pacServerMetURL->Clear();
 }
 
-/*BOOL CServerWnd::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	theApp.ShowHelp(eMule_FAQ_Update_Server);
-	return TRUE;
-}
-removed help [lama]*/
 void CServerWnd::OnSvrTextChange()
 {
 	GetDlgItem(IDC_ADDSERVER)->EnableWindow(GetDlgItem(IDC_IPADDRESS)->GetWindowTextLength());

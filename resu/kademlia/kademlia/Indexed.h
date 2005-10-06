@@ -30,7 +30,9 @@ there client on the eMule forum..
 
 #include "MapKey.h"
 #include "../../Types.h"
+#pragma warning(disable:4702) //unreachable code
 #include <list>
+#pragma warning(default:4702) //unreachable code
 #include "SearchManager.h"
 #include "../routing/Maps.h"
 #include "../utils/UInt128.h"

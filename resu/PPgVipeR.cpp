@@ -178,6 +178,7 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
  //<<-- ADDED STORMIT -  Morph: PowerShared //
 					iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));// [ionix] - FunnyNick
+ 
 
 //Telp+ Menu VipeR
 		m_AdditionalVipeR = m_ctrlTreeOptions.InsertGroup(_T("Misc Functions "), iImgAddTweaks, TVI_ROOT);
@@ -461,6 +462,7 @@ void CPPgVipeR::Localize(void)
 		// ==> Anti Uploader Ban - Stulle
 	    if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 // <== Anti Uploader Ban - Stulle
+
 	//>>> [ionix] - FunnyNick
 		if (m_htiFunnyNickEnabled) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickEnabled, GetResString(IDS_DISPLAYFUNNYNICK));
 		if (m_htiFunnyNickTag) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag, GetResString(IDS_FN_TAG));
@@ -500,6 +502,7 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 		thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
 	}
 	// <== Anti Uploader Ban - Stulle
+
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	if(m_iDropSourcesTimerNNS < 2)
 		thePrefs.m_iDropSourcesTimerNNS = 2;

@@ -437,14 +437,15 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	static	bool	m_bRestoreLastLogPane;
 	static	int		m_iLastLogPaneID;
 	static	uint16	MaxConperFive;
-	// [TPT] - quick start added by lama
+
+	// [TPT] - quick start
 	static bool	m_QuickStart;
 	static uint16  m_QuickStartMaxCon;
 	static uint16  m_QuickStartMaxConPerFive;
 	static uint16  m_QuickStartMinutes;
 	// [TPT] - quick start
 
-	// [ionix] quickstart after ip change added by lama
+	// [ionix] quickstart after ip change
 	static bool	m_bQuickStartAfterIPChange;
 	// [ionix] quickstart after ip change
 
@@ -707,6 +708,7 @@ static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat
 	static uint16 m_iAntiUploaderBanLimit;
 	static uint8 AntiUploaderBanCaseMode;
 	// <== Anti Uploader Ban - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -1260,7 +1262,8 @@ static	uint16	GetMaxSourcePerFileSoft();
 	static	COLORREF GetLogSuccessColor()				{return m_crLogSuccess;}
 
 	static	uint16	GetMaxConperFive()					{return MaxConperFive;}
-		// [TPT] - quick start added by lama
+	
+	// [TPT] - quick start added by lama
 	static	void	SetMaxCon(int in)         {maxconnections=in;} 
 	static	uint16	GetMaxCon()		          {return maxconnections;}
 	static	void	SetQuickStartMaxCon(int in) { m_QuickStartMaxCon = in; }
@@ -1618,6 +1621,7 @@ protected:
 	static void LoadPreferences();
 	static void SavePreferences();
 	static CString GetHomepageBaseURLForLevel(uint8 nLevel);
+
 };
 
 extern CPreferences thePrefs;

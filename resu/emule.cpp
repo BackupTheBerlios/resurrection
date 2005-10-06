@@ -74,12 +74,12 @@
 #include "FirewallOpener.h"
 #include "StringConversion.h"
 #include "Log.h"
+#include "./AntiLeech/AntiLeech.h" //>>> AntiLeech Class
 #include "Collection.h"
 //KTS+ IP to Country
 #include "IP2Country.h"
 //KTS- IP to Country
 #include "fakecheck.h" //MORPH - Added by SiRoB
-#include "AntiLeech.h" //>>> AntiLeech Class 
 
 CLogFile theLog;
 CLogFile theVerboseLog;
@@ -456,6 +456,7 @@ BOOL CemuleApp::InitInstance()
 		AfxMessageBox(GetResString(IDS_SOCKETS_INIT_FAILED));
 		return FALSE;
 	}
+
 #if _MFC_VER==0x0700 || _MFC_VER==0x0710
 	atexit(__AfxSocketTerm);
 #else
@@ -539,6 +540,7 @@ BOOL CemuleApp::InitInstance()
 	else
 		::RemAutoStart();
 
+	theAntiLeechClass.Init(); //>>> AntiLeech Class
 	m_pFirewallOpener = new CFirewallOpener();
 	m_pFirewallOpener->Init(true); // we need to init it now (even if we may not use it yet) because of CoInitializeSecurity - which kinda ruins the sense of the class interface but ooohh well :P
 	// Open WinXP firewallports if set in preferences and possible
@@ -588,7 +590,7 @@ BOOL CemuleApp::InitInstance()
 	ip2country = new CIP2Country(); 
 	//KTS- IP to Country
 FakeCheck 	= new CFakecheck(); //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updating
-	thePerfLog.Startup();
+thePerfLog.Startup();
 	dlg.DoModal();
 
 	DisableRTLWindowsLayout();
@@ -1153,7 +1155,6 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 	//KTS- webcache
 
 }
-
 
 bool CemuleApp::IsFirewalled()
 {
@@ -1808,7 +1809,6 @@ void CemuleApp::CreateBackwardDiagonalBrush()
 	}
 }
 // Commander - Added: FriendLinks [emulEspaña] - Start
-
 bool CemuleApp::IsEd2kFriendLinkInClipboard()
 {
 	static const CHAR _szEd2kFriendLink[] = "ed2k://|friend|";
@@ -1823,7 +1823,6 @@ void CemuleApp::UpdateDesktopColorDepth()
 		g_bLowColorDesktop = (GetProfileInt(_T("eMule"), _T("LowColorRes"), 0) != 0);
 #endif
 }
-
 //Start Optimizer Spe64
 void CemuleApp::OptimizerInfo(void)
 {
@@ -1899,4 +1898,5 @@ if (!emuledlg)
 	AddModLogLine(false,_T("********Optimizer********"));
 		}
 //End Optimizer Spe64
+
 

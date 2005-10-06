@@ -70,7 +70,6 @@ class CemuleApp : public CWinApp
 {
 public:
 	CemuleApp(LPCTSTR lpszAppName = NULL);
-
 	// ZZ:UploadSpeedSense -->
     UploadBandwidthThrottler* uploadBandwidthThrottler;
     LastCommonRouteFinder* lastCommonRouteFinder;
@@ -204,7 +203,6 @@ protected:
 	void SetTimeOnTransfer();
     #define MAGIC      0xafecffbd // <<< [iONiX] - WiZaRd - Multiple Instances added by lama
 	static BOOL CALLBACK SearchEmuleWindow(HWND hWnd, LPARAM lParam);
-
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnHelp();
 
@@ -232,7 +230,7 @@ protected:
 	public: 
 	WSADATA				m_wsaData; 
 	//Spe64 added eWombat [WINSOCK2]
-
+	
 	//Start Optimizer Spe64
 	void OptimizerInfo(void); 
 	//End Optimizer Spe64

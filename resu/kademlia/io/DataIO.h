@@ -30,7 +30,10 @@ there client on the eMule forum..
 
 #pragma once
 
+#pragma warning(disable:4702) //unreachable code
 #include <list>
+#pragma warning(default:4702) //unreachable code
+
 
 ////////////////////////////////////////
 namespace Kademlia {

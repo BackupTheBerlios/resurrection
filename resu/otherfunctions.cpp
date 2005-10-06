@@ -43,7 +43,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
 CWebServices theWebServices;
 
 // Base chars for encode an decode functions
@@ -3041,6 +3040,7 @@ bool DoCollectionRegFix(bool checkOnly)
 	}
 	return false;
 }
+
 //<CB Mod : OtherFunctions : ExtendedSupport>
 
 #define PACKVERSION(major,minor) MAKELONG(minor,major)

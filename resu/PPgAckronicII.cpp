@@ -180,5 +180,7 @@ void CPPgAckronicII::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	UpdateData(false); 
 	CPropertyPage::OnHScroll(nSBCode, nPos, pScrollBar);
-	
+
 }
+
+

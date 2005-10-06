@@ -7,6 +7,7 @@
 #include "UserMsgs.h"
 #include "Preferences.h"
 #include ".\ppgne.h"
+#include "./AntiLeech/PPgAntiLeech.h" //>>> [ionix] - LeecherBox
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,6 +23,7 @@ IMPLEMENT_DYNAMIC(CPPgNe, CPropertyPage)
 
 BEGIN_MESSAGE_MAP(CPPgNe, CPropertyPage)
 	ON_WM_HSCROLL()	
+	ON_BN_CLICKED(IDC_SHOWLEECHERBOX, OnBnClickedLeecherBox) // [ionix] - LeecherBox
 	ON_STN_CLICKED(IDC_NICEHASH_RIGHT, OnStnClickedNicehashRight)
 		//>>> WiZaRd - SP - AutoHL
 	ON_EN_CHANGE(IDC_AutoHLUpdate, OnSettingsChange)
@@ -304,7 +306,8 @@ void CPPgNe::LoadSettings(void){
 if(m_hWnd)
 {
         CString strBuffer;
-	 
+			GetDlgItem(IDC_SHOWLEECHERBOX)->SetWindowText(GetResString(IDS_LEECHERBOX)); // [ionix] - LeecherBox
+ 
  //sivka aggressive client handling 
 		CheckDlgButton(IDC_CHECK_SIVKABAN, thePrefs.IsSivkaBan());//wert auslesen 
         CheckDlgButton(IDC_CHECK_SIVKA_BANLOG, thePrefs.IsSivkaBanLog());
@@ -489,3 +492,10 @@ void CPPgNe::OnBnClickedSivkaBan()
     SetModified();
 }
 //sivka aggressive client handling
+//>>> [ionix] - LeecherBox
+void CPPgNe::OnBnClickedLeecherBox()
+{
+	CPPgAntiLeech dialog;
+	dialog.DoModal();
+}
+//<<< [ionix] - LeecherBox

@@ -43,7 +43,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
 // CServerConnect
 
 void CServerConnect::TryAnotherConnectionrequest()
@@ -51,7 +50,7 @@ void CServerConnect::TryAnotherConnectionrequest()
 	if (connectionattemps.GetCount() < (thePrefs.IsSafeServerConnectEnabled() ? 1 : 2))
 	{
 		CServer* next_server = used_list->GetNextServer();
-		if (next_server == NULL)
+ 		if (next_server == NULL)
 		{
 			if (connectionattemps.GetCount() == 0)
 			{
@@ -274,7 +273,6 @@ bool CServerConnect::SendPacket(Packet* packet,bool delpacket, CServerSocket* to
 	}
 	return true;
 }
-
 bool CServerConnect::SendUDPPacket(Packet* packet,CServer* host,bool delpacket){
 	if (theApp.IsConnected()){
 		if (udpsocket != NULL)
@@ -345,6 +343,7 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 			theStats.serverConnectTime = 0;
 			theStats.Add2TotalServerDuration();
 			// <-----khaos-
+			
 			if (thePrefs.Reconnect() && !connecting){
 				ConnectToAnyServer();		
 			}
@@ -366,7 +365,6 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 				StopConnectionTry();
 				break;
 			}
-
 			DWORD tmpkey;
 			CServerSocket* tmpsock;
 			POSITION pos = connectionattemps.GetStartPosition();
@@ -491,7 +489,7 @@ CServerConnect::~CServerConnect(){
 CServer* CServerConnect::GetCurrentServer(){
 	if (IsConnected() && connectedsocket)
 		return connectedsocket->cur_server;
-	return NULL;
+		return NULL;
 }
 
 void CServerConnect::SetClientID(uint32 newid){
@@ -503,27 +501,29 @@ void CServerConnect::SetClientID(uint32 newid){
 	theApp.emuledlg->ShowConnectionState();
 }
 
+//Xman 
+// Maella -Code Fix-
+// Remark: One user had a crash here, so this method was rewritten.
+//         => A multiple calls of this method is safe now.
 void CServerConnect::DestroySocket(CServerSocket* pSck){
-	if (pSck == NULL)
-		return;
-	// remove socket from list of opened sockets
-	for( POSITION pos = m_lstOpenSockets.GetHeadPosition(); pos != NULL; )
-	{
-		POSITION posDel = pos;
-		CServerSocket* pTestSck = (CServerSocket*)m_lstOpenSockets.GetNext(pos);
-		if (pTestSck == pSck)
-		{
-			m_lstOpenSockets.RemoveAt(posDel);
-			break;
-		}
-	}
+	if(pSck != NULL){
+		// Remove from the list
+		POSITION pos = m_lstOpenSockets.Find(pSck);
+		if(pos != NULL){
+			m_lstOpenSockets.RemoveAt(pos);
+
+			// Close socket
 	if (pSck->m_SocketData.hSocket != INVALID_SOCKET){ // deadlake PROXYSUPPORT - changed to AsyncSocketEx
 		pSck->AsyncSelect(0);
 		pSck->Close();
 	}
 
+			// Finally delete socket
 	delete pSck;
 }
+	}
+}
+// Maella end
 
 bool CServerConnect::IsLocalServer(uint32 dwIP, uint16 nPort){
 	if (IsConnected()){

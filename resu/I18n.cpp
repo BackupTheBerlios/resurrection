@@ -191,6 +191,7 @@ void CPreferences::SetLanguageID(WORD lid)
 
 static bool CheckLangDLLVersion(const CString& rstrLangDLL)
 {
+	// [ionix] - AntiLeech - accept older Versions
 	bool bResult = false;
 	DWORD dwUnused;
 	DWORD dwVerInfSize = GetFileVersionInfoSize(const_cast<LPTSTR>((LPCTSTR)rstrLangDLL), &dwUnused);

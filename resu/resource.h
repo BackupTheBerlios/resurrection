@@ -2139,7 +2139,9 @@
 #define IDC_RSRC                        2883
 #define IDC_RURL                        2886
 #define IDC_EDIT3                       2887
+#define IDC_FRIENDS_POSITION            2888
 #define IDC_EDIT10                      2895
+#define IDC_FRIENDS_POSITION_EDIT       2896
 #define IDC_BUTTON1                     2899
 #define IDC_LD_LINKGROUP                2900
 #define IDC_LD_BASICGROUP               2901
@@ -2564,7 +2566,15 @@
 #define IDS_GETHTMLFRIENDED2KLINK       60100
 #define IDS_TO_FRIENDS                  60101
 #define IDS_USER_ALREADY_FRIEND         60102
+#define IDD_PPG_ANTILEECH               60103
+#define IDC_ANTILEECH_LIST             60104
+#define IDC_ANTILEECH_BAN               60105
+#define IDC_ANTILEECH_CASE              60106
+#define IDC_ANTILEECH_REASON            60107
+#define IDS_LEECHERBOX			60108
+#define IDC_SHOWLEECHERBOX              60109
 
+#define IDS_CD_UPOSITION                61055
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

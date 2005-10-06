@@ -28,7 +28,9 @@ Any mod that changes anything within the Kademlia side will not be allowed to ad
 there client on the eMule forum..
 */
 #pragma once
+#pragma warning(disable:4702) //unreachable code
 #include <map>
+#pragma warning(default:4702) //unreachable code
 
 class CSharedFileList;
 struct Status;

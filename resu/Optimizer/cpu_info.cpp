@@ -475,9 +475,9 @@ bool __cdecl CPUInfo::RetrieveCPUIdentity ()
 	}
 
 	// Process the returned information.
-	memcpy (ChipID.Vendor, &(CPUVendor[0]), sizeof (int));
-	memcpy (&(ChipID.Vendor[4]), &(CPUVendor[1]), sizeof (int));
-	memcpy (&(ChipID.Vendor[8]), &(CPUVendor[2]), sizeof (int));
+	MEMCOPY (ChipID.Vendor, &(CPUVendor[0]), sizeof (int));
+	MEMCOPY (&(ChipID.Vendor[4]), &(CPUVendor[1]), sizeof (int));
+	MEMCOPY (&(ChipID.Vendor[8]), &(CPUVendor[2]), sizeof (int));
 	ChipID.Vendor[12] = '\0';
 
 	// Attempt to retrieve the manufacturer from the vendor string.
@@ -1155,18 +1155,18 @@ bool __cdecl CPUInfo::RetrieveExtendedCPUIdentity ()
 	}
 
 	// Process the returned information.
-	memcpy (ChipID.ProcessorName, &(CPUExtendedIdentity[0]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[4]), &(CPUExtendedIdentity[1]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[8]), &(CPUExtendedIdentity[2]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[12]), &(CPUExtendedIdentity[3]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[16]), &(CPUExtendedIdentity[4]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[20]), &(CPUExtendedIdentity[5]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[24]), &(CPUExtendedIdentity[6]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[28]), &(CPUExtendedIdentity[7]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[32]), &(CPUExtendedIdentity[8]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[36]), &(CPUExtendedIdentity[9]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[40]), &(CPUExtendedIdentity[10]), sizeof (int));
-	memcpy (&(ChipID.ProcessorName[44]), &(CPUExtendedIdentity[11]), sizeof (int));
+	MEMCOPY (ChipID.ProcessorName, &(CPUExtendedIdentity[0]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[4]), &(CPUExtendedIdentity[1]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[8]), &(CPUExtendedIdentity[2]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[12]), &(CPUExtendedIdentity[3]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[16]), &(CPUExtendedIdentity[4]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[20]), &(CPUExtendedIdentity[5]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[24]), &(CPUExtendedIdentity[6]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[28]), &(CPUExtendedIdentity[7]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[32]), &(CPUExtendedIdentity[8]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[36]), &(CPUExtendedIdentity[9]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[40]), &(CPUExtendedIdentity[10]), sizeof (int));
+	MEMCOPY (&(ChipID.ProcessorName[44]), &(CPUExtendedIdentity[11]), sizeof (int));
 	ChipID.ProcessorName[48] = '\0';
 
 	// Because some manufacturers (<cough>Intel</cough>) have leading white space - we have to post-process the name.

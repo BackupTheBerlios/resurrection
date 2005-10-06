@@ -63,7 +63,7 @@
 // IP-to-Country +
 #include "IP2Country.h" 
 // IP-to-Country -
-#include "AntiLeech.h" //>>> AntiLeech Class added by lama
+#include "./AntiLeech/AntiLeech.h" //>>> AntiLeech Class
 //KRQ+ webcache
 #include "WebCache/WebCacheSocket.h" 
 //KTS- webcache
@@ -436,8 +436,11 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("  Tags=%u"), tagcount);
 
-	bool m_bNickThief = false; //>>> AntiNickThief
-	bool bBanHim = false; //>>> WiZaRd 4 [ionix] - Bad User Banning
+//>>> WiZaRd::AntiLeech
+	bool m_bNickCheck = false;
+	bool m_bModCheck = false;
+	bool bBanHim = false; 
+//<<< WiZaRd::AntiLeech
 
 	for (uint32 i = 0;i < tagcount; i++){
 		CTag temptag(data, true);
@@ -460,26 +463,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					m_strHelloInfo.AppendFormat(_T("\n  Name='%s'"), m_pszUsername);
 				}
 				
-				// [ionix] - WiZaRd - AntiNickThief
-				if(m_pszUsername)
-				{					
-					//if(StrStr(m_pszUsername, m_sAntiNickThiefTag)) 
-					if(theAntiLeechClass.FindOurTagIn(m_pszUsername))
-						m_bNickThief = true; 
-					//else 
-					//	m_bNickThief = false; 					
-				}
-				// [ionix] - WiZaRd - AntiNickThief
+//>>> WiZaRd::AntiLeech
+				m_bNickCheck = true;
 				//WiZaRd: it's technically impossible to receive an empty username
 				//as eMule will then use the default name - so this is a *very* bad client!
-				else
-				{
-					//m_bNickThief = false; 
-					//>>> WiZaRd 4 [ionix] - Bad User Banning
-					//Ban(_T("Tried to crash us!")); 
+				if(!m_pszUsername)
 					bBanHim = true;
-					//<<< WiZaRd 4 [ionix] - Bad User Banning
-				}
+//<<< WiZaRd::AntiLeech
 				break;
 			case CT_VERSION:
 				if (bDbgInfo)
@@ -504,6 +494,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					m_bRedSmurfClient = StrStrI(m_strModVersion, MOD_ID) != 0; 
                     // Mondgott :: Show RedSmurfIconOnClientDetect
 				CheckForGPLEvilDoer();
+				m_bModCheck = true; //>>> WiZaRd::AntiLeech
 				break;
 			//KTS+ webcache
 			case WC_TAG_VOODOO:
@@ -614,12 +605,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	m_nServerPort = data->ReadUInt16();
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("\n  Server=%s:%u"), ipstr(m_dwServerIP), m_nServerPort);
-
-	// Check for additional data in Hello packet to determine client's software version.
-	//
-	// *) eDonkeyHybrid 0.40 - 1.2 sends an additional Int32. (Since 1.3 they don't send it any longer.)
-	// *) MLdonkey sends an additional Int32
-	//
+	// Hybrid now has an extra uint32.. What is it for?
+	// Also, many clients seem to send an extra 6? These are not eDonkeys or Hybrids..
 	if (data->GetLength() - data->GetPosition() == sizeof(uint32)){
 		uint32 test = data->ReadUInt32();
 		if (test == 'KDLM'){
@@ -706,6 +693,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	strBuffer.Remove(_T(' '));
 	if (strBuffer.Find(_T("EMULE-CLIENT")) != -1 || strBuffer.Find(_T("POWERMULE")) != -1 ){
 		m_bGPLEvildoer = true;  
+		Ban(_T("Aggressive Client !!"));//TKB Add
 	}
 
 	m_byInfopacketsReceived |= IP_EDONKEYPROTPACK;
@@ -720,29 +708,25 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	}
 
 	InitClientSoftwareVersion();
+	theAntiLeechClass.Check4BadVer(this); //>>> AntiLeech Class
 
 	if (m_bIsHybrid)
 		m_fSharedDirectories = 1;
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
-	//>>> WiZaRd 4 [ionix] - Bad User Banning
-	Check4BadMod();
-	Check4BadName();
-	// [ionix] - WiZaRd - AntiNickThief start
-	if (thePrefs.GetAntiNickThief())
-	{ 
-		//if(IsNickThief())
-		if(m_bNickThief)
+
+//>>> WiZaRd::AntiLeech
+	if(m_bModCheck)
 		{ 
-			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
-				AddModLogLine(false, _T("Ban: (%s) used a NickThief -> banned!"), m_pszUsername); 
-			CString msg;
-			msg.Format(_T("%s was banned! Reason: NickThief!"), m_pszUsername);
-			Ban(msg);
+		theAntiLeechClass.Check4BadMod(this);
+		theAntiLeechClass.Check4ModThief(this);
 		}
+	if(m_bNickCheck)
+	{
+		theAntiLeechClass.Check4BadName(this);
+		theAntiLeechClass.Check4NickThief(this);
 	}
-	// [ionix] WiZaRd - AntiNickThief end 
 	if(bBanHim)
 	{
 		if(!IsBanned() && thePrefs.IsLeecherSecureLog())
@@ -751,20 +735,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		msg.Format(_T("%s was banned! Reason: Tried to crash us!"), m_pszUsername);
 		Ban(msg);
 	}
-	// [ionix] - WiZaRd - Anti Mod Faker Version
-	if(thePrefs.IsAntiModIdFaker())
-	{
-		if(theAntiLeechClass.CheckForModThief(this))
-		{
-			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
-				AddModLogLine(false, _T("Ban: (%s) uses a ModThief -> banned!"),m_pszUsername); 
-			CString msg;
-			msg.Format(_T("%s was banned! Reason: ModThief!"), m_pszUsername);
-			Ban(msg);
-		}
-	}
-	// [ionix] - WiZaRd - Anti Mod Faker Version
-//<<< WiZaRd 4 [ionix] - Bad User Banning
+//<<< WiZaRd::AntiLeech
+
 	
 	//>>> [ionix] - MORPH: xrmb FunnyNick
 	if (!IsBanned() && thePrefs.DisplayFunnyNick()){ //[ionix] - MORPH: Keep Leecher name
@@ -889,6 +861,8 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	} else {
 		return;
 	}
+	bool m_bModCheck = false; //>>> WiZaRd::AntiLeech
+
 
 	uint32 tagcount = data.ReadUInt32();
 	if (bDbgInfo)
@@ -967,8 +941,9 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 					m_bRedSmurfClient = StrStrI(m_strModVersion, MOD_ID) != 0; 
                     // Mondgott :: Show RedSmurfIconOnClientDetect
 				CheckForGPLEvilDoer();
+				m_bModCheck = true; //>>> WiZaRd::AntiLeech
 				break;
-			default:
+				default:
 				if (bDbgInfo)
 					m_strMuleInfo.AppendFormat(_T("\n  ***UnkTag=%s"), temptag.GetFullInfo());
 		}
@@ -986,26 +961,17 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	m_bEmuleProtocol = true;
 	m_byInfopacketsReceived |= IP_EMULEPROTPACK;
 	InitClientSoftwareVersion();
-
+	theAntiLeechClass.Check4BadVer(this); //>>> AntiLeech Class
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
 
-//>>> WiZaRd 4 [ionix] - Bad User Banning
-	Check4BadMod();
-	// [ionix] - WiZaRd - Anti Mod Faker Version
-	if(thePrefs.IsAntiModIdFaker())
-	{
-		if(theAntiLeechClass.CheckForModThief(this))
+//>>> WiZaRd::AntiLeech
+	if(m_bModCheck)
 		{
-			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
-				AddModLogLine(false, _T("Ban: (%s) uses a ModThief -> banned!"),m_pszUsername); 
-			CString msg;
-			msg.Format(_T("%s was banned! Reason: ModThief!"), m_pszUsername);
-			Ban(msg);
-		}
+		theAntiLeechClass.Check4BadMod(this);
+		theAntiLeechClass.Check4ModThief(this);
 	}
-	// [ionix] - WiZaRd - Anti Mod Faker Version
-//<<< WiZaRd 4 [ionix] - Bad User Banning
+//<<< WiZaRd::AntiLeech
 }
 
 void CUpDownClient::SendHelloAnswer(){
@@ -2900,128 +2866,3 @@ void CUpDownClient::ResetIP2Country(){
 	m_structUserCountry = theApp.ip2country->GetCountryFromIP(m_dwUserIP);
 }
 // IP-to-Country -
-//>>> WiZaRd 4 [ionix] - Bad User Banning
-void CUpDownClient::Check4BadMod() 
-{
-	// [ionix] - ZX - AntiLeecher
-	if (thePrefs.IsLeecherSecure() && !m_strModVersion.IsEmpty())
-	{
-		if  (StrStrI(m_strModVersion,_T("HARDMULE")) ||
-			StrStrI(m_strModVersion,_T("RAMMSTEIN")) ||
-			StrStrI(m_strModVersion,_T("LSD-13h")) ||
-			StrStrI(m_strModVersion,_T("Rappi")) ||
-			StrStrI(m_strModVersion,_T("00de")) ||
-			StrStrI(m_strModVersion,_T("OO.de")) ||	//WiZaRd		
-			StrStrI(m_strModVersion,_T("00.de")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("OOde")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("Devil")) ||
-			StrStrI(m_strModVersion,_T("Elfen")) ||
-			StrStrI(m_strModVersion,_T("$.M@ri0")) ||
-			StrStrI(m_strModVersion,_T("Anonymer Alkoholiker")) ||
-			StrStrI(m_strModVersion,_T("DMX")) ||
-			StrStrI(m_strModVersion,_T("Cy4n1d3")) ||
-			StrStrI(m_strModVersion,_T("Darkmule")) ||
-			StrStrI(m_strModVersion,_T("Firce Zone Reloaded")) ||
-			StrStrI(m_strModVersion,_T("SpeedMule")) ||
-			StrStrI(m_strModVersion,_T("Splatter_eMule_Com_Mod")) ||
-			StrStrI(m_strModVersion,_T("Crying-Angel")) ||
-			StrStrI(m_strModVersion,_T("Osama BinLaden World Tour 2004")) ||
-			//StrStrI(m_strModVersion,_T("ElbenDonner")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("Elben")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("PROeMule")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("Elfen")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("eMuleReactor")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("!FREEANGEL!")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("SpOofMod")) ||
-			StrStrI(m_strModVersion,_T("Bad Donkey")) ||
-			StrStrI(m_strModVersion, _T("Plus Plus")) || //WiZaRd
-			StrStrI(m_strModVersion, _T("++")) || //WiZaRd
-			StrStrI(m_strModVersion, _T("PROeMule")) || //WiZaRd
-			//StrStrI(m_strModVersion,_T("B@d-D3vi7")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("Stonehenge")) ||
-			StrStrI(m_strModVersion,_T("@RAPTOR")) ||
-			StrStrI(m_strModVersion,_T("eVorte"))||
-			StrStrI(m_strModVersion,_T("Mison"))||
-			StrStrI(m_strModVersion,_T("father"))||
-			StrStrI(m_strModVersion,_T("Dragon"))||
-			StrStrI(m_strModVersion,_T("booster"))|| //Temporaly added, must check the tag
-			StrStrI(m_strModVersion,_T("$motty"))||
-			StrStrI(m_strModVersion,_T("Thunder"))||
-			StrStrI(m_strModVersion,_T("BuzzFuzz"))||
-			StrStrI(m_strModVersion,_T("Speed-Unit"))|| 
-			StrStrI(m_strModVersion,_T("Killians"))||
-			StrStrI(m_strModVersion,_T("LALA-IL"))||
-			StrStrI(m_strModVersion,_T("Element"))|| 
-			StrStrI(m_strModVersion,_T("pwNd muLe")) ||
-			StrStrI(m_strModVersion,_T("HARDPAW")) ||
-			StrStrI(m_strModVersion,_T("XXL")) ||
-			StrStrI(m_strModVersion,_T("EastShare")) && StrStrI(m_strClientSoftware,_T("0.29"))||
-			StrStrI(m_strModVersion,_T("LSD.16g")) ||			
-			StrStrI(m_strModVersion,_T("Rockesel")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("Bad Donkey")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("DSL-Light-Client")) || //WiZaRd
-			StrStrI(m_strModVersion,_T("ACAT")) ||
-			StrStrI(m_strModVersion,_T("LSD.7c")) && !StrStrI(m_strClientSoftware,_T("27"))||
-			StrStrI(m_strModVersion,_T("Morph")) && (StrStrI(m_strModVersion,_T("Max"))) ||
-			StrStrI(m_strModVersion,_T("eChanblard v7.0")) ||
-			StrStrI(m_strModVersion,_T("ACAT")) && m_strModVersion.GetLength() > 4 ||
-			StrStrI(m_strModVersion,_T("sivka v12e8")) && m_nClientVersion != MAKE_CLIENT_VERSION(0, 42, 4) || // added - Stulle
-			StrStrI(m_strModVersion,_T("          ")) ||
-			StrStrI(m_strModVersion,_T("MirageMod")) ||
-			StrStrI(m_strModVersion,_T("AIDEADSL")) ||
-			StrStrI(m_strModVersion,_T("Xtended")) ||
-			StrStrI(m_strModVersion,_T("ZX v3.5")) ||// WiZaRd
-	                StrStrI(m_strModVersion,_T("ZX v3.7"))|| //Lama (Snake Mod) 
-			StrStrI(m_strModVersion,_T("ZX v4.0"))|| //Lama (Snake Mod) 
-			StrStrI(m_strModVersion,_T("ZX v4.1"))|| // [lama - snake mod]
-			StrStrI(m_strModVersion,_T("ZX v4.5"))|| // [lama - snake mod]
-	                StrStrI(m_strModVersion,_T("Arabella"))|| // [lama - arabella mod]
-			m_strModVersion.IsEmpty() == false && StrStrI(m_strClientSoftware,_T("edonkey"))||
-			((GetVersion()>589) && (GetSourceExchangeVersion()>0) && (GetClientSoft()==51)) //LSD, edonkey user with eMule property
-			)
-		{
-			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
-				AddModLogLine(false, _T("Ban: (%s) using (%s) -> banned!"), m_pszUsername, m_strModVersion); 
-			CString msg;
-			msg.Format(_T("%s was banned! Reason: Leecher Client!"), m_pszUsername);
-			Ban(msg);
-		}
-	}
-	// [ionix] - ZX - AntiLeecher
-}
-
-void CUpDownClient::Check4BadName()
-{
-	// [ionix] - ZX - AntiLeecher
-	if (thePrefs.IsLeecherSecure() && m_pszUsername)
-	{
-		if  (
-			//StrStrI(m_pszUsername,_T("emuleech")) || //WiZaRd
-			StrStrI(m_pszUsername,_T("Rappi")) ||
-			//StrStrI(m_pszUsername,_T("Leecher")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("eMuleReactor")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("[KOR]")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("www.pruna.com")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("http://www.miciolino.de")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("[USS]")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("[miciolino.de]")) || //WiZaRd
-			StrStrI(m_pszUsername,_T("miciolino.de")) || //WiZaRd
-			StrStrI(m_pszUsername,_T("Ketamine")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("[FZR]")) || //WiZaRd
-			//StrStrI(m_pszUsername,_T("[FZE]")) || //WiZaRd
-			StrStrI(m_pszUsername,_T("00.de")) || //WiZaRd
-			StrStrI(m_pszUsername,_T("00de")) ||//WiZaRd
-			StrStrI(m_pszUsername,_T("OO.de"))|| //WiZaRd
-			StrStrI(m_pszUsername,_T("OOde")) //WiZaRd
-			 )
-		{
-			if(!IsBanned() && thePrefs.IsLeecherSecureLog())
-				AddModLogLine(false, _T("Ban: (%s) using (%s)  -> banned!"), m_pszUsername, m_strModVersion); 
-			CString msg;
-			msg.Format(_T("%s was banned! Reason: Leecher Client!"), m_pszUsername);
-			Ban(msg);
-		}
-	}
-	// [ionix] - ZX - AntiLeecher
-}
-//<<< WiZaRd 4 [ionix] - Bad User Banning

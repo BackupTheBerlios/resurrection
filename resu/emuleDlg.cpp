@@ -108,6 +108,8 @@
 // MORPH START - Added by Commander, Friendlinks [emulEspaña]
 #include "Friend.h"
 // MORPH END - Added by Commander, Friendlinks [emulEspaña]
+#include "./AntiLeech/AntiLeech.h" //>>> AntiLeech Class
+#include "./AntiLeech/PPgAntiLeech.h" //>>> AntiLeech Class
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1929,6 +1931,7 @@ void CemuleDlg::OnClose()
 	delete theApp.uploadBandwidthThrottler; theApp.uploadBandwidthThrottler = NULL;
 	delete theApp.lastCommonRouteFinder; theApp.lastCommonRouteFinder = NULL;
 
+	theAntiLeechClass.UnInit(); //>>> AntiLeech Class
 	thePrefs.Uninit();
 	theApp.m_app_state = APP_STATE_DONE;
 	CTrayDialog::OnCancel();
@@ -2680,6 +2683,14 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			dlg.DoModal();
 			break;
 		}
+//>>> AntiLeech Class
+		case MP_ANTILEECH:
+		{
+			CPPgAntiLeech dialog;
+			dialog.DoModal();
+			break;
+		}
+//<<< AntiLeech Class
 		case MP_HM_DIRECT_DOWNLOAD:{
 			CDirectDownloadDlg dlg;
 			dlg.DoModal();
@@ -2762,6 +2773,7 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	menu.AppendMenu(MF_STRING,MP_HM_CONVERTPF, GetResString(IDS_IMPORTSPLPF) + _T("..."), _T("CONVERT"));
 	menu.AppendMenu(MF_STRING,MP_HM_IPFILTER, GetResString(IDS_IPFILTER) + _T("..."), _T("IPFILTER"));
 	menu.AppendMenu(MF_STRING,MP_HM_DIRECT_DOWNLOAD, GetResString(IDS_SW_DIRECTDOWNLOAD) + _T("..."), _T("PASTELINK"));
+	menu.AppendMenu(MF_STRING,MP_ANTILEECH, GetResString(IDS_LEECHERBOX), _T("DELETE")); //>>> AntiLeech Class
 
 	menu.AppendMenu(MF_SEPARATOR);
 	menu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)Links.m_hMenu, GetResString(IDS_LINKS), _T("WEB") );

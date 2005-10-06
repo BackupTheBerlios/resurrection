@@ -225,4 +225,4 @@
 #define MP_WHOIS				15400
 #define MP_WHOIS2				15401
 //KTS- Whois
-
+#define MP_ANTILEECH			15002 //>>> AntiLeech Class

@@ -28,16 +28,8 @@ class CKadContactListCtrl : public CMuleListCtrl
 public:
 	CKadContactListCtrl();
 	virtual ~CKadContactListCtrl();
-	//KTS+ IP to Country
-	void	UpdateContact(int iItem, Kademlia::CContact* contact);
-	void	UpdateAllContact();
-	//KTS- IP to Country
 protected:
 	friend class CKademliaWnd;
-	//KTS+
-	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
-	CImageList	imagelist;
-	//KTS-
 	bool ContactAdd(const Kademlia::CContact* contact);
 	void ContactRem(const Kademlia::CContact* contact);
 	void ContactRef(const Kademlia::CContact* contact);
@@ -58,9 +50,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnSysColorChange();
-		//KTS+ Whois 
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	//KTS- Whois
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg	void OnColumnClick( NMHDR* pNMHDR, LRESULT* pResult);
 };

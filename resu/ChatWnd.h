@@ -76,4 +76,6 @@ protected:
 	afx_msg void	OnBnClickedBnmenu();
 	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
 	afx_msg void OnStnDblclickFriendsicon();
+public:
+	afx_msg void OnStnClickedFriendsCountry();
 };

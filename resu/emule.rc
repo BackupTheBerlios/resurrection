@@ -202,33 +202,34 @@ BEGIN
     PUSHBUTTON      "Close",IDC_CCLOSE,449,262,50,14,BS_FLAT
     CONTROL         "",IDC_LIST2,"SysListView32",LVS_REPORT | LVS_SINGLESEL | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,5,24,132,
-                    167,WS_EX_STATICEDGE
+                    130,WS_EX_STATICEDGE
     CONTROL         "Messages",IDC_MESSAGES_LBL,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,157,6,236,8
     ICON            "",IDC_MESSAGEICON,144,4,20,20
     CONTROL         "Friends",IDC_FRIENDS_LBL,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,54,5,57,8
-    ICON            "",IDC_FRIENDSICON,5,1,21,20,SS_NOTIFY
+    ICON            "",IDC_FRIENDSICON,5,1,20,20,SS_NOTIFY
     PUSHBUTTON      "v",IDC_BTN_MENU,30,3,14,13,BS_NOTIFY | BS_FLAT
-    GROUPBOX        "Info",IDC_FRIENDS_MSG,5,195,132,89
-    LTEXT           "Userhash:",IDC_FRIENDS_USERHASH,10,220,61,8
-    LTEXT           "Client:",IDC_FRIENDS_CLIENT,10,232,61,8
-    LTEXT           "Uploaded:",IDC_FRIENDS_UPLOADED,10,256,61,8
-    LTEXT           "Downloaded:",IDC_FRIENDS_DOWNLOADED,10,268,61,8
-    LTEXT           "ID:",IDC_FRIENDS_IDENT,10,244,61,8
-    LTEXT           "Name:",IDC_FRIENDS_NAME,10,208,61,8
-    LTEXT           "-",IDC_FRIENDS_NAME_EDIT,73,208,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_USERHASH_EDIT,73,220,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_CLIENTE_EDIT,73,232,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_IDENTIFICACION_EDIT,73,244,60,8,
+    GROUPBOX        "Info",IDC_FRIENDS_MSG,5,162,132,122
+    LTEXT           "Userhash:",IDC_FRIENDS_USERHASH,12,210,54,8
+    LTEXT           "Client:",IDC_FRIENDS_CLIENT,12,222,44,8
+    LTEXT           "Uploaded:",IDC_FRIENDS_UPLOADED,12,246,44,8
+    LTEXT           "Downloaded:",IDC_FRIENDS_DOWNLOADED,12,258,48,8
+    LTEXT           "ID:",IDC_FRIENDS_IDENT,12,234,32,8
+    LTEXT           "Name:",IDC_FRIENDS_NAME,12,174,44,8
+    LTEXT           "QR Position:",IDC_FRIENDS_POSITION,12,186,44,8
+    LTEXT           "-",IDC_FRIENDS_NAME_EDIT,72,174,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_POSITION_EDIT,72,186,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_USERHASH_EDIT,72,210,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_CLIENTE_EDIT,72,222,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_IDENTIFICACION_EDIT,72,234,60,8,
                     SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_SUBIDO_EDIT,73,256,60,8,SS_NOPREFIX
-    LTEXT           "-",IDC_FRIENDS_DESCARGADO_EDIT,73,268,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_SUBIDO_EDIT,72,246,60,8,SS_NOPREFIX
+    LTEXT           "-",IDC_FRIENDS_DESCARGADO_EDIT,72,258,60,8,SS_NOPREFIX
     CONTROL         "",IDC_SPLITTER_FRIEND,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,139,5,3,278
-    LTEXT           "Country:",IDC_FRIENDS_COUNTRY,12,270,61,8
+    LTEXT           "Country:",IDC_FRIENDS_COUNTRY,12,270,42,8
     LTEXT           "-",IDC_FRIENDS_COUNTRY_EDIT,72,270,60,8,SS_NOPREFIX
-    ICON            "",IDC_COUNTRYFLAG2,44,269,21,20
 END
 
 IDD_STATISTICS DIALOGEX 0, 35, 511, 290
@@ -1099,6 +1100,22 @@ BEGIN
                     SS_LEFTNOWORDWRAP | SS_NOPREFIX | WS_GROUP,4,118,302,8
 END
 
+60103 DIALOGEX 0, 0, 453, 289
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "AntiLeech"
+FONT 8, "Tahoma", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_ANTILEECH_LIST,"SysListView32",LVS_REPORT | 
+                    LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,19,450,250
+    CONTROL         "Ban?",IDC_ANTILEECH_BAN,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,3,5,31,10
+    CONTROL         "Casesensitive?",IDC_ANTILEECH_CASE,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,62,5,63,10
+    EDITTEXT        IDC_ANTILEECH_REASON,146,2,303,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Close",IDOK,400,273,50,14,BS_FLAT
+    DEFPUSHBUTTON   "Apply",IDC_APPLY,348,273,50,14,BS_FLAT
+END
+
 IDD_FILEDETAILS_INFO DIALOGEX 0, 0, 334, 250
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "File Details"
@@ -1449,23 +1466,20 @@ EXSTYLE WS_EX_CONTEXTHELP
 CAPTION "AcKroNiC II"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Buffer time limit",IDC_BTL_TEXT,12,246,204,8
+    LTEXT           "Buffer time limit",IDC_BTL_TEXT,12,48,204,8
     CONTROL         "",IDC_BTL,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    WS_TABSTOP,12,258,206,11,WS_EX_STATICEDGE
-    LTEXT           "File buffer size",IDC_FILEBUFFERSIZE_STATIC,12,282,204,
-                    8
+                    WS_TABSTOP,12,60,206,11,WS_EX_STATICEDGE
+    LTEXT           "File buffer size",IDC_FILEBUFFERSIZE_STATIC,12,78,204,8
     CONTROL         "",IDC_FILEBUFFERSIZE,"msctls_trackbar32",WS_TABSTOP,12,
-                    294,206,11,WS_EX_STATICEDGE
-    LTEXT           "Upload slots:",IDC_UP_SLOTS_LABEL,66,174,63,13
-    LTEXT           "X",IDC_UP_SLOTS,144,174,22,8
+                    90,206,11,WS_EX_STATICEDGE
+    LTEXT           "Upload slots:",IDC_UP_SLOTS_LABEL,42,6,63,13
+    LTEXT           "X",IDC_UP_SLOTS,114,6,22,8
     LTEXT           "Upload speed per client:",IDC_UP_DR_PER_CLIENT_LABEL,18,
-                    204,96,12
-    RTEXT           "YYYY",IDC_UP_DR_PER_CLIENT,138,204,34,10
-    LTEXT           "Bps",IDC_UP_DR_PER_CLIENT2,186,204,16,12
+                    36,96,12
+    RTEXT           "YYYY",IDC_UP_DR_PER_CLIENT,120,36,34,10
+    LTEXT           "Bps",IDC_UP_DR_PER_CLIENT2,168,36,16,12
     CONTROL         "",IDC_UP_SLOTS_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,186,210,13
-    CONTROL         60090,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,6,
-                    12,220,149
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,6,18,210,13
 END
 
 IDD_PPG_NE DIALOGEX 0, 0, 231, 343
@@ -1513,13 +1527,13 @@ BEGIN
     EDITTEXT        IDC_IsClientBanTime,12,180,22,12,ES_CENTER | 
                     ES_AUTOHSCROLL,WS_EX_STATICEDGE
     LTEXT           "BanTime (2-25 Hours)",IDC_IsClientBanTime_static,38,182,
-                    98,8
+                    82,8
     CONTROL         "LeecherSecureLog",IDC_LEECHERSECURELOG,"Button",
                     BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,12,168,95,10
     CONTROL         "AntiModThief",IDC_ANTIMODIDFAKER,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,114,156,95,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,138,156,60,10
     CONTROL         "AntiNickThief",IDC_ANTINICKTHIEF,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,114,168,95,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,138,168,60,10
     CONTROL         "Download files in color:",IDC_EnableDownloadInColor,
                     "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,12,210,
                     105,11
@@ -1543,13 +1557,14 @@ BEGIN
                     ES_AUTOHSCROLL
     CTEXT           "Timer",IDC_STATIC,113,270,40,8
     CTEXT           "Counter",IDC_STATIC,173,270,40,8
-    LTEXT           "Load Balance for Hashing",IDC_NICEHASH_STATIC,65,293,97,
+    LTEXT           "Load Balance for Hashing",IDC_NICEHASH_STATIC,66,300,97,
                     8
     CONTROL         "",IDC_NICEHASH_WEIGHT,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    TBS_TOOLTIPS | WS_TABSTOP,65,302,97,11,WS_EX_CLIENTEDGE
-    LTEXT           "Faster hashing",IDC_NICEHASH_LEFT,16,317,66,8
-    LTEXT           "Less CPU-load",IDC_NICEHASH_RIGHT,155,317,66,8
-    GROUPBOX        "NiceHash",IDC_STATIC,6,287,216,44
+                    TBS_TOOLTIPS | WS_TABSTOP,66,312,97,11,WS_EX_CLIENTEDGE
+    LTEXT           "Faster hashing",IDC_NICEHASH_LEFT,12,324,66,8
+    LTEXT           "Less CPU-load",IDC_NICEHASH_RIGHT,150,324,66,8
+    GROUPBOX        "NiceHash",IDC_STATIC,6,288,216,54
+    PUSHBUTTON      "Not Set",IDC_SHOWLEECHERBOX,138,180,61,13
 END
 
 IDD_PPG_Spe3 DIALOGEX 0, 0, 229, 287
@@ -2025,6 +2040,11 @@ BEGIN
         RIGHTMARGIN, 401
         TOPMARGIN, 7
         BOTTOMMARGIN, 123
+    END
+
+    60103, DIALOG
+    BEGIN
+        RIGHTMARGIN, 322
     END
 
     IDD_FILEDETAILS_INFO, DIALOG
@@ -2722,8 +2742,22 @@ BEGIN
     IDS_FD_COMPR            "Compression"
     IDS_SOCKETS_INIT_FAILED2 "Error initiating the windows sockets."
     IDS_MAIN_READY          "eMule Version %s ready"
-    IDS_POWERSHARE_PREFIX   "PS"
     IDS_SEL_SKIN            "Select Skin..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_PW_Spe3             "ReSuRReCTioN Update"
+    IDS_UPDATEIPFILTERONSTART "Update IPfilter.dat on startup"
+    IDS_UploadColor         "Enable UL Color by Remote QR"
+    IDS_SIVKA_ASK_TIME      "Time for ask, before banned [5-12 min.]"
+    IDS_SIVKA_ASK_COUNTER   "Counter for ask, before banned [4-25]"
+    IDS_SIVKA_ASK_LOG       "Log banned clients"
+    IDS_CHECK_SIVKA_BANLOG  "activate Sivka BanLog"
+    IDS_CHECK_SIVKABAN      "activate Sivka-Ban"
+    IDS_ACKRONIC_SETTINGS   "AcKroNiC Setting"
+    IDS_POWERSHARE_PREFIX   "PS"
+    IDS_POWERRELEASE        "PowerRelease"
 END
 
 STRINGTABLE 
@@ -3276,6 +3310,11 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_CD_UPOSITION        "QR-Position"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CD_SCORES           "Scores"
     IDS_CD_MOD              "DL/UP Modifier:"
     IDS_CD_RATING           "Rating (total):"
@@ -3421,6 +3460,7 @@ BEGIN
     IDS_GETMYHTMLFRIENDED2KLINK "Copy my friend link to clipboard (HTML)"
     IDS_GETFRIENDED2KLINK   "Copy friend link to clipboard"
     IDS_GETHTMLFRIENDED2KLINK "Copy friend link to clipboard (HTML)"
+    IDS_LEECHERBOX          "Edit Leecher list"
 END
 
 STRINGTABLE 
@@ -3509,20 +3549,6 @@ BEGIN
     IDS_SOURCEEXCHANGESWAP  "Temporary Source Exchange Swap"
     IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Download parts needed for preview first"
     IDS_PR_SHORT_LOW        "[Lo]"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_PW_Spe3             "ReSuRReCTioN Update"
-    IDS_UPDATEIPFILTERONSTART "Update IPfilter.dat on startup"
-    IDS_UploadColor         "Enable UL Color by Remote QR"
-    IDS_SIVKA_ASK_TIME      "Time for ask, before banned [5-12 min.]"
-    IDS_SIVKA_ASK_COUNTER   "Counter for ask, before banned [4-25]"
-    IDS_SIVKA_ASK_LOG       "Log banned clients"
-    IDS_CHECK_SIVKA_BANLOG  "activate Sivka BanLog"
-    IDS_CHECK_SIVKABAN      "activate Sivka-Ban"
-    IDS_ACKRONIC_SETTINGS   "AcKroNiC Setting"
-    IDS_POWERRELEASE        "PowerRelease"
 END
 
 STRINGTABLE 
@@ -4541,11 +4567,13 @@ BEGIN
     IDS_EnableDownloadInBold "Downloading Files in Bold"
     IDS_RELEASEFILE         "Super Release"
     IDS_RELEASEREMOVE       "Remove Super Release"
+    IDS_RELEASESET          "Enable Super Release"
     IDS_LOG_IACH            "Log IACH Events"
 END
 
 STRINGTABLE 
 BEGIN
+    IDS_POWERSHARE          "Powershare"
     IDS_UPLOAD_COMPLETED    "Completing"
     IDS_UPLOAD_PREEMPTED    "Pre-empted by higher prio upload"
     IDS_LOG_WCEVENTS        "Log WebCache Events"
@@ -4569,6 +4597,7 @@ STRINGTABLE
 BEGIN
     IDS_PW_WEBCACHE         "Webcache"
     IDS_BTL_TEXT            "Buffer time limit"
+    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
 END
 
 STRINGTABLE 
@@ -4681,6 +4710,7 @@ BEGIN
     IDS_INVISIBLEMODE       "Invisible Mode"
     IDS_CTRLKEY             "CTRL"
     IDS_ALTKEY              "ALT"
+    IDS_SFM                 "Shared File Management"
     IDS_SHIFTKEY            "SHIFT"
     IDS_INVMODE_HOTKEY      "Select the hotkey to restore the window"
     IDS_INVMODE_MODKEY      "Modifier Keys:"
@@ -4723,25 +4753,26 @@ STRINGTABLE
 BEGIN
     IDS_HIDEOS              "Hide Overshare"
     IDS_SELECTIVESHARE      "Selective chunk sharing"
-    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
     IDS_SF_TURN_PART        "File UL (part)"
+    IDS_SF_TURN_SIMPLE      "File UL (simple)"
+    IDS_SF_FULLUPLOAD       "File UL (full)"
     IDS_SHAREONLYTHENEED    "Share Only The Need"
     IDS_HIDEOVERSHARES      "Overshares before hiding chunks (0 = Disabled)"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_INVMODE             "Activate Invisible Mode"
-    IDS_SF_TURN_SIMPLE      "File UL (simple)"
     IDS_INVMODE_ONSTART     "Invisible on startup"
-    IDS_SF_FULLUPLOAD       "File UL (full)"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FEEDBACK_CREATE     "Created at: %s"
-    IDS_RELEASESET          "Enable Super Release"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_SFM                 "Shared File Management"
     IDS_POWERSHARE_COLUMN_LABEL "Powershare"
     IDS_POWERSHARE_ON_LABEL "On"
     IDS_POWERSHARE_LABEL    "Off"
@@ -4753,7 +4784,6 @@ BEGIN
     IDS_POWERSHARE_ADVISED_LABEL "Advised"
 END
 
-
 STRINGTABLE 
 BEGIN
     IDS_POWERSHARE_OFF_LABEL "Off"
@@ -4761,7 +4791,6 @@ BEGIN
     IDS_POWERSHARE_DENIED_LABEL "Denied"
     IDS_POWERSHARE_DISABLED "Disabled"
     IDS_POWERSHARE_ACTIVATED "Activated"
-    IDS_POWERSHARE          "Powershare"
     IDS_POWERSHARE_LIMIT    "Limit of complete sources"
     IDS_UM                  "Upload Management"
     IDS_SPREADBAR           "Spreadbar"
@@ -4770,7 +4799,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FEEDBACK_FROM       "Feedback from %s on eMule %s "
+    IDS_FEEDBACK_FROM       "[code]Feedback from %s on eMule %s "
     IDS_FEEDBACK_FILENAME   "File name: %s"
     IDS_FEEDBACK_FILETYPE   "File type: %s"
     IDS_FEEDBACK_FILESIZE   "Size: %i MB"
@@ -4778,7 +4807,7 @@ BEGIN
     IDS_FEEDBACK_TOTAL      "Total sources: %i"
     IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
     IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
-    IDS_FEEDBACK_COMPLETE   "Estimated complete sources: %i"
+    IDS_FEEDBACK_COMPLETE   "Estimated complete sources: %i[/code]"
     IDS_COPYFEEDBACK        "Copy feedback to clipboard"
     IDS_COPYFEEDBACK_DE     "Kopiere Bericht in Zwischenablage (DE)"
     IDS_FEEDBACK_UPLOADED_FULL "Uploaded All Sessions : %i MB"
