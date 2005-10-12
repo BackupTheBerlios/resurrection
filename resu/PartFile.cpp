@@ -61,6 +61,7 @@
 #include "Log.h"
 #include "CollectionViewDialog.h"
 #include "Collection.h"
+#include "Fakecheck.h" //>>> [ionix] - WiZaRd::eD2K Updates
 
 //KTS+ webcache
 #include "WebCache/WebCacheSocket.h" // yonatan http
@@ -254,6 +255,8 @@ void CPartFile::Init()
 		m_iFileHardLimit = thePrefs.GetMaxSourcePerFile(); //default Pref-Hardlimit 
 //<<< WiZaRd - AutoHL added by lama
 	//KTS+ webcache
+SetSpecialFile(NULL); //>>> [ionix] - WiZaRd::eD2K Updates	
+// MORPH START - Added by Commander, WebCache 1.2f
 	LastWebcacheSourceCountTime = ::GetTickCount(); //JP speed up sorting webcache column
 	WebcacheSources = 0; //JP speed up sorting webcache column
 	WebcacheSourcesOurProxy = 0; //JP added from Gnaddelwarz
@@ -261,6 +264,7 @@ void CPartFile::Init()
 	Webcacherequests = 0; //JP WC-Filedetails
 	SuccessfulWebcacherequests = 0; //JP WC-Filedetails
 	WebCacheDownDataThisFile = 0; //JP WC-Filedetails
+	// MORPH END - Added by Commander, WebCache 1.2f
 	newdate = true;
 	m_LastSearchTime = 0;
 	m_LastSearchTimeKad = 0;
@@ -859,6 +863,15 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 						delete newtag;
 						break;
 					}
+//>>> [ionix] - WiZaRd::eD2K Updates
+					case FT_SPECIALFILE:
+					{
+						if(newtag->IsInt())
+							SetSpecialFile(newtag->GetInt());
+						delete newtag;
+						break;
+					}
+//<<< [ionix] - WiZaRd::eD2K Updates				   
 				    default:{
 											    if (newtag->GetNameID()==0 && (newtag->GetName()[0]==FT_GAPSTART || newtag->GetName()[0]==FT_GAPEND))
 						{
@@ -1355,7 +1368,14 @@ bool CPartFile::SavePartFile()
 			aichtag.WriteTagToFile(&file);
 			uTagCount++;
 		}
-		
+//>>> [ionix] - WiZaRd::eD2K Updates
+		if(IsSpecialFile())
+		{
+			CTag special(FT_SPECIALFILE, IsSpecialFile());
+			special.WriteTagToFile(&file);
+			uTagCount++;
+		}
+//<<< [ionix] - WiZaRd::eD2K Updates
 //<<-- ADDED STORMIT - Morph: PowerShare //
 		if (GetHideOS()>=0){
 			CTag hideostag(FT_HIDEOS, GetHideOS());
@@ -3366,7 +3386,7 @@ void CPartFile::PerformFileCompleteEnd(DWORD dwResult)
 			}
 		}
 	}
-
+CheckAndUpdateIfPossible();  //>>> [ionix] - WiZaRd::eD2K Updates
 	theApp.downloadqueue->StartNextFileIfPrefs(GetCategory());
 }
 
@@ -6285,4 +6305,11 @@ uint16    CPartFile::GetFileHardLimit() const
 	return m_iFileHardLimit; 
 		}
 //<<< WiZaRd - AutoHL added by lama
+//>>> [ionix] - WiZaRd::eD2K Updates
+void CPartFile::CheckAndUpdateIfPossible()
+{
+	uint8 m_uiType = IsSpecialFile();
+	if(m_uiType == NULL)
+		return;
 
+}

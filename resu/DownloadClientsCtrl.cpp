@@ -38,6 +38,7 @@
 // IP-to-Country +
 #include "IP2Country.h" 
 // IP-to-Country -
+#include "fakecheck.h" // [ionix] - Fakecheck
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -78,7 +79,7 @@ void CDownloadClientsCtrl::Init()
 	InsertColumn(5,	GetResString(IDS_CL_TRANSFDOWN), LVCFMT_LEFT, 115);
 	InsertColumn(6,	GetResString(IDS_CL_TRANSFUP), LVCFMT_LEFT, 115);
 	InsertColumn(7,	GetResString(IDS_META_SRCTYPE), LVCFMT_LEFT, 60);
-	InsertColumn(8,	GetResString(IDS_MODVERSION_LABEL), LVCFMT_LEFT, 100);
+InsertColumn(8,  GetResString(IDS_CHECKFAKE),LVCFMT_LEFT,220); // [ionix] - FakeCheck
 
 	SetAllIcons();
 	Localize();
@@ -163,6 +164,12 @@ void CDownloadClientsCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(7, &hdi);
 	strRes.ReleaseBuffer();
+// [ionix] - Fakecheck
+	strRes = GetResString(IDS_CHECKFAKE);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(8, &hdi);
+	strRes.ReleaseBuffer();
+    // [ionix] - Fakecheck
 }
 
 void CDownloadClientsCtrl::AddClient(CUpDownClient* client)
@@ -395,13 +402,21 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						break;
 					}
 					break;
+// [ionix] - WiZaRd - Fakecheck
+				case 8:{ 
+                    Sbuffer = _T("No fake"); 
+                    CKnownFile* file = client->GetRequestFile(); 
+                    if(file) 
+                    { 
+						CString tmp = theApp.FakeCheck->IsFake((uchar*)file->GetFileHash(), file->GetFileSize()) ? _tcsdup(theApp.FakeCheck->GetLastHit()) : NULL;; 
 				
-				// <CB Mod : Download List : Mod Version>
-				case 8:
-					Sbuffer = client->GetClientModVer();
+						if(!tmp.IsEmpty()) 
+                             Sbuffer = tmp; 
+                    }                          
+                    dc->DrawText(Sbuffer, Sbuffer.GetLength() ,&cur_rec, DLC_DT_TEXT); 
 					break;
-				// </CB Mod : Download List : Mod Version>
-
+				}
+			// [ionix] - WiZaRd - Fakecheck end
 				}
 				if( iColumn != 4 && iColumn != 0 && iColumn != 3 && iColumn != 11)
 					dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
@@ -586,6 +601,14 @@ case 106:
 		case 107: 
 			iResult=CompareUnsigned(item2->GetSourceFrom(), item1->GetSourceFrom());
 			break;
+		// [ionix] - Fakecheck
+		/*case 8:
+			iResult=CompareOptLocaleStringNoCase(item1->GetFakeComment(), item2->GetFakeComment());
+			break;
+		case (108):
+			iResult=CompareOptLocaleStringNoCase(item2->GetFakeComment(), item1->GetFakeComment());
+			break;
+			// [ionix] - Fakecheck end	*/	
 		default:
 			iResult=0;
 			break;

@@ -400,11 +400,11 @@ void CEMSocket::OnReceive(int nErrorCode){
 				case OP_EDONKEYPROT:
 				case OP_PACKEDPROT:
 				case OP_EMULEPROT:
-//KTS+ webcache
+// MORPH START - Added by SiRoB, WebCache 1.2f
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 				case OP_WEBCACHEPACKEDPROT:
 				case OP_WEBCACHEPROT: // yonatan - webcache protocol packets
-//KTS- webcache
+// MORPH END   - Added by SiRoB, WebCache 1.2f
 					break;
 				default:
 					EMTrace("CEMSocket::OnReceive ERROR Wrong header");

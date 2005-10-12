@@ -19,7 +19,7 @@
 
 struct Fakes_Struct{
    uchar			Hash[16];
-   uint32			Lenght;
+   uint32			Length;
    CString			RealTitle;
 };
 
@@ -32,12 +32,19 @@ class CFakecheck
 public:
 	CFakecheck();
 	~CFakecheck();
-	void	AddFake(uchar* Hash,uint32& Lenght,CString& Realtitle);
+	void	AddFake(uchar* Hash,uint32& Length,CString& Realtitle);
 	void	RemoveAllFakes();
-	int		LoadFromFile();
+//>>> [ionix] - WiZaRd::eD2K Updates
+	bool	LoadFromFile(const CString& path = _T(""));
+	bool	SaveToFile(const CString& path = _T(""));
+	void	AddFakeFile(const CString& path, const bool& removeold = false);
+	void	DownloadFakeList(const CString& m_sURL = _T(""));
+	//int		LoadFromFile();
+	//void	DownloadFakeList();
+//<<< [ionix] - WiZaRd::eD2K Updates
 	CString GetLastHit() const;
 	bool	IsFake(uchar* Hash2test, uint32 lenght);
-	void	DownloadFakeList();
+//	void	DownloadFakeList();
 	CString GetDefaultFilePath() const;
 private:
 	const Fakes_Struct* m_pLastHit;

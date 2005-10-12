@@ -359,7 +359,8 @@ void CUpDownClient::SendFileRequest()
 				DebugSend("OP__MPAichFileHashReq", this, reqfile->GetFileHash());
 			dataFileReq.WriteUInt8(OP_AICHFILEHASHREQ);
 		}
-                //KTS+ webcache
+
+		// MORPH START - Added by Commander, WebCache 1.2e
 		// Superlexx - webcache - the webcache-only tags, moved here from the hello packet
 		if (SupportsWebCache() && WebCacheInfoNeeded())
 		{
@@ -400,10 +401,10 @@ void CUpDownClient::SendFileRequest()
 		// 26-Jul-2003: removed requesting the file status for files <= PARTSIZE for better compatibility with ed2k protocol (eDonkeyHybrid).
 		// if the remote client answers the OP_REQUESTFILENAME with OP_REQFILENAMEANSWER the file is shared by the remote client. if we
 		// know that the file is shared, we know also that the file is complete and don't need to request the file status.
-		//KTS+  webcache
+		// MORPH START - Modified by Commander, WebCache 1.2e
 		if (reqfile->GetPartCount() > 1
 			|| SupportsWebCache())	// Superlexx - webcache - webcache-enabled clients might use IFP
-		//KTS- webcache
+		// MORPH END - Modified by Commander, WebCache 1.2e
 		{
 			if (thePrefs.GetDebugClientTCPLevel() > 0)
 				DebugSend("OP__SetReqFileID", this, reqfile->GetFileHash());
@@ -747,7 +748,6 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
         if(nNewState == DS_DOWNLOADING && socket){
 		    socket->SetTimeOut(CONNECTION_TIMEOUT*4);
         }
-		///KTS-
 		if (m_nDownloadState == DS_DOWNLOADING ){
 			if(socket)
 				socket->SetTimeOut(CONNECTION_TIMEOUT);
@@ -819,8 +819,7 @@ void CUpDownClient::ProcessHashSet(const uchar* packet,uint32 size)
 		reqfile->hashsetneeded = true;
 		throw GetResString(IDS_ERR_BADHASHSET);
 	}
-	
-	//KTS+ webcache
+	// MORPH START - Added by Commander, WebCache 1.2e
 	// Superlexx - IFP
 	if (thePrefs.IsWebCacheDownloadEnabled() && reqfile->GetStatus() == PS_EMPTY)
 	{
@@ -828,7 +827,7 @@ void CUpDownClient::ProcessHashSet(const uchar* packet,uint32 size)
 			reqfile->SetStatus(PS_READY);
 		theApp.sharedfiles->SafeAddKFile(reqfile);
 	}
-	//KTS- webcache
+	// MORPH END - Added by Commander, WebCache 1.2e
 	SendStartupLoadReq();
 }
 
@@ -915,8 +914,8 @@ void CUpDownClient::SendBlockRequests()
         }
     }
 	CreateBlockRequests(blockCount);
-	if (m_PendingBlocks_list.IsEmpty())
-	{
+
+	if (m_PendingBlocks_list.IsEmpty()){
 		SendCancelTransfer();
 		SetDownloadState(DS_NONEEDEDPARTS);
         SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::SendBlockRequests()"), true, false, false, NULL, true, true);
@@ -1179,9 +1178,8 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 					// Request next block
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugSend("More block requests", this);
-					//KTS+ webcache
+// WebCache ////////////////////////////////////////////////////////////////////////////////////
 					if (m_PendingBlocks_list.IsEmpty()) // Superlexx - tmp
-					//KTS- webcache
 					SendBlockRequests();	
 				}
 			}
@@ -1359,7 +1357,6 @@ void CUpDownClient::CheckDownloadTimeout()
 			OnPeerCacheDownSocketTimeout();
 		}
 	}
-// WebCache ////////////////////////////////////////////////////////////////////////////////////
 // yonatan http start //////////////////////////////////////////////////////////////////////////
 	else if (IsDownloadingFromWebCache() && m_pWCDownSocket) // jp proxy stall fix removed: && m_pWCDownSocket->IsConnected())
 	{
@@ -1383,6 +1380,7 @@ void CUpDownClient::CheckDownloadTimeout()
 	}
 	else if( !IsProxy() ) // proxies don't have a socket!
 // yonatan http end ////////////////////////////////////////////////////////////////////////////
+    // MORPH END - Added by Commander, WebCache 1.2e
 	{
 		if ((::GetTickCount() - m_dwLastBlockReceived) > DOWNLOADTIMEOUT)
 		{
@@ -2137,14 +2135,14 @@ void CUpDownClient::SendCancelTransfer(Packet* packet)
 		SetPeerCacheDownState(PCDS_NONE);
 	}
 
-//KTS+ webcache
+// MORPH START - Added by Commander, WebCache 1.2e
 	if (m_pWCDownSocket)
 	{
 		m_pWCDownSocket->Safe_Delete();
 		m_pWCDownSocket = NULL;
 		SetWebCacheDownState(WCDS_NONE);
 	}
-//KTS- webcache
+// MORPH END - Added by Commander, WebCache 1.2e
 }
 
 void CUpDownClient::SetRequestFile(CPartFile* pReqFile)

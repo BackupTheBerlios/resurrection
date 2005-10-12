@@ -15,9 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-//KTS+ webcache
-#include "ListenSocket.h" // yonatan http 
-//KTS- webcache
+
+#include "ListenSocket.h" // yonatan http // MORPH - Added by Commander, WebCache 1.2e
 
 class Packet;
 
@@ -58,14 +57,12 @@ protected:
 	CStringAArray		m_astrHttpHeaders;
 	int					m_iHttpHeadersSize;
 
-//KTS+ webcache
+// MORPH START - Added by Commander, WebCache 1.2e
 public: // yonatan http - for ugly webcache cast in EMSocket.cpp
 	bool ProcessHttpPacket(const BYTE* packet, UINT size);
-	//void ProcessHttpHeaderPacket(const char* packet, UINT size, LPBYTE& pBody, int& iSizeBody);
 
 protected: // yonatan http
 	void ProcessHttpHeaderPacket(const char* packet, UINT size, LPBYTE& pBody, int& iSizeBody);
-//KTS- webcache
 	virtual bool ProcessHttpResponse();
 	virtual bool ProcessHttpResponseBody(const BYTE* pucData, UINT size);
 	virtual bool ProcessHttpRequest();

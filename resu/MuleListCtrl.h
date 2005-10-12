@@ -68,18 +68,18 @@ public:
 	}
 
 	// Sorts the list
-	BOOL SortItems(PFNLVCOMPARE pfnCompare, DWORD_PTR dwData)
-	{
-		//>>> WiZaRd - Sorting FiX?
+	BOOL SortItems(PFNLVCOMPARE pfnCompare, DWORD_PTR dwData) {
+//>>> WiZaRd - Sorting FiX
 		//Usually the list will be sorted while redrawing is enabled
         //causing every sortstep to produce an unnecessary redraw
-        //so I disabled that wink.gif
+        //so I disabled that 
 		SetRedraw(FALSE);
 		//return CListCtrl::SortItems(pfnCompare, dwData);
 		BOOL ret = CListCtrl::SortItems(pfnCompare, dwData);
 		SetRedraw(TRUE);
 		return ret;
-		//<<< WiZaRd - Sorting FiX?
+//<<< WiZaRd - Sorting FiX
+		
 	}
 
 	// Sorts the list

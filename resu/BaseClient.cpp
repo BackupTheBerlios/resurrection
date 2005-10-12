@@ -496,22 +496,20 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 				CheckForGPLEvilDoer();
 				m_bModCheck = true; //>>> WiZaRd::AntiLeech
 				break;
-			//KTS+ webcache
+			// MORPH START - Added by Commander, WebCache 1.2e
 			case WC_TAG_VOODOO:
-				//m_bNotOfficial = true; //MOPRH - Added by SiRoB, GhostMod
 				m_bWebCacheSupport = temptag.IsInt() && temptag.GetInt() == 'ARC4';
 				break;
 			case WC_TAG_FLAGS:
-				//m_bNotOfficial = true; //MOPRH - Added by SiRoB, GhostMod
 				if (m_bWebCacheSupport && temptag.IsInt())
 				{
 					m_uWebCacheFlags = temptag.GetInt();
 					b_webcacheInfoNeeded = m_uWebCacheFlags & WC_FLAGS_INFO_NEEDED;
-					m_bWebCacheSupportsMultiOHCBs = (m_uWebCacheFlags & WC_FLAGS_MULTI_OHCBS) != NULL;
+					m_bWebCacheSupportsMultiOHCBs = (m_uWebCacheFlags & WC_FLAGS_MULTI_OHCBS)!=0;
 				}
 				break;
 			// Superlexx webcache - moved to the multipacket
-			//KTS- webcache
+			// MORPH END - Added by Commander, WebCache 1.2e
 			case CT_EMULE_UDPPORTS:
 				// 16 KAD Port
 				// 16 UDP Port
@@ -1350,7 +1348,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 			m_pPCUpSocket->client = NULL;
 			m_pPCUpSocket->Safe_Delete();
 		}
-		//KTS+ webcache
+		// MORPH START - Added by Commander, WebCache 1.2e
 		SetWebCacheDownState(WCDS_NONE);
 		SetWebCacheUpState(WCUS_NONE);
 		if (m_pWCDownSocket){
@@ -1361,7 +1359,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 			m_pWCUpSocket->client = NULL;
 			m_pWCUpSocket->Safe_Delete();
 		}
-		//KTS- webcache
+		// MORPH END - Added by Commander, WebCache 1.2e
 		m_fSentOutOfPartReqs = 0;
 		return false;
 	}
@@ -2688,7 +2686,7 @@ CString CUpDownClient::GetDownloadStateDisplayString() const
 		strState = _T("From Proxy");
 		break;
 	}
-	//KTS- webcache
+	// MORPH END - Added by Commander, WebCache 1.2e
 	return strState;
 }
 

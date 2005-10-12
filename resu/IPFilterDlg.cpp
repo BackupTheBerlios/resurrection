@@ -509,7 +509,8 @@ void CIPFilterDlg::OnBnClickedSave()
 	CWaitCursor curWait;
 	try
 	{
-		theApp.ipfilter->SaveToDefaultFile();
+		//theApp.ipfilter->SaveToDefaultFile();
+		theApp.ipfilter->SaveToFile(); //>>> [ionix] - WiZaRd::eD2K Updates
 	}
 	catch(CString err)
 	{

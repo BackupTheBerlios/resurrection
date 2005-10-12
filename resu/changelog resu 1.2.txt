@@ -1,7 +1,7 @@
 ReSuRReCTIoN 1.2
 
 Fixed: Statistics (Secure Ident)
-Fixed: IP2Country im Serverwnd 
+Fixed: IP2Country in Serverwnd 
 Fixed: Chunk selection patch[Xman]/big thanx @-G6R- for crashreport (changed against Xtreme 4.5 Code)
 Fixed: error in ProcessHello
 Fixed: Friendfix [WiZaRd]
@@ -22,6 +22,8 @@ Added: Flood Ask Protection [Dark]
 Added: Total upload /Download Column [LSD]
 Added: Feedback in [code][/code] function[lama]
 Added: Sharing Permissions [XMUle]
+Added: FakeCheck + IPFilter Update via eD2K [WiZaRd/Aireoreion/emuleplus] 
+Added: Fake check on Downloadlistctrl and Downloadclientctrl [IONIX]
 
 Re-Added: Hide Over Share
 Re-Added: Spreadbar

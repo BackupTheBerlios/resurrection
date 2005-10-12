@@ -446,8 +446,8 @@ void CDownloadListCtrl::UpdateItem(void* toupdate)
 {
 	if (!theApp.emuledlg->IsRunning())
 		return;
-	//FRTK --> MORPH START - SiRoB, Don't Refresh item if not needed
-	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd)
+	//MORPH START - SiRoB, Don't Refresh item if not needed
+	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd  || theApp.emuledlg->transferwnd->downloadlistctrl.IsWindowVisible() == false )
 		return;
 	//MORPH END   - SiRoB, Don't Refresh item if not needed
 
@@ -1097,7 +1097,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			break;
 		case 12:	// category
 			break;
-		//FRTK(kts)+ webcache
+		//MORPH START - Added by SiRoB, WebCache 1.2f
 		//JP Webcache START
 		case 13: {
 			if (lpUpDownClient->SupportsWebCache())
@@ -1117,7 +1117,8 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			break;
 		}
 		//JP Webcache END
-		//FRTK(kts)- webcache
+		//MORPH END   - Added by SiRoB, WebCache 1.2f
+		//MORPH START - Added by SiRoB, IP2Country		
 		}
 	}
 }

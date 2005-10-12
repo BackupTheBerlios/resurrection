@@ -68,6 +68,12 @@ bool	CPreferences::m_bIP2CountryShowFlag;
 //KTS- IP to Country
 int     CPreferences::m_iCreditSystem;  // Credit System
 uint8	CPreferences::m_uScoreRatioThres;	// Credit System
+//>>> [ionix]: e+ - Fakecheck - modified
+uint32		CPreferences::m_dwDLingFakeListVersion;
+CString		CPreferences::m_strDLingFakeListLink;
+uint32		CPreferences::m_dwDLingIpFilterVersion;
+CString		CPreferences::m_strDLingIpFilterLink;
+//<<< [ionix]: e+ - Fakecheck - modified
 
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 bool	CPreferences::m_bDropSourcesNNS;
@@ -556,12 +562,12 @@ bool	CPreferences::m_bPeerCacheEnabled;
 uint16	CPreferences::m_nPeerCachePort;
 bool	CPreferences::m_bPeerCacheShow;
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
-SYSTEMTIME	CPreferences::m_FakesDatVersion;
+uint32	CPreferences::m_FakesDatVersion;
 bool	CPreferences::UpdateFakeStartup;
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
 //MORPH START added by Yun.SF3: Ipfilter.dat update
 bool	CPreferences::AutoUpdateIPFilter; //added by milobac: Ipfilter.dat update
-SYSTEMTIME	CPreferences::m_IPfilterVersion; //added by milobac: Ipfilter.dat update
+uint32	CPreferences::m_IPfilterVersion; //added by milobac: Ipfilter.dat update
 //MORPH END added by Yun.SF3: Ipfilter.dat update
 bool	CPreferences::m_bOpenPortsOnStartUp;
 uint8	CPreferences::m_byLogLevel;
@@ -1884,6 +1890,12 @@ void CPreferences::SavePreferences()
 //
 
 
+	//>>> [ionix]: e+ - Fakecheck - modified
+	ini.WriteInt(_T("DownloadingFakeListVersion"), m_dwDLingFakeListVersion);
+	ini.WriteString(_T("DownloadingFakeListLink"), m_strDLingFakeListLink);
+	ini.WriteInt(_T("DownloadingIpFilterVersion"), m_dwDLingIpFilterVersion);
+	ini.WriteString(_T("DownloadingIpFilterLink"), m_strDLingIpFilterLink);
+	//<<< [ionix]: e+ - Fakecheck - modified
 	
 //Telp Start payback first
 	ini.WriteBool(_T("PBF"),m_bPBF ,_T("eMule"));
@@ -2141,16 +2153,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("Found"), m_bPeerCacheWasFound);
 	ini.WriteBool(_T("Enabled"), m_bPeerCacheEnabled);
 	ini.WriteInt(_T("PCPort"), m_nPeerCachePort);
-//MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
-	ini.WriteBinary(_T("FakesDatVersion"), (LPBYTE)&m_FakesDatVersion, sizeof(m_FakesDatVersion),_T("eMule")); 
-	ini.WriteBool(_T("UpdateFakeStartup"),UpdateFakeStartup,_T("eMule"));
-	//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
-    //MORPH START added by Yun.SF3: Ipfilter.dat update
-	ini.WriteBinary(_T("IPfilterVersion"), (LPBYTE)&m_IPfilterVersion, sizeof(m_IPfilterVersion),_T("eMule")); 
-	ini.WriteBool(_T("AutoUPdateIPFilter"),AutoUpdateIPFilter,_T("eMule"));
-    //MORPH END added by Yun.SF3: Ipfilter.dat update
-ini.WriteString(_T("UpdateURLFakeList"),UpdateURLFakeList,_T("eMule"));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
-ini.WriteString(_T("UpdateURLIPFilter"),UpdateURLIPFilter,_T("eMule"));//MORPH START added by Yun.SF3: Ipfilter.dat update
 // Morph: PowerShare
 	ini.WriteInt(_T("PowershareMode"),m_iPowershareMode,_T("eMule")); //MORPH - Added by SiRoB, Avoid misusing of powersharing
 	ini.WriteInt(_T("HideOvershares"),hideOS,_T("eMule"));
@@ -2191,6 +2193,16 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit,_T("eMule"));
 	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode,_T("eMule"));
 	// <== Anti Uploader Ban - Stulle
+//MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
+	ini.WriteInt(_T("FakesDatVersion"),m_FakesDatVersion,_T("eMule"));
+	ini.WriteBool(_T("UpdateFakeStartup"),UpdateFakeStartup,_T("eMule"));
+//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
+//MORPH START added by Yun.SF3: Ipfilter.dat update
+	ini.WriteInt(_T("IPfilterVersion"),m_IPfilterVersion,_T("eMule")); //added by milobac: Ipfilter.dat update
+	ini.WriteBool(_T("AutoUPdateIPFilter"),AutoUpdateIPFilter,_T("eMule")); //added by milobac: Ipfilter.dat update
+    //MORPH END added by Yun.SF3: Ipfilter.dat update
+ini.WriteString(_T("UpdateURLFakeList"),UpdateURLFakeList,_T("eMule"));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
+ini.WriteString(_T("UpdateURLIPFilter"),UpdateURLIPFilter,_T("eMule"));//MORPH START added by Yun.SF3: Ipfilter.dat update
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2571,6 +2583,12 @@ void CPreferences::LoadPreferences()
 	depth3D = ini.GetInt(_T("3DDepth"), 5);
 	m_bEnableMiniMule = ini.GetBool(_T("MiniMule"), true);
 	#define MINMAX(val, mini, maxi)	(min(max(mini, val), maxi)) //added by lama (AutoHL)
+	//>>> [ionix]: e+ - Fakecheck - modified
+	m_dwDLingFakeListVersion=ini.GetInt(_T("DownloadingFakeListVersion"),0);
+	m_strDLingFakeListLink=ini.GetString(_T("DownloadingFakeListLink"), _T(""));
+	m_dwDLingIpFilterVersion=ini.GetInt(_T("DownloadingIpFilterVersion"), 0);
+	m_strDLingIpFilterLink=ini.GetString(_T("DownloadingIpFilterLink"), _T(""));
+	//<<< [ionix]: e+ - Fakecheck - modified
 //>>> WiZaRd - AutoHL added by lama
 	m_uiAutoHLUpdateTimer = ini.GetInt(_T("AutoHLUpdate"), 300); 
 	m_uiAutoHLUpdateTimer = MINMAX(m_uiAutoHLUpdateTimer, 10, 600);
@@ -2797,21 +2815,6 @@ void CPreferences::LoadPreferences()
 	//m_IPfilterVersion=ini.GetInt(_T("IPfilterVersion"),0); //added by milobac: Ipfilter.dat update
 	//MORPH END added by Yun.SF3: Ipfilter.dat update
 _stprintf(UpdateURLIPFilter,_T("%s"),ini.GetString(_T("UpdateURLIPFilter"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip")));//MORPH START added by Yun.SF3: Ipfilter.dat update
-//MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
-	//m_FakesDatVersion=ini.GetInt(_T("FakesDatVersion"),0);
-	//UpdateFakeStartup=ini.GetBool(_T("UpdateFakeStartup"),false);
-//MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
-	pst = NULL;
-	usize = sizeof m_FakesDatVersion;
-	if (ini.GetBinary(_T("FakesDatVersion"), &pst, &usize) && usize == sizeof m_FakesDatVersion)
-		memcpy(&m_FakesDatVersion, pst, sizeof m_FakesDatVersion);
-	else
-		memset(&m_FakesDatVersion, 0, sizeof m_FakesDatVersion);
-	delete[] pst;
-	UpdateFakeStartup=ini.GetBool(_T("UpdateFakeStartup"),false);
-	//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating	
-//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
-_stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/fakes.dat")));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 // Morph: PowerShare
 	m_iPowershareMode=ini.GetInt(_T("PowershareMode"),2);
 	hideOS=ini.GetInt(_T("HideOvershares"),0/*5*/);
@@ -2820,6 +2823,11 @@ _stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("h
 	PowerShareLimit=ini.GetInt(_T("PowerShareLimit"),0);
 	// <--- Morph: PowerShare
 	m_iSpreadbarSetStatus = ini.GetInt(_T("SpreadbarSetStatus"), 1);
+//MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
+	m_FakesDatVersion=ini.GetInt(_T("FakesDatVersion"),0);
+	UpdateFakeStartup=ini.GetBool(_T("UpdateFakeStartup"),false);
+	//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
+_stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/fakes.dat")));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 
 m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_uScoreRatioThres = m_iCreditSystem == 2 ? 3 : 1; // Credit System	
@@ -2971,6 +2979,12 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
 	m_bFnTagAtEnd = ini.GetBool(_T("FnTagAtEnd"), false);
 	// <== FunnyNick Tag - Stulle
+	//>>> [ionix]: e+ - Fakecheck - modified
+	m_dwDLingFakeListVersion=ini.GetInt(_T("DownloadingFakeListVersion"),0);
+	m_strDLingFakeListLink=ini.GetString(_T("DownloadingFakeListLink"), _T(""));
+	m_dwDLingIpFilterVersion=ini.GetInt(_T("DownloadingIpFilterVersion"), 0);
+	m_strDLingIpFilterLink=ini.GetString(_T("DownloadingIpFilterLink"), _T(""));
+	//<<< [ionix]: e+ - Fakecheck - modified
 	LoadCats();
 	SetLanguage();
 }

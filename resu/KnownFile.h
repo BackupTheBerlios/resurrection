@@ -43,7 +43,7 @@ public:
 //Telp Start push rare file
 	float	GetFileRatio(void) ;
 //Telp End push rare file	
-	//KTS+ webcache
+	// MORPH START - Added by Commander, WebCache 1.2e
 	bool ReleaseViaWebCache; //JP webcache release
 	uint32 GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount); //JP webcache release
 	void SetReleaseViaWebCache(bool WCRelease) {ReleaseViaWebCache=WCRelease;} //JP webcache release

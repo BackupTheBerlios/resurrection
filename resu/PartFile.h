@@ -468,4 +468,16 @@ public:
 	//JP Throttle OHCB-production END
 //KTS- webcache
 	void	RemoveSrcAtPos(POSITION pos);
+//>>> WiZaRd::eD2K Updates
+#define TYPE_FAKE	1
+#define TYPE_IPFLT	2
+#define TYPE_IP2	3
+private:
+	uint8	m_uiSpecialFile;
+public:
+	uint8	IsSpecialFile()					{return m_uiSpecialFile;}
+	void	SetSpecialFile(const uint8& i)	{m_uiSpecialFile = i;}
+	void	CheckAndUpdateIfPossible();
+//<<< WiZaRd::eD2K Updates
+
 };

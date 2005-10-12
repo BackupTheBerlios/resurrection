@@ -310,7 +310,7 @@ BOOL CPPgConnection::OnApply()
 				theApp.listensocket->Rebind();
 			else
 				bRestartApp = true;
-			//KTS+ WebCache 1.2f
+			//MORPH START - Added by SiRoB, WebCache 1.2f
 			// yonatan WC-TODO: check out Rebind()
 			// jp webcachesettings
 			// this part crashes if Webcachesettings has not been active page at least once see PreferencesDlg.cpp (103)
@@ -326,7 +326,7 @@ BOOL CPPgConnection::OnApply()
 			
 			theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.LoadSettings();
 			// jp end
-			//KTS- WebCache 1.2f
+			//MORPH END   - Added by SiRoB, WebCache 1.2f
 		}
 	}
 	

@@ -46,13 +46,15 @@
 #include "ClientUDPSocket.h"
 #include "SHAHashSet.h"
 #include "Log.h"
-//KTS+ webcache
+
+
+// MORPH START - Added by Commander, WebCache 1.2e
 #include "WebCache/WebCacheSocket.h"
 #include "WebCache/WebCachedBlock.h"
 #include "WebCache/WebCacheProxyClient.h"
 #include "WebCache/WebCachedBlockList.h"
 #include "WebCache/WebCacheOHCBManager.h"
-//KTS- webcache
+// MORPH END - Added by Commander, WebCache 1.2e
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -137,6 +139,8 @@ void CClientReqSocket::ResetTimeOutTimer(){
 
 UINT CClientReqSocket::GetTimeOut()
 {
+	// yonatan http: Added WC stuff to CWebCacheSocket::ResetTimeOutTimer() - WC-TODO ?
+	
 	// PC-TODO
 	// the PC socket may even already be disconnected and deleted and we still need to keep the
 	// ed2k socket open because remote client may still be downloading from cache.
@@ -1122,7 +1126,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					client->SetFileListRequested(0);
                     break;
                 }
-        		//KTS+ webcache
+        		// MORPH START - Added by Commander, WebCache 1.2e
 				case OP_HTTP_CACHED_BLOCK:
 				{
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
@@ -1136,7 +1140,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					}
 					break;
 				}
-                //KTS- webcache
+                // MORPH END - Added by Commander, WebCache 1.2e
 				default:
 					theStats.AddDownDataOverheadOther(size);
 					PacketToDebugLogLine(_T("eDonkey"), packet, size, opcode, DLP_LOW);
@@ -1197,9 +1201,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 			{
                 case OP_MULTIPACKET:
 				{
-					//KTS+ webcache
-					bool webcacheInfoReceived = false;
-					//KTS- webcache
+					bool webcacheInfoReceived = false; // MORPH - Added by Commander, WebCache 1.2e
 
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugRecv("OP_MultiPacket", client, (size >= 16) ? packet : NULL);
@@ -1334,8 +1336,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								}
 								break;
 							}
-
-							//KTS+ webcache
+							// MORPH START - Added by Commander, WebCache 1.2e                                
 							// Superlexx - webcache - moved WC_TAG_WEBCACHENAME, WC_TAG_WEBCACHEID and WC_TAG_MASTERKEY here from the hello packet
 							case WC_TAG_WEBCACHENAME:
 							{
@@ -1401,12 +1402,14 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								}
 								break;*/
 							// Superlexx - webcache - end
+							// MORPH END - Added by Commander, WebCache 1.2e
 							default:
 								if (thePrefs.GetDebugClientTCPLevel() > 0)
 									Debug(_T("***NOTE: Invalid sub opcode 0x%02x with OP_MultiPacket received; %s"), opcode_in, client->DbgGetClientInfo());
 						}
 					}
-					//KTS+ webcache
+
+					// MORPH START - Added by Commander, WebCache 1.2e
 					// Superlexx - webcache - send webcacheInfo in the answer when needed
 					if( client->SupportsWebCache() && (client->WebCacheInfoNeeded() || webcacheInfoReceived))
 					{
@@ -1427,7 +1430,8 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 						
 						client->SetWebCacheInfoNeeded(false);
 					}
-					//KTS- webcache
+					// MORPH END - Added by Commander, WebCache 1.2e
+
 					if (data_out.GetLength() > 16)
 					{
 						if (thePrefs.GetDebugClientTCPLevel() > 0)
@@ -1556,13 +1560,14 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								break;
 							}*/
 							// Superlexx - webcache - end
-							//KTS- webcache
+							// MORPH END - Added by Commander, WebCache 1.2e
 							default:
 								if (thePrefs.GetDebugClientTCPLevel() > 0)
 									Debug(_T("***NOTE: Invalid sub opcode 0x%02x with OP_MultiPacketAns received; %s"), opcode_in, client->DbgGetClientInfo());
 						}
 					}
 
+					//MORPH START - Added by Commander, WebCache 1.9a
 					if (client->SupportsWebCache()
 						&& client->SupportsMultiOHCBs()
 						&& client->IsTrustedOHCBSender())
@@ -1576,6 +1581,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 							SendPacket(tosend, true);
 						}
 					}
+					//MORPH END   - Added by Commander, WebCache 1.9a				
 					break;
 				}
 				case OP_EMULEINFO:
@@ -2248,7 +2254,7 @@ bool CClientReqSocket::PacketReceivedCppEH(Packet* packet)
 		case OP_EMULEPROT:
 			bResult = ProcessExtPacket((const BYTE*)packet->pBuffer, packet->size, packet->opcode, uRawSize);
 			break;
-//KTS+ webcache
+// MORPH START - Added by Commander, WebCache 1.2f
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 		// yonatan - webcache protocol packets
 		case OP_WEBCACHEPACKEDPROT:	// Superlexx - packed WC protocol
@@ -2263,7 +2269,7 @@ bool CClientReqSocket::PacketReceivedCppEH(Packet* packet)
 			bResult = ProcessWebCachePacket((const BYTE*)packet->pBuffer, packet->size, packet->opcode, uRawSize);
 			break;
 		// yonatan - webcache protocol packets end
-//KTS- webcache
+// MORPH END - Added by SiRoB, WebCache 1.2f
 		default:{
 			theStats.AddDownDataOverheadOther(uRawSize);
 			if (thePrefs.GetVerbose())
@@ -2575,12 +2581,11 @@ void CListenSocket::OnAccept(int nErrorCode)
 		uint32 nFataErrors = 0;
 		while (m_nPendingConnections > 0)
 		{
-		//KTS+ webcache
+// WebCache ////////////////////////////////////////////////////////////////////////////////////
 			// JP detect fake HighID
 			// MOD BEGIN netfinity: Fake HighID
 			thePrefs.m_bHighIdPossible = true;
 			// MOD END netfinity
-			//KTS- webcache
 			m_nPendingConnections--;
 
 			CClientReqSocket* newclient;
@@ -2834,7 +2839,7 @@ float CListenSocket::GetMaxConperFiveModifier()
 	float Modifier = 1.0F - SpikeSize / SpikeTolerance;
 	return Modifier;
 }
-//KTS+ webcache
+// MORPH START - Added by SiRoB, WebCache 1.2f
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 // yonatan - webcache protocol packets
 bool CClientReqSocket::ProcessWebCachePacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize)
@@ -2921,4 +2926,4 @@ bool CClientReqSocket::ProcessWebCachePacket(const BYTE* packet, uint32 size, UI
 			return false;
 }
 // yonatan - webcache protocol packets end
-//KTS- webcache
+// MORPH END   - Added by SiRoB, WebCache 1.2f

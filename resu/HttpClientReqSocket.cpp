@@ -24,10 +24,11 @@
 #include "Preferences.h"
 #include "Statistics.h"
 #include "Log.h"
-//KTS+ webcache
+// MORPH START - Added by Commander, WebCache 1.2e
 #include "WebCache/WebCachedBlockList.h"
 #include "WebCache/WebCacheProxyClient.h" 
-//KTS+ webcache
+// MORPH END - Added by Commander, WebCache 1.2e
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -111,7 +112,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		strError.Format(_T("Error: HTTP socket: %s; %s"), ex, DbgGetClientInfo());
 		if (thePrefs.GetVerbose())
 			AddDebugLogLine(false, _T("%s"), strError);
-		//KTS+ webcache
+		// MORPH START - Added by Commander, WebCache 1.2e
 		// client removal experiment
 		if( GetClient() && GetClient()->IsProxy() ) {
 			Debug( _T("Restarting Proxy Downloads\n") );
@@ -121,7 +122,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 				SINGLEProxyClient->DeleteBlock(); // make SingleProxyClient not busy
 			WebCachedBlockList.TryToDL(); // download next block
 		}
-		//KTS- webcache
+		// MORPH END - Added by Commander, WebCache 1.2e
 	}
 
 	if (!bResult && !deletethis)
@@ -216,12 +217,12 @@ bool CHttpClientReqSocket::ProcessHttpPacket(const BYTE* pucData, UINT uSize)
 	}
 	else{
 		theStats.AddDownDataOverheadFileRequest(uSize);
-		//KTS+ webcache
+		// MORPH START - Added by Commander, WebCache 1.2e
 		//throw CString("Invalid HTTP socket state");
 		CString tmp;
 		tmp.Format( _T("Invalid HTTP socket state: %u"), GetHttpState() );
 		throw tmp;
-		//KTS- webcache
+		// MORPH END - Added by Commander, WebCache 1.2e
 	}
 
 	return true;

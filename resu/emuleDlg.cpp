@@ -77,7 +77,6 @@
 #include "FriendList.h"
 #include "IPFilter.h"
 #include "Statistics.h"
-//#include "MuleToolbarCtrl.h" Toolbar SPE64
 #include "TaskbarNotifier.h"
 #include "MuleStatusbarCtrl.h"
 #include "ListenSocket.h"
@@ -1920,7 +1919,6 @@ void CemuleDlg::OnClose()
 	delete theApp.uploadqueue;		theApp.uploadqueue = NULL;
 	delete theApp.clientlist;		theApp.clientlist = NULL;
 	delete theApp.friendlist;		theApp.friendlist = NULL;
-	//delete theApp.scheduler;		theApp.scheduler = NULL; removed scheduler [lama]
 	delete theApp.ipfilter;			theApp.ipfilter = NULL;
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
@@ -3121,28 +3119,7 @@ LRESULT CemuleDlg::OnPeerCacheResponse(WPARAM wParam, LPARAM lParam)
 	return theApp.m_pPeerCache->OnPeerCacheCheckResponse(wParam,lParam);
 }
 
-/*void CemuleDlg::CreateToolbarCmdIconMap()
-{
-	m_mapTbarCmdToIcon.SetAt(TBBTN_CONNECT, _T("Connect"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_KAD, _T("Kademlia"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_SERVER, _T("Server"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_TRANSFERS, _T("Transfer"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_SEARCH, _T("Search"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_SHARED, _T("SharedFiles"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_MESSAGES, _T("Messages"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_STATS, _T("Statistics"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_OPTIONS, _T("Preferences"));
-	m_mapTbarCmdToIcon.SetAt(TBBTN_TOOLS, _T("Tools"));
-}
 
-LPCTSTR CemuleDlg::GetIconFromCmdId(UINT uId)
-{
-	LPCTSTR pszIconId = NULL;
-	if (m_mapTbarCmdToIcon.Lookup(uId, pszIconId))
-		return pszIconId;
-	return NULL;
-}
-*/
 BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 {
 	if (!thePrefs.GetUseReBarToolbar())
@@ -3153,70 +3130,15 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 	ASSERT( id == AFX_IDW_REBAR );
 	ASSERT( pnmrc->uBand == 0 );
 	ASSERT( pnmrc->wID == 0 );
-//	ASSERT( m_mapTbarCmdToIcon.GetSize() != 0 );
-
-//==> Toolbar [shadow2004]
-/*	// get visible area of rebar/toolbar
-	CRect rcVisibleButtons;
-	toolbar->GetClientRect(&rcVisibleButtons);
-
-	// search the first toolbar button which is not fully visible
-	int iButtons = toolbar->GetButtonCount();
-	for (int i = 0; i < iButtons; i++)
-	{
-		CRect rcButton;
-		toolbar->GetItemRect(i, &rcButton);
-
-		CRect rcVisible;
-		if (!rcVisible.IntersectRect(&rcVisibleButtons, &rcButton) || !EqualRect(rcButton, rcVisible))
-			break;
-	}*/
-//<== Toolbar [shadow2004]
-
 	// create menu for all toolbar buttons which are not (fully) visible
 	BOOL bLastMenuItemIsSep = TRUE;
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
 	menu.AddMenuTitle(_T("eMule"), true);
 
-//==> Toolbar [shadow2004]
-/*	while (i < iButtons)
-	{
-		TCHAR szString[256];
-		szString[0] = _T('\0');
-		TBBUTTONINFO tbbi = {0};
-		tbbi.cbSize = sizeof tbbi;
-		tbbi.dwMask = TBIF_BYINDEX | TBIF_COMMAND | TBIF_STYLE | TBIF_STATE | TBIF_TEXT;
-		tbbi.cchText = ARRSIZE(szString);
-		tbbi.pszText = szString;
-		if (toolbar->GetButtonInfo(i, &tbbi) != -1)
-		{
-			if (tbbi.fsStyle & TBSTYLE_SEP)
-			{
-				if (!bLastMenuItemIsSep)
-					bLastMenuItemIsSep = menu.AppendMenu(MF_SEPARATOR, 0, (LPCTSTR)NULL);
-			}
-			else
-			{
-				if (szString[0] != _T('\0') && menu.AppendMenu(MF_STRING, tbbi.idCommand, szString, GetIconFromCmdId(tbbi.idCommand)))
-				{
-					bLastMenuItemIsSep = FALSE;
-					if (tbbi.fsState & TBSTATE_CHECKED)
-						menu.CheckMenuItem(tbbi.idCommand, MF_BYCOMMAND | MF_CHECKED);
-					if ((tbbi.fsState & TBSTATE_ENABLED) == 0)
-						menu.EnableMenuItem(tbbi.idCommand, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-				}
-			}
-		}
-
-		i++;
-	}*/
-//<== Toolbar [shadow2004]
 
 	CPoint ptMenu(pnmrc->rc.left, pnmrc->rc.top);
 	ClientToScreen(&ptMenu);
-	//ptMenu.y += rcVisibleButtons.Height();
-	//menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_TOPALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, ptMenu.x, ptMenu.y, this);
 	*plResult = 1;
 	return FALSE;
 }

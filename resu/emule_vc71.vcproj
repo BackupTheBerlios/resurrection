@@ -284,6 +284,9 @@
 				RelativePath="Emule.cpp">
 			</File>
 			<File
+				RelativePath=".\extractfile.cpp">
+			</File>
+			<File
 				RelativePath=".\fakecheck.cpp">
 			</File>
 			<File
@@ -783,6 +786,9 @@
 			</File>
 			<File
 				RelativePath="Exceptions.h">
+			</File>
+			<File
+				RelativePath=".\extractfile.h">
 			</File>
 			<File
 				RelativePath=".\fakecheck.h">

@@ -76,16 +76,6 @@ BOOL CPPgSpe3::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void SysTimeToStr(LPSYSTEMTIME st, LPTSTR str)
-{
-	TCHAR sDate[15];
-	sDate[0] = _T('\0');
-	GetDateFormat(LOCALE_USER_DEFAULT, DATE_SHORTDATE, st, NULL, sDate, 100);
-	TCHAR sTime[15];
-	sTime[0] = _T('\0');
-	GetTimeFormat(LOCALE_USER_DEFAULT, 0, st, NULL ,sTime ,100);
-	_stprintf(str, _T("%s %s"), sDate, sTime);
-}
 
 void CPPgSpe3::LoadSettings(void)
 {
@@ -106,7 +96,6 @@ CString strBuffer;
 		CheckDlgButton(IDC_AUTOUPIPFILTER,0);
 	//MORPH END added by Yun.SF3: Ipfilter.dat update
 
-	//KTS+
 //Commander - Added: IP2Country Auto-updating - Start
 	GetDlgItem(IDC_UPDATE_URL_IP2COUNTRY)->SetWindowText(thePrefs.UpdateURLIP2Country);
 	if(thePrefs.AutoUpdateIP2Country)
@@ -123,7 +112,6 @@ CString strBuffer;
 	strBuffer.Format(_T("v.%u"), thePrefs.GetIP2CountryVersion());
 	GetDlgItem(IDC_IP2COUNTRY_VERSION)->SetWindowText(strBuffer);
 	//Commander - Added: IP2Country Auto-updating - End
-	//KTS-
 }
 
 BOOL CPPgSpe3::OnApply()
@@ -134,20 +122,20 @@ BOOL CPPgSpe3::OnApply()
 	//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 	GetDlgItem(IDC_UPDATE_URL_FAKELIST)->GetWindowText(buffer);
 	_tcscpy(thePrefs.UpdateURLFakeList, buffer);
-	thePrefs.UpdateFakeStartup = IsDlgButtonChecked(IDC_UPDATEFAKELISTSTART)!=0;
+	thePrefs.UpdateFakeStartup = IsDlgButtonChecked(IDC_UPDATEFAKELISTSTART);
 	//MORPH END   - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 
 
     //MORPH START - Added by Yun.SF3: Ipfilter.dat update
 	GetDlgItem(IDC_UPDATE_URL_IPFILTER)->GetWindowText(buffer);
 	_tcscpy(thePrefs.UpdateURLIPFilter, buffer);
-	thePrefs.AutoUpdateIPFilter = IsDlgButtonChecked(IDC_AUTOUPIPFILTER)!=0;
+	thePrefs.AutoUpdateIPFilter = IsDlgButtonChecked(IDC_AUTOUPIPFILTER);
 	//MORPH END   - Added by Yun.SF3: Ipfilter.dat update
 
  //Commander - Added: IP2Country Auto-updating - Start
     GetDlgItem(IDC_UPDATE_URL_IP2COUNTRY)->GetWindowText(buffer);
 	_tcscpy(thePrefs.UpdateURLIP2Country, buffer);
-	thePrefs.AutoUpdateIP2Country = IsDlgButtonChecked(IDC_AUTOUPIP2COUNTRY)!=0;
+	thePrefs.AutoUpdateIP2Country = IsDlgButtonChecked(IDC_AUTOUPIP2COUNTRY);
 	//Commander - Added: IP2Country Auto-updating - End
 
 		//Commander - Added: IP2Country Auto-updating - Start
@@ -197,37 +185,38 @@ void CPPgSpe3::OnBnClickedUpdatefakes()
 {
 	OnApply();
 	theApp.FakeCheck->DownloadFakeList();
-	TCHAR sBuffer[30];
-	sBuffer[0] = _T('\0'); 
-	SysTimeToStr(thePrefs.GetFakesDatVersion(), sBuffer);
-	GetDlgItem(IDC_FAKELIST_VERSION)->SetWindowText(sBuffer);
+	CString strBuffer;
+	strBuffer.Format(_T("v.%u"), thePrefs.GetFakesDatVersion());
+	GetDlgItem(IDC_FAKELIST_VERSION)->SetWindowText(strBuffer);
 }
 
 void CPPgSpe3::OnBnClickedResetfakes()
 {
-	CString strBuffer = _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/fakes.dat");
+	CString strBuffer = _T("http://donkeyfakes.gambri.net/public/ed2kfakes.txt");
 	GetDlgItem(IDC_UPDATE_URL_FAKELIST)->SetWindowText(strBuffer);
-	memset(thePrefs.GetFakesDatVersion(), 0, sizeof(SYSTEMTIME));
-	GetDlgItem(IDC_FAKELIST_VERSION)->SetWindowText(_T(""));
+	thePrefs.m_FakesDatVersion = 0;
+	strBuffer.Format(_T("v.%u"), thePrefs.GetFakesDatVersion());
+	GetDlgItem(IDC_FAKELIST_VERSION)->SetWindowText(strBuffer);
 }
 //MORPH START added by Yun.SF3: Ipfilter.dat update
 void CPPgSpe3::OnBnClickedUpdateipfurl()
 {
 	OnApply();
 	theApp.ipfilter->UpdateIPFilterURL();
-	TCHAR sBuffer[30];
-	sBuffer[0] = _T('\0'); 
-	SysTimeToStr(thePrefs.GetIPfilterVersion(), sBuffer);
-	GetDlgItem(IDC_IPFILTER_VERSION)->SetWindowText(sBuffer);
+	CString strBuffer;
+	strBuffer.Format(_T("v.%u"), thePrefs.GetIPfilterVersion());
+	GetDlgItem(IDC_IPFILTER_VERSION)->SetWindowText(strBuffer);
 }
 //MORPH END added by Yun.SF3: Ipfilter.dat update
 
 void CPPgSpe3::OnBnClickedResetipfurl()
 {
-	CString strBuffer = _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip");
+	CString strBuffer = _T("http://emulepawcio.sourceforge.net/ed2kipfilter.txt");
 	GetDlgItem(IDC_UPDATE_URL_IPFILTER)->SetWindowText(strBuffer);
-	memset(thePrefs.GetIPfilterVersion(), 0, sizeof(SYSTEMTIME));
-	GetDlgItem(IDC_IPFILTER_VERSION)->SetWindowText(_T(""));
+	thePrefs.m_IPfilterVersion = 0;
+	strBuffer.Format(_T("v.%u"), thePrefs.GetIPfilterVersion());
+	GetDlgItem(IDC_IPFILTER_VERSION)->SetWindowText(strBuffer);
+
 }
 
 

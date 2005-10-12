@@ -324,7 +324,7 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink,uint8 cat)
 			}
 		}
 	}
-	    //KTS+ webcache
+	    // MORPH START - Added by SiRoB, WebCache 1.2f
 		if (!theApp.sharedfiles->GetFileByID(pLink->GetHashKey())	// not already in the shared files list
 			&& partfile							// valid pointer
 			&& !partfile->hashsetneeded			// hash set not needed
@@ -334,7 +334,7 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink,uint8 cat)
 				partfile->SetStatus(PS_READY);
 			theApp.sharedfiles->SafeAddKFile(partfile);
 		}
-		//KTS- wzbcache
+		// MORPH END - Added by SiRoB, WebCache 1.2f
 
 	if (pLink->HasHostnameSources())
 	{
@@ -369,9 +369,9 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	msgTemp.Format(GetResString(IDS_NEWDOWNLOAD) + _T("\n"), newfile->GetFileName());
 	theApp.emuledlg->ShowNotifier(msgTemp, TBN_DOWNLOADADDED);
 	ExportPartMetFilesOverview();
-	//KTS+ webcache
+	// MORPH START - Added by Commander, WebCache 1.2e
 	thePrefs.UpdateWebcacheReleaseAllowed(); //JP webcache release
-	//KTS- webcache
+	// MORPH END - Added by Commander, WebCache 1.2e
 }
 
 bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) const

@@ -1144,7 +1144,7 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 	
 	m_dwPublicIP = dwIP;
 
-        //KTS+ webcache
+// WebCache ////////////////////////////////////////////////////////////////////////////////////
 	// jp detect Webcache on Startup START
 	if (thePrefs.WCAutoupdate
 		&& m_dwPublicIP != 0 )
@@ -1152,9 +1152,9 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 		thePrefs.detectWebcacheOnStart = false;
 		AutodetectWebcache();
 	}
-	//KTS- webcache
-
+	// jp detect Webcache on Startup END
 }
+
 
 bool CemuleApp::IsFirewalled()
 {

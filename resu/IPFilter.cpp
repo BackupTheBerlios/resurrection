@@ -25,9 +25,13 @@
 #include "Preferences.h"
 #include "emuledlg.h"
 #include "Log.h"
-#include "HttpDownloadDlg.h"//MORPH START added by Yun.SF3: Ipfilter.dat update
-#include "ZipFile.h"//MORPH - Added by SiRoB, ZIP File download decompress
-#include "GZipFile.h"//MORPH - Added by SiRoB, GZIP File download decompress
+#include "HttpDownloadDlg.h"//MORPH START Ipfilter.dat update
+//>>> [ionix] - WiZaRd::eD2K Updates
+#include "extractfile.h" 
+#include "ED2KLink.h" 
+#include "DownloadQueue.h" 
+#include "PartFile.h"
+//<<< [ionix] - WiZaRd::eD2K Updates
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -283,19 +287,28 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 			}
 		}
 
-		AddLogLine(bShowResponse, GetResString(IDS_IPFILTERLOADED), m_iplist.GetCount());
+		AddModLogLine,false (bShowResponse, m_iplist.GetCount() == 0 ? LOG_WARNING : LOG_SUCCESS, GetResString(IDS_IPFILTERLOADED), m_iplist.GetCount());
 		if (thePrefs.GetVerbose())
 		{
-			AddModLogLine(false, GetResString(IDS_LOG_IPFILTER_LOADED), pszFilePath, GetTickCount()-dwStart);
-			AddModLogLine(false, GetResString(IDS_LOG_IPFILTER_INFO), iLine, iFoundRanges, iDuplicate, iMerged);
+			DWORD dwEnd = GetTickCount();
+			AddDebugLogLine(false, _T("Loaded IP filters from \"%s\""), pszFilePath);
+			AddDebugLogLine(false, _T("Parsed lines/entries:%u  Found IP ranges:%u  Duplicate:%u  Merged:%u  Time:%s"), iLine, iFoundRanges, iDuplicate, iMerged, CastSecondsToHM((dwEnd-dwStart+500)/1000));
 		}
 	}
 	return m_iplist.GetCount();
 }
 
-void CIPFilter::SaveToDefaultFile()
+//>>> [ionix] - WiZaRd::eD2K Updates
+void CIPFilter::SaveToFile(const CString& path)
+//void CIPFilter::SaveToDefaultFile()
+//<<< [ionix] - WiZaRd::eD2K Updates
 {
-	CString strFilePath = thePrefs.GetConfigDir() + DFLT_IPFILTER_FILENAME;
+//>>> [ionix] - WiZaRd::eD2K Updates
+	CString strFilePath = path;
+	if(strFilePath.IsEmpty())
+		strFilePath = GetDefaultFilePath();
+	//CString strFilePath = thePrefs.GetConfigDir() + DFLT_IPFILTER_FILENAME;
+//<<< [ionix] - WiZaRd::eD2K Updates
 	FILE* fp = _tfsopen(strFilePath, _T("wt"), _SH_DENYWR);
 	if (fp != NULL)
 	{
@@ -312,7 +325,7 @@ void CIPFilter::SaveToDefaultFile()
 			if (_ftprintf(fp, _T("%-15s - %-15s , %3u , %s\n"), szStart, szEnd, flt->level, flt->desc) == 0 || ferror(fp))
 			{
 				CString strError;
-				strError.Format(GetResString(IDS_IPFILTER_SAVERR), strFilePath, _tcserror(errno));
+				strError.Format(_T("Failed to save IP filter to file \"%s\" - %hs"), strFilePath, strerror(errno));
 				throw strError;
 			}
 		}
@@ -321,7 +334,7 @@ void CIPFilter::SaveToDefaultFile()
 	else
 	{
 		CString strError;
-		strError.Format(GetResString(IDS_IPFILTER_SAVERR), strFilePath, _tcserror(errno));
+		strError.Format(_T("Failed to save IP filter to file \"%s\" - %hs"), strFilePath, strerror(errno));
 		throw strError;
 	}
 }
@@ -483,35 +496,100 @@ bool CIPFilter::RemoveIPFilter(const SIPFilter* pFilter)
 	return false;
 }
 
-//MORPH START added by Yun.SF3: Ipfilter.dat update
-void CIPFilter::UpdateIPFilterURL()
+//MORPH START Ipfilter.dat update
+//>>> [ionix] - WiZaRd::eD2K Updates
+void CIPFilter::UpdateIPFilterURL(const CString& m_sURL)
+//void CIPFilter::UpdateIPFilterURL()
+//<<< [ionix] - WiZaRd::eD2K Updates
 {
 	CString sbuffer;
-	CString strURL = thePrefs.GetUpdateURLIPFilter();
+//>>> [ionix] - WiZaRd::eD2K Updates
+	CString strURL;
+	if(m_sURL.IsEmpty())
+		strURL = thePrefs.GetUpdateURLIPFilter();
+	else
+		strURL = m_sURL;
+	//CString strURL = thePrefs.GetUpdateURLIPFilter();
+//<<< [ionix] - WiZaRd::eD2K Updates
+	strURL.TrimRight(_T(".txt"));
+	strURL.TrimRight(_T(".dat"));
+	strURL.TrimRight(_T(".zip"));
+	strURL.Append(_T(".txt"));
+
 	TCHAR szTempFilePath[_MAX_PATH];
+//>>> [ionix] - WiZaRd::eD2K Updates
 	_tmakepath(szTempFilePath, NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T("tmp"));
+	//FILE* readFile= _tfsopen(szTempFilePath, _T("r"), _SH_DENYWR); //HANDLE LEAK - is never closed/used!
+//<<< [ionix] - WiZaRd::eD2K Updates
 
 	CHttpDownloadDlg dlgDownload;
-	dlgDownload.m_strTitle = GetResString(IDS_DWL_IPFILTERFILE);
+	dlgDownload.m_strTitle = _T("Downloading IP filter version file");
 	dlgDownload.m_sURLToDownload = strURL;
 	dlgDownload.m_sFileToDownloadInto = szTempFilePath;
-	SYSTEMTIME SysTime;
-	if (PathFileExists(GetDefaultFilePath()))
-		memcpy(&SysTime, thePrefs.GetIPfilterVersion(), sizeof(SYSTEMTIME));
-	else
-		memset(&SysTime, 0, sizeof(SYSTEMTIME));
-	dlgDownload.m_pLastModifiedTime = &SysTime;
 
 	if (dlgDownload.DoModal() != IDOK)
 	{
-		LogError(LOG_STATUSBAR, GetResString(IDS_DWLIPFILTERFAILED));
+		_tremove(szTempFilePath);
+		AddLogLine(true, _T("Error downloading %s"), strURL);
 		return;
 	}
-	if (dlgDownload.m_pLastModifiedTime == NULL)
+//>>> [ionix] - WiZaRd::eD2K Updates
+/*
+	FILE* readFile= _tfsopen(szTempFilePath, _T("r"), _SH_DENYWR);
+	//readFile = _tfsopen(szTempFilePath, _T("r"), _SH_DENYWR);
+
+	char buffer[9];
+	int lenBuf = 9;
+	fgets(buffer,lenBuf,readFile);
+	CString sbuffer = buffer;
+	sbuffer = sbuffer.Trim();
+	fclose(readFile);
+	_tremove(szTempFilePath);
+*/
+	CStdioFile IPFilterDotTxtFile;
+	CString strVersion = _T("");
+	CString strED2KLink = _T("");
+	if(IPFilterDotTxtFile.Open(szTempFilePath, CFile::modeRead | CFile::shareDenyWrite))
+	{
+		IPFilterDotTxtFile.ReadString(strVersion);
+		IPFilterDotTxtFile.ReadString(strED2KLink);
+		IPFilterDotTxtFile.Close();		
+		strVersion.Trim();
+		strED2KLink.Trim();
+	}
+	_tremove(szTempFilePath);
+//<<< [ionix] - WiZaRd::eD2K Updates
+
+	if (thePrefs.GetIPfilterVersion()< (uint32) _tstoi(strVersion) || !PathFileExists(GetDefaultFilePath()) || FileSize(GetDefaultFilePath()) < 10240) //>>> [ionix] - WiZaRd::eD2K Updates: changed sbuffer to strVersion
+	{
+//>>> [ionix] - WiZaRd::eD2K Updates
+		if(strED2KLink.IsEmpty())
+		{
+		CString IPFilterURL;
+		if(m_sURL.IsEmpty())
+			IPFilterURL = thePrefs.GetUpdateURLIPFilter();
+		else
+			IPFilterURL = m_sURL;
+		//CString IPFilterURL = thePrefs.GetUpdateURLIPFilter();
+//<<< [ionix] - WiZaRd::eD2K Updates
+		_tmakepath(szTempFilePath, NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T("tmp"));
+
+		CHttpDownloadDlg dlgDownload;
+		dlgDownload.m_strTitle = _T("Downloading IP filter file");
+		dlgDownload.m_sURLToDownload = IPFilterURL;
+		dlgDownload.m_sFileToDownloadInto = szTempFilePath;
+		if (dlgDownload.DoModal() != IDOK || FileSize(szTempFilePath) < 10240)
+		{
+			_tremove(szTempFilePath);
+			AddLogLine(true, _T("IP Filter download failed"));
 			return;
+		}
 
 		bool bIsZipFile = false;
 		bool bUnzipped = false;
+//>>> [ionix] - WiZaRd::eD2K Updates
+		Unzip(szTempFilePath, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, bIsZipFile, bUnzipped, _T("guarding.p2p"));
+/*
 		CZIPFile zip;
 		if (zip.Open(szTempFilePath))
 		{
@@ -520,80 +598,150 @@ void CIPFilter::UpdateIPFilterURL()
 			CZIPFile::File* zfile = zip.GetFile(_T("guarding.p2p"));
 			if (zfile)
 			{
-			CString strTempUnzipFilePath;
-			_tmakepath(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
-			strTempUnzipFilePath.ReleaseBuffer();
-			if (zfile->Extract(strTempUnzipFilePath))
+				TCHAR szTempUnzipFilePath[MAX_PATH];
+				_tmakepath(szTempUnzipFilePath, NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
+				if (zfile->Extract(szTempUnzipFilePath))
 				{
 					zip.Close();
 					zfile = NULL;
 
 					if (_tremove(GetDefaultFilePath()) != 0)
-					TRACE("*** Error: Failed to remove default IP filter file \"%s\" - %s\n", GetDefaultFilePath(), _tcserror(errno));
-				if (_trename(strTempUnzipFilePath, GetDefaultFilePath()) != 0)
-					TRACE("*** Error: Failed to rename uncompressed IP filter file \"%s\" to default IP filter file \"%s\" - %s\n", strTempUnzipFilePath, theApp.ipfilter->GetDefaultFilePath(), _tcserror(errno));
+						TRACE("*** Error: Failed to remove default IP filter file \"%s\" - %s\n", theApp.ipfilter->GetDefaultFilePath(), _tcserror(errno));
+					if (_trename(szTempUnzipFilePath, GetDefaultFilePath()) != 0)
+						TRACE("*** Error: Failed to rename uncompressed IP filter file \"%s\" to default IP filter file \"%s\" - %s\n", szTempUnzipFilePath, theApp.ipfilter->GetDefaultFilePath(), _tcserror(errno));
 					if (_tremove(szTempFilePath) != 0)
 						TRACE("*** Error: Failed to remove temporary IP filter file \"%s\" - %s\n", szTempFilePath, _tcserror(errno));
 					bUnzipped = true;
 				}
 				else
-				LogError(LOG_STATUSBAR, GetResString(IDS_ERR_IPFILTERZIPEXTR), szTempFilePath);
+					AddLogLine(true, _T("Failed to extract IP filter file from downloaded IP filter ZIP file \"%s\"."), szTempFilePath);
 			}
 			else
-			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_IPFILTERCONTENTERR), szTempFilePath);
+				AddLogLine(true, _T("Downloaded IP filter file \"%s\" is a ZIP file with unexpected content."), szTempFilePath);
 
 			zip.Close();
 		}
-	else
-	{
-		CGZIPFile gz;
-		if (gz.Open(szTempFilePath))
-		{
-			bIsZipFile = true;
-
-			CString strTempUnzipFilePath;
-			_tmakepath(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
-			strTempUnzipFilePath.ReleaseBuffer();
-
-			// add filename and extension of uncompressed file to temporary file
-			CString strUncompressedFileName = gz.GetUncompressedFileName();
-			if (!strUncompressedFileName.IsEmpty())
-			{
-				strTempUnzipFilePath += _T('.');
-				strTempUnzipFilePath += strUncompressedFileName;
-			}
-
-			if (gz.Extract(strTempUnzipFilePath))
-			{
-				gz.Close();
-
-				if (_tremove(GetDefaultFilePath()) != 0)
-					TRACE(_T("*** Error: Failed to remove default IP filter file \"%s\" - %hs\n"), GetDefaultFilePath(), strerror(errno));
-				if (_trename(strTempUnzipFilePath, GetDefaultFilePath()) != 0)
-					TRACE(_T("*** Error: Failed to rename uncompressed IP filter file \"%s\" to default IP filter file \"%s\" - %hs\n"), strTempUnzipFilePath, GetDefaultFilePath(), _tcserror(errno));
-				if (_tremove(szTempFilePath) != 0)
-					TRACE(_T("*** Error: Failed to remove temporary IP filter file \"%s\" - %hs\n"), szTempFilePath, strerror(errno));
-				bUnzipped = true;
-			}
-		}
-		gz.Close();
-	}
-
+*/
+//<<< [ionix] - WiZaRd::eD2K Updates
 		if (!bIsZipFile && !bUnzipped)
-		{
+	{
 			_tremove(GetDefaultFilePath());
 			_trename(szTempFilePath, GetDefaultFilePath());
 		}
 
-	//Moved up to not retry if archive don't contain the awaited file
-	memcpy(thePrefs.GetIPfilterVersion(), &SysTime, sizeof SysTime); //Commander - Added: Update version number
-	thePrefs.Save();
-
-		if(bIsZipFile && !bUnzipped){
+		if(bIsZipFile && !bUnzipped)
 			return;
-		}
 
 		LoadFromDefaultFile();
-   
+
+		thePrefs.SetIpfilterVersion(_tstoi(strVersion)); //>>> [ionix] - WiZaRd::eD2K Updates
+		thePrefs.Save();
+	}
+//>>> [ionix] - WiZaRd::eD2K Updates
+		else if(uint32(_tstoi(strVersion)) > thePrefs.GetDLingIpFilterVersion())
+		{		
+			if (!thePrefs.GetDLingIpFilterLink().IsEmpty())
+			{
+				CED2KLink* pLink = CED2KLink::CreateLinkFromUrl(thePrefs.GetDLingIpFilterLink());
+				if (pLink != NULL)
+			{
+					CED2KFileLink* pFileLink = pLink->GetFileLink();
+					if (pFileLink != NULL)
+			{
+						CPartFile* file = theApp.downloadqueue->GetFileByID(pFileLink->GetHashKey());
+						if(file)
+						{
+							//TODO - delete old file!
+						}
+					}
+				}
+				delete pLink;
+			}
+
+			CED2KLink* pLink = CED2KLink::CreateLinkFromUrl(strED2KLink);
+			if (pLink != NULL)
+			{
+				CED2KFileLink* pFileLink = pLink->GetFileLink();
+				if (pFileLink != NULL)
+			{
+					if (!theApp.downloadqueue->IsFileExisting(pFileLink->GetHashKey()))
+			{
+						theApp.downloadqueue->AddFileLinkToDownload(pFileLink);
+						CPartFile* file = theApp.downloadqueue->GetFileByID(pFileLink->GetHashKey());
+						if (file != NULL)
+						{
+							thePrefs.SetDLingIpFilterVersion(_tstoi(strVersion));
+							thePrefs.SetDLingIpFilterLink(strED2KLink);
+							file->SetSpecialFile(TYPE_IPFLT);
+							thePrefs.Save();
+						}
+						else
+							AddLogLine(false, _T("Error updating ipfilter"));
+			}
+		}
+	}
+			delete pLink;
+			}
+//<<< [ionix] - WiZaRd::eD2K Updates
+		}
+	}
+//MORPH END Ipfilter.dat update
+
+//>>> [ionix] - WiZaRd::eD2K Updates
+void CIPFilter::AddFilterFile(const CString& path, const bool& removeold)
+		{
+	if(!PathFileExists(path)) //just to be sure...
+		{
+		AddDebugLogLine(false, _T("Failed to update \"%s\" with \"%s\" - file does not exist!"), GetDefaultFilePath(), path);
+		return;
+		}
+
+	if(removeold)
+		RemoveAllIPFilters();
+
+	//Backup current file
+	const CString strBackupFilePath = GetDefaultFilePath() + _T(".bak");
+	::MoveFile(GetDefaultFilePath(), strBackupFilePath);
+
+	bool bLoaded = false; //success indicator
+
+	//first try to unzip...
+	bool bIsZipFile = false;
+	bool bUnzipped = false;
+	if(IsRar(path) && (UnRAR(path, thePrefs.GetConfigDir())) )
+		bLoaded = AddFromFile(GetDefaultFilePath())!=0;
+	else // Plaintext will be unzipped too ;)
+		Unzip(path, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, bIsZipFile, bUnzipped, _T("guarding.p2p")); // added _T("guarding.p2p") - who knows ;)
+	//an error occured here...
+	//TODO: return value of AddFromFile is not reliable!
+
+	if(bUnzipped)
+		bLoaded = AddFromFile(GetDefaultFilePath())!=0; 
+	/*
+	if(bIsZipFile)
+	{
+		if(bUnzipped)
+			bLoaded = AddFromFile(GetDefaultFilePath())!=0; 
+		}
+	else if(UnRAR(path, thePrefs.GetConfigDir()))
+		bLoaded = AddFromFile(GetDefaultFilePath())!=0;
+	else //plaintext already!?
+		bLoaded = AddFromFile(path)!=0;
+	*/
+
+	//success
+	if(bLoaded)
+	{
+		SaveToFile(); //save the current file...
+		::DeleteFile(strBackupFilePath); //kick the old file...		
+		AddDebugLogLine(false, _T("Successfully updated \"%s\" with \"%s\""), GetDefaultFilePath(), path);
+	}
+	else //failed 
+	{		
+		::MoveFile(strBackupFilePath, GetDefaultFilePath()); //restore backup
+		AddDebugLogLine(false, _T("Failed to update \"%s\" with \"%s\""), GetDefaultFilePath(), path);
+		if(removeold) // restore old ipfilters if they were deleted
+			AddFromFile(GetDefaultFilePath());
 }
-//MORPH END added by Yun.SF3: Ipfilter.dat update
+}
+//<<< [ionix] - WiZaRd::eD2K Updates

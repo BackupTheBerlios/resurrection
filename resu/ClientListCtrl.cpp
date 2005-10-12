@@ -72,7 +72,6 @@ void CClientListCtrl::Init()
 	CString coltemp;
 	coltemp=GetResString(IDS_CD_UHASH);coltemp.Remove(':');
 	InsertColumn(7,coltemp,LVCFMT_LEFT,150,7);
-	InsertColumn(8,GetResString(IDS_MODVERSION_LABEL),LVCFMT_LEFT,100,8); //Spe64 Modversion
 	
 	SetAllIcons();
 	Localize();
@@ -159,11 +158,6 @@ void CClientListCtrl::Localize()
 		hdi.pszText = strRes.GetBuffer();
 		pHeaderCtrl->SetItem(7, &hdi);
 		strRes.ReleaseBuffer();
-//Spe6+4 Modversion
-		strRes=GetResString(IDS_MODVERSION_LABEL);
-		hdi.pszText = strRes.GetBuffer();
-		pHeaderCtrl->SetItem(8, &hdi);
-		strRes.ReleaseBuffer();
 	}
 }
 
@@ -219,7 +213,7 @@ void CClientListCtrl::RefreshClient(const CUpDownClient* client)
 		return;
 
 	//MORPH START - SiRoB, Don't Refresh item if not needed
-	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd)
+	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd || theApp.emuledlg->transferwnd->clientlistctrl.IsWindowVisible() == false )
 		return;
 	//MORPH END   - SiRoB, Don't Refresh item if not needed
 	LVFINDINFO find;
@@ -260,7 +254,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
-	//CRect cur_rec(lpDrawItemStruct->rcItem);
+	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 
 	int iOldBkMode;
@@ -372,10 +366,6 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 7:
 					Sbuffer = md4str(client->GetUserHash());
 					break;
-               //Spe64 ModVersion
- case 8:
-                    Sbuffer = client->GetClientModVer();
-                    break;
 			}
 			if( iColumn != 0)
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
@@ -689,19 +679,6 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	    case 107:
 		    iResult=memcmp(item2->GetUserHash(), item1->GetUserHash(), 16);
 			break;
-//Spe64 ModVersion
-        case 8:
-		case 108: 
-		    if(item1->GetClientModVer() && item2->GetClientModVer())
-			    iResult = _tcsicmp(item1->GetClientModVer(), item2->GetClientModVer());
-                if(lParamSort == 108) {
-                    iResult = -iResult;
-                }
-		    else if(item1->GetClientSoftVer())
-			    iResult =  1;
-		    else
-			    iResult =  -1;
-            break;
 
 		default:
 			iResult=0;

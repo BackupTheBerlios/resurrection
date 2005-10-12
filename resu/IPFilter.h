@@ -47,13 +47,16 @@ public:
 
 	int AddFromFile(LPCTSTR pszFilePath, bool bShowResponse = true);
 	int LoadFromDefaultFile(bool bShowResponse = true);
-	void SaveToDefaultFile();
+//>>> [ionix] - WiZaRd::eD2K Updates
+	void SaveToFile(const CString& path = _T(""));
+	void AddFilterFile(const CString& path, const bool& removeold = false);
+//<<< [ionix] - WiZaRd::eD2K Updates
 
 	bool IsFiltered(uint32 IP) /*const*/;
 	bool IsFiltered(uint32 IP, UINT level) /*const*/;
 	LPCTSTR GetLastHit() const;
 	const CIPFilterArray& GetIPFilter() const;
-	void    UpdateIPFilterURL();//MORPH START added by Yun.SF3: Ipfilter.dat update
+	void    UpdateIPFilterURL(const CString& m_sURL = _T(""));//MORPH START: Ipfilter.dat update //>>> [ionix] - WiZaRd::eD2K Updates
 private:
 	const SIPFilter* m_pLastHit;
 	CIPFilterArray m_iplist;

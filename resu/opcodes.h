@@ -574,3 +574,4 @@
 #define KADEMLIA_FIND_VALUE		0x02
 #define KADEMLIA_STORE			0x04
 #define KADEMLIA_FIND_NODE		0x0B
+#define FT_SPECIALFILE			0xBF //>>> [ionix] - WiZaRd::eD2K Updates

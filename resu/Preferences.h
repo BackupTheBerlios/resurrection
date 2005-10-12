@@ -406,6 +406,12 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	static	UINT	splitterbarPositionFriend;
 	static	UINT	splitterbarPositionShared;
 	//MORPH END - Added by SiRoB, Splitting Bar [O²]
+		//>>> [ionix]: e+ - Fakecheck - modified
+	static uint32 m_dwDLingFakeListVersion;
+	static CString m_strDLingFakeListLink;
+	static uint32 m_dwDLingIpFilterVersion;
+	static CString m_strDLingIpFilterLink;
+	//<<< [ionix]: e+ - Fakecheck - modified
 	static	UINT	m_uDeadServerRetries;
 	static	DWORD	m_dwServerKeepAliveTimeout;
 	// -khaos--+++> Changed data type to avoid overflows
@@ -645,7 +651,16 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 
 	//AICH Options
 	static bool		m_bTrustEveryHash;
-		//KTS+ webcache
+	
+static TCHAR UpdateURLFakeList[256];//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
+static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat update
+
+//MORPH START added by Yun.SF3: Ipfilter.dat update
+	static bool		AutoUpdateIPFilter; //added by milobac: Ipfilter.dat update
+	static uint32		m_IPfilterVersion; //added by milobac: Ipfilter.dat update
+	//MORPH END added by Yun.SF3: Ipfilter.dat update
+	
+	// MORPH START - Added by Commander, WebCache 1.2f
 	static	bool	m_bHighIdPossible; // JP detect fake HighID (from netfinity)
 	static	bool	WebCacheDisabledThisSession; //JP temp disabler
 	static	uint32	WebCachePingSendTime;//jp check proxy config
@@ -685,13 +700,6 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	static	uint8	webcacheTrustLevel;
 // yonatan http end ////////////////////////////////////////////////////////////////////////////
 	//KTS- webcache	
-static TCHAR UpdateURLFakeList[256];//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
-static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat update
-	
-//MORPH START added by Yun.SF3: Ipfilter.dat update
-	static bool		AutoUpdateIPFilter; //added by milobac: Ipfilter.dat update
-	static SYSTEMTIME		m_IPfilterVersion; //added by milobac: Ipfilter.dat update
-	//MORPH END added by Yun.SF3: Ipfilter.dat update
 	// files
 	static bool		m_bRememberCancelledFiles;
 	static bool		m_bRememberDownloadedFiles;
@@ -747,6 +755,16 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 	static bool IsLeecherSecureLog()    {return m_bLeecherSecureLog;} 
 	// [ionix] WiZaRd - AntiNickThief 
   static bool GetAllowMultipleInstances() { return m_bAllowMultipleInstances; } // [ionix] Multiple Instances added by lama	
+	//>>> [ionix]: e+ - Fakecheck - modified
+	static uint32	GetDLingFakeListVersion()					{ return m_dwDLingFakeListVersion; }
+	static void		SetDLingFakeListVersion(uint32 dwVersion)	{ m_dwDLingFakeListVersion = dwVersion; }
+	static CString	GetDLingFakeListLink()						{ return m_strDLingFakeListLink; }
+	static void		SetDLingFakeListLink(const CString& strLink){ m_strDLingFakeListLink = strLink; }
+	static uint32	GetDLingIpFilterVersion()					{ return m_dwDLingIpFilterVersion; }
+	static void		SetDLingIpFilterVersion(uint32 dwVersion)	{ m_dwDLingIpFilterVersion = dwVersion; }
+	static CString	GetDLingIpFilterLink()						{ return m_strDLingIpFilterLink; }
+	static void		SetDLingIpFilterLink(const CString& strLink){ m_strDLingIpFilterLink = strLink; }
+	//<<< [ionix]: e+ - Fakecheck - modified
 	CPreferences();
 	~CPreferences();
 
@@ -764,8 +782,9 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
     static bool GetEnablePushSmallFile()			{return enablePushSmallFile;} //Hawkstar, push small file
 //Telp End push small file
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
-	static SYSTEMTIME		m_FakesDatVersion;
+	static uint32		m_FakesDatVersion;
 	static bool		UpdateFakeStartup;
+static	bool	IsUpdateFakeStartupEnabled()		{ return UpdateFakeStartup; }
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
 
 
@@ -1508,12 +1527,14 @@ static	uint16	GetMaxSourcePerFileSoft();
 static	CString	GetUpdateURLFakeList()				{return CString(UpdateURLFakeList);}		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 static	CString	GetUpdateURLIPFilter()				{return CString(UpdateURLIPFilter);}//MORPH START added by Yun.SF3: Ipfilter.dat update
 static bool	IsAutoUPdateIPFilterEnabled()		{ return AutoUpdateIPFilter; } //MORPH START added by Yun.SF3: Ipfilter.dat update
-static LPSYSTEMTIME   GetIPfilterVersion()				{return &m_IPfilterVersion;}
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
-	static LPSYSTEMTIME   GetFakesDatVersion()				{return &m_FakesDatVersion;}
-	static	bool	IsUpdateFakeStartupEnabled()		{ return UpdateFakeStartup; }
-
+	static	uint32	GetFakesDatVersion()				{return m_FakesDatVersion;}
+	static	void	SetFakesDatVersion(uint32 version)	{m_FakesDatVersion = version;} 
 	//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
+//MORPH START added by Yun.SF3: Ipfilter.dat update
+	static	uint32	GetIPfilterVersion()				{return m_IPfilterVersion;}
+	static	void	SetIpfilterVersion(uint32 version)	{m_IPfilterVersion = version;}
+	//MORPH END added by Yun.SF3: Ipfilter.dat update
 
 	static	bool	IsRememberingDownloadedFiles()		{return m_bRememberDownloadedFiles;}
 	static	bool	IsRememberingCancelledFiles()		{return m_bRememberCancelledFiles;}

@@ -35,9 +35,6 @@ class CKademliaWnd;
 class CKnownFileList; 
 class CMainFrameDropTarget;
 class CMuleStatusBarCtrl;
-//==> Toolbar [shadow2004]
-//class CMuleToolbarCtrl;
-//<== Toolbar [shadow2004]
 class CPreferencesDlg;
 class CSearchDlg;
 class CServerWnd;
@@ -60,9 +57,6 @@ class CMiniMule;
 
 class CemuleDlg : public CTrayDialog
 {
-//==> Toolbar [shadow2004]
-//	friend class CMuleToolbarCtrl;
-//<== Toolbar [shadow2004]
 	friend class CMiniMule;
 
 public:
@@ -129,9 +123,6 @@ public:
 	CStatisticsDlg*  statisticswnd;
 	CTaskbarNotifier* m_wndTaskbarNotifier;
 	CReBarCtrl		m_ctlMainTopReBar;
-//==> Toolbar [shadow2004]
-//	CMuleToolbarCtrl* toolbar;
-//<== Toolbar [shadow2004]
 	CKademliaWnd*	kademliawnd;
 	CWnd*			activewnd;
 	uint8			status;

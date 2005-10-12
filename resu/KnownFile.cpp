@@ -98,9 +98,7 @@ IMPLEMENT_DYNAMIC(CKnownFile, CAbstractFile)
 
 CKnownFile::CKnownFile()
 {
-//KTS+ webcache
-	ReleaseViaWebCache = false; //JP webcache release 
-//KTS- webcache
+	ReleaseViaWebCache = false; //JP webcache release // MORPH - Added by Commander, WebCache 1.2e
 	m_iPartCount = 0;
 	m_iED2KPartCount = 0;
 	m_iED2KPartHashCount = 0;
@@ -152,10 +150,10 @@ CKnownFile::~CKnownFile()
 	for (int i = 0; i < hashlist.GetSize(); i++)
 		delete[] hashlist[i];
 	delete m_pAICHHashSet;
+	delete m_pCollection;
 //<<-- ADDED STORMIT - Morph: PowerShare //
 	if(m_pbitmapOldSharedStatusBar != NULL) m_dcSharedStatusBar.SelectObject(m_pbitmapOldSharedStatusBar);
 
-	delete m_pCollection;
 }
 
 #ifdef _DEBUG
@@ -1494,9 +1492,8 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 		{
 			ASSERT( forClient->GetUpPartCount() == GetPartCount() );
 			const uint8* srcstatus = cur_src->GetUpPartStatus();
-			//KTS+ webcache
+			// MORPH - Modified by Commander, WebCache 1.2e
 			if( srcstatus && (!forClient->SupportsWebCache() && !cur_src->SupportsWebCache())) // Superlexx - IFP - if both clients do support webcache, then they have IFP and might find empty sources useful; send that source even if they both are not behind same proxy to improve found webcache-enabled source number on those clients
-                        //KTS- webcache
 			{
 				ASSERT( cur_src->GetUpPartCount() == GetPartCount() );
 				if (cur_src->GetUpPartCount() == forClient->GetUpPartCount())

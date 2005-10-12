@@ -277,11 +277,13 @@ CString ReverseDnsLookup(DWORD dwIP)
 {
 	CString strHostName;
 
-	// WebCache: Superlexx - no need to rape root DNS servers
+        // MORPH START - Added by Commander, WebCache 1.2e
+	// Superlexx - no need to rape root DNS servers
 	if (thePrefs.GetWebCacheLastGlobalIP() == dwIP
 		&& thePrefs.GetLastResolvedName() != ""
 		&& thePrefs.GetWebCacheLastSearch() - ::GetTickCount() < 1000*60*60*24 )
 		return thePrefs.GetLastResolvedName();
+	// MORPH END - Added by Commander, WebCache 1.2e
 
 	HMODULE hLib = LoadLibrary(_T("dnsapi.dll"));
 	if (hLib)
@@ -349,9 +351,11 @@ CString ReverseDnsLookup(DWORD dwIP)
 		FreeLibrary(hLib);
 	}
 
-	// WebCache: Superlexx - no need to rape root DNS servers
+        // MORPH START - Added by Commander, WebCache 1.2e
+	// Superlexx - no need to rape root DNS servers
 	thePrefs.SetWebCacheLastGlobalIP(dwIP);
 	thePrefs.SetLastResolvedName(strHostName);
+        // MORPH END - Added by Commander, WebCache 1.2e
 
 	return strHostName;
 }
