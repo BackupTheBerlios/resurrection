@@ -51,6 +51,15 @@ enum EWebCacheUpState{
 	WCUS_NONE = 0,
 	WCUS_UPLOADING
 };
+// ==> FunnyNick Tag - Stulle
+enum FnTagSelection {
+	CS_NONE = 0,
+	CS_SHORT,
+	CS_FULL,
+	CS_CUST
+};
+// <== FunnyNick Tag - Stulle
+
 //KTS+ SNAFU
 class CTag; 
 //KTS+ SNAFU
@@ -242,7 +251,8 @@ public:
 	void			CheckFailedFileIdReqs(const uchar* aucFileHash);
 	uint32			GetUserIDHybrid() const							{ return m_nUserIDHybrid; }
 	void			SetUserIDHybrid(uint32 val)						{ m_nUserIDHybrid = val; }
-	LPCTSTR			GetUserName() const								{ return m_pszUsername; }
+	/*FunnyNick*/LPCTSTR	GetUserName() const								{ return (thePrefs.DisplayFunnyNick() && m_pszFunnyNick)?m_pszFunnyNick:m_pszUsername; }
+	/*FunnyNick*/void	UpdateFunnyNick();
 	void			SetUserName(LPCTSTR pszNewName);
 	uint32			GetIP() const									{ return m_dwUserIP; }
 	void			SetIP( uint32 val ) //Only use this when you know the real IP or when your clearing it.
@@ -748,6 +758,7 @@ protected:
 	bool	m_bIsHybrid;
 	//--group to aligned int32
 	TCHAR*	m_pszUsername;
+	TCHAR*	m_pszFunnyNick; //MORPH - Added by SiRoB, FunnyNick
 	uchar	m_achUserHash[16];
 	uint16	m_nUDPPort;
 	uint16	m_nKadPort;

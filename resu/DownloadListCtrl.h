@@ -115,6 +115,10 @@ protected:
 	CImageList  m_ImageList;
 	CTitleMenu	m_PrioMenu;
 	CTitleMenu	m_FileMenu;
+	//FRTK(kts)+
+	CTitleMenu	m_PermMenu;	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
+
 	CMenu		m_SourcesMenu;
 	bool		m_bRemainSort;
 	typedef std::pair<void*, CtrlItem_Struct*> ListItemsPair;

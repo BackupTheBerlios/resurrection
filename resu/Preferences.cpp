@@ -502,6 +502,8 @@ CSize	CPreferences::m_sizToolbarIconSize;
 bool	CPreferences::m_bPreviewEnabled;
 TCHAR	CPreferences::UpdateURLFakeList[256];//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
 TCHAR	CPreferences::UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat update
+bool	CPreferences::m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
+
 bool	CPreferences::m_bDynUpEnabled;
 int		CPreferences::m_iDynUpPingTolerance;
 int		CPreferences::m_iDynUpGoingUpDivider;
@@ -509,7 +511,6 @@ int		CPreferences::m_iDynUpGoingDownDivider;
 int		CPreferences::m_iDynUpNumberOfPings;
 int		CPreferences::m_iDynUpPingToleranceMilliseconds;
 bool	CPreferences::m_bDynUpUseMillisecondPingTolerance;
-bool	CPreferences::m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
 
 // Morph: PowerShare
 uint8	CPreferences::m_iPowershareMode; //MORPH - Added by SiRoB, Avoid misusing of powersharing
@@ -639,6 +640,12 @@ bool	CPreferences::UpdateWebcacheReleaseAllowed()
 		webcacheReleaseAllowed = false;
 	return webcacheReleaseAllowed;
 }
+// ==> FunnyNick Tag - Stulle
+uint8	CPreferences::FnTagMode;
+TCHAR	CPreferences::m_sFnCustomTag [256];
+bool	CPreferences::m_bFnTagAtEnd;
+// <== FunnyNick Tag - Stulle
+
 //JP webcache release END
 //KTS- webcache
 CPreferences::CPreferences()
@@ -656,10 +663,6 @@ m_bHighIdPossible = false; // JP detect fake HighID (from netfinity)
 //JP set standard values for stuff that doesn't need to be saved. This should probably be somewhere else END
 //KTS- webcache
 }
-// ==> FunnyNick Tag - Stulle
-uint8	CPreferences::FnTagMode;
-TCHAR	CPreferences::m_sFnCustomTag [256];
-// <== FunnyNick Tag - Stulle
 
 CPreferences::~CPreferences()
 {
@@ -2168,8 +2171,9 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 //<<< Sivka - Aggressive Client Handling [WiZaRd]
 	ini.WriteBool(_T("DisplayFunnyNick"), m_bFunnyNick,_T("eMule"));//MORPH - Added by SiRoB, Optionnal funnynick display
 // ==> FunnyNick Tag - Stulle
-	ini.WriteInt(_T("FnTagMode"), FnTagMode,_T("eMule"));
-	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag,_T("eMule"));
+	ini.WriteInt(_T("FnTagMode"), FnTagMode);
+	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag);
+	ini.WriteBool(_T("FnTagAtEnd"), m_bFnTagAtEnd);
 	// <== FunnyNick Tag - Stulle
 	uint32 temp = ini.GetInt(_T("ReAskFileSRC"), FILEREASKTIME); //29 mins
 	uReAskFileSRC = (temp >= FILEREASKTIME && temp <= 3300000) ? temp : FILEREASKTIME;
@@ -2808,7 +2812,6 @@ _stprintf(UpdateURLIPFilter,_T("%s"),ini.GetString(_T("UpdateURLIPFilter"),_T("h
 	//MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating	
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
 _stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/fakes.dat")));		//MORPH START - Added by milobac and Yun.SF3, FakeCheck, FakeReport, Auto-updating
-	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);//MORPH - Added by SiRoB, Optionnal funnynick display
 // Morph: PowerShare
 	m_iPowershareMode=ini.GetInt(_T("PowershareMode"),2);
 	hideOS=ini.GetInt(_T("HideOvershares"),0/*5*/);
@@ -2820,6 +2823,8 @@ _stprintf(UpdateURLFakeList,_T("%s"),ini.GetString(_T("UpdateURLFakeList"),_T("h
 
 m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_uScoreRatioThres = m_iCreditSystem == 2 ? 3 : 1; // Credit System	
+		m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);//MORPH - Added by SiRoB, Optionnal funnynick display
+
 	LPBYTE pData = NULL;
 	UINT uSize = sizeof m_lfHyperText;
 	if (ini.GetBinary(_T("HyperTextFont"), &pData, &uSize) && uSize == sizeof m_lfHyperText)
@@ -2962,8 +2967,9 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 //<<< Sivka - Aggressive Client Handling [WiZaRd]
    bReAskSRCAfterIPChange = ini.GetBool(_T("ReAskSRCAfterIPChange"),true); // [Maella/sivka: -ReAsk SRCs after IP Change-]
 	// ==> FunnyNick Tag - Stulle
-	FnTagMode = ini.GetInt(_T("FnTagMode"), 2, _T("eMule"));
+	FnTagMode = ini.GetInt(_T("FnTagMode"), 2);
 	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
+	m_bFnTagAtEnd = ini.GetBool(_T("FnTagAtEnd"), false);
 	// <== FunnyNick Tag - Stulle
 	LoadCats();
 	SetLanguage();

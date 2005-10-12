@@ -47,6 +47,9 @@ protected:
 	CTitleMenu		m_SharedFilesMenu;
 	CTitleMenu		m_CollectionsMenu;
 	CMenu			m_PrioMenu;
+	//FRTK(kts)+
+	CMenu		m_PermMenu;	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	bool			sortstat[4];
 	CImageList		m_ImageList;
 	CDirectoryItem*	m_pDirectoryFilter;

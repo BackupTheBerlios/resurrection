@@ -437,15 +437,14 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	static	bool	m_bRestoreLastLogPane;
 	static	int		m_iLastLogPaneID;
 	static	uint16	MaxConperFive;
-
-	// [TPT] - quick start
+	// [TPT] - quick start added by lama
 	static bool	m_QuickStart;
 	static uint16  m_QuickStartMaxCon;
 	static uint16  m_QuickStartMaxConPerFive;
 	static uint16  m_QuickStartMinutes;
 	// [TPT] - quick start
 
-	// [ionix] quickstart after ip change
+	// [ionix] quickstart after ip change added by lama
 	static bool	m_bQuickStartAfterIPChange;
 	// [ionix] quickstart after ip change
 
@@ -585,7 +584,6 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
 	static	CSize	m_sizToolbarIconSize;
 
 	static	bool	m_bWinaTransToolbar;
-	static bool	m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
 
 	//preview
 	static	bool	m_bPreviewEnabled;
@@ -600,6 +598,8 @@ static	UINT	m_iBufferTimeLimit; //FrankyFive: Buffer Time Limit
         // <--- Morph: PowerShare
 //<<-- ADDED STORMIT - Morph: PowerShare //
 	static uint8	m_iSpreadbarSetStatus;
+	static bool	m_bFunnyNick;//MORPH - Added by SiRoB, Optionnal funnynick display
+
 // [ionix] WiZaRd - AntiNickThief 
 	static bool		m_bAntiNickThief;
 	static uint8	m_bClientBanTime; 
@@ -698,6 +698,7 @@ static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat
 	// ==> FunnyNick Tag - Stulle
 	static uint8	FnTagMode;
 	static TCHAR	m_sFnCustomTag [256];
+	static bool		m_bFnTagAtEnd;
 	// <== FunnyNick Tag - Stulle
 	//emil notifier
 	static bool		m_bNotifierSendMail;
@@ -1493,6 +1494,7 @@ static	uint16	GetMaxSourcePerFileSoft();
 	static	uint8	GetFnTag()	{return FnTagMode;}
 	static	CString GetFnCustomTag ()						{ return m_sFnCustomTag; }
 	static	void	SetFnCustomTag (CString _CustTag)	{ _stprintf(m_sFnCustomTag,_T("%s"),_CustTag); }
+	static	bool	GetFnTagAtEnd()	{return m_bFnTagAtEnd;}
 	// <== FunnyNick Tag - Stulle
 
 	//AICH Hash

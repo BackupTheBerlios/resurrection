@@ -106,6 +106,7 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	bool m_bFunnyNickEnabled;
 	int m_iFunnyNickTag;
 	CString m_strFunnyNickTagCustom;
+	bool m_bFnTagAtEnd;
 	// [ionix] - FunnyNick
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	HTREEITEM m_htiDropSources;
@@ -136,6 +137,7 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiFunnyNickTag_2;
 	HTREEITEM m_htiFunnyNickTag_3;
 	HTREEITEM m_htiFunnyNickTagCustom;
+	HTREEITEM m_htiFnTagAtEnd;
 	// [ionix] - FunnyNick
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();

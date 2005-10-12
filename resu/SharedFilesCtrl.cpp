@@ -265,7 +265,14 @@ void CSharedFilesCtrl::Localize()
 	//<<-- ADDED STORMIT - SHARE ONLY THE NEED - //
 	// <--- Morph: PowerShare
 	//<<-- ADDED STORMIT - Morph: PowerShare //
-
+	//FRTK(kts)+
+	// xMule_MOD: showSharePermissions
+	strRes = GetResString(IDS_PERMISSION);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(19, &hdi);
+	strRes.ReleaseBuffer();
+	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 
 	CreateMenues();
 
@@ -453,7 +460,16 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 
 					cur_rec.left += 3;
-
+	// xMule_MOD: showSharePermissions, modified by itsonlyme
+					// display not finished files in navy, blocked files in red and friend-only files in orange
+					if (file->GetPermissions() == PERM_NOONE)
+						dc->SetTextColor((COLORREF)RGB(240,0,0));
+					else if (file->GetPermissions() == PERM_FRIENDS)
+						dc->SetTextColor((COLORREF)RGB(208,128,0));
+					else if (file->IsPartFile())
+						dc->SetTextColor((COLORREF)RGB(0,0,192));
+					// xMule_MOD: showSharePermissions
+					//FRTK(kts)-
 					buffer = file->GetFileName();
 					break;
 				}
@@ -671,7 +687,24 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						break;
 					// <--- Morph: PowerShare
 //<<-- ADDED STORMIT - Morph: PowerShare //
-		
+			//FRTK(kts)+
+			// xMule_MOD: showSharePermissions
+			case 19:
+				switch (file->GetPermissions())
+				{
+					case PERM_NOONE: 
+						buffer = GetResString(IDS_HIDDEN); 
+						break;
+					case PERM_FRIENDS: 
+						buffer = GetResString(IDS_FSTATUS_FRIENDSONLY); 
+						break;
+					default: 
+						buffer = GetResString(IDS_FSTATUS_PUBLIC); 
+						break;
+				}
+				break;
+			// xMule_MOD: showSharePermissions
+			//FRTK(kts)-
 			}
 
 //<<-- ADDED STORMIT - Morph: PowerShare //
@@ -743,6 +776,9 @@ CString buffer;
 	//Telp Super Release
 //<<-- ADDED STORMIT - Morph: PowerShare //
 	UINT uPrioMenuItem = 0;
+	//FRTK(kts)+
+	UINT uPermMenuItem = 0;	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	const CKnownFile* pSingleSelFile = NULL;
 	POSITION pos = GetFirstSelectedItemPosition();
 	while (pos)
@@ -814,7 +850,25 @@ CString buffer;
 			uPowerShareLimitMenuItem = 0;
 			iPowerShareLimit = -1;
 	}
+//FRTK(kts)+
+		// xMule_MOD: showSharePermissions
+		UINT uCurPermMenuItem = 0;
+		if (pFile->GetPermissions() == PERM_ALL)
+			uCurPermMenuItem = MP_PERMALL;
+		else if (pFile->GetPermissions() == PERM_FRIENDS)
+			uCurPermMenuItem = MP_PERMFRIENDS;
+		else if (pFile->GetPermissions() == PERM_NOONE)
+			uCurPermMenuItem = MP_PERMNONE;
+		else
+			ASSERT(0);
 
+		if (bFirstItem)
+			uPermMenuItem = uCurPermMenuItem;
+		else if (uPermMenuItem != uCurPermMenuItem)
+			uPermMenuItem = 0;
+		// xMule_MOD: showSharePermissions
+		//FRTK(kts)-
+		//FRTK(kts)+ Hideos
 		UINT uCurSpreadbarMenuItem = 0;
 		if(pFile->GetSpreadbarSetStatus() == -1)
 			uCurSpreadbarMenuItem = MP_SPREADBAR_DEFAULT;
@@ -869,6 +923,12 @@ UINT uCurSelectiveChunkMenuItem = 0;
 //<<-- ADDED STORMIT - Morph: PowerShare //
 	bFirstItem = false;
 	}
+//FRTK(kts)+
+	// xMule_MOD: showSharePermissions
+	m_SharedFilesMenu.EnableMenuItem((UINT_PTR)m_PermMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	m_PermMenu.CheckMenuRadioItem(MP_PERMALL, MP_PERMNONE, uPermMenuItem, 0);
+	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 //KTS+ webcache
 	//jp webcache release START
 	m_PrioMenu.EnableMenuItem(MP_PRIOWCRELEASE, (thePrefs.UpdateWebcacheReleaseAllowed() && !uGreyOutWCRelease) ? MF_ENABLED : MF_GRAYED);
@@ -1004,6 +1064,8 @@ default:
 	//MORPH START - Added by IceCream, copy feedback feature
 	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_US, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_NOCODE, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_US_NOCODE, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	//MORPH END   - Added by IceCream, copy feedback feature
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
@@ -1088,7 +1150,38 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			case MP_COPYFEEDBACK_US:
 			{
 				CString feed;
-					feed.AppendFormat(_T("[code]Upload Report von %s mit %s\r\n"),thePrefs.GetUserNick(),MOD_VERSION);
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM_DE),thePrefs.GetUserNick(),MOD_VERSION);
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback(true));
+						feed.Append(_T("\r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+			case MP_COPYFEEDBACK_NOCODE:
+				{
+					CString feed;
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
+					feed.AppendFormat(_T(" \r\n"));
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback());
+						feed.Append(_T(" \r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+			case MP_COPYFEEDBACK_US_NOCODE:
+				{
+					CString feed;
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM_DE),thePrefs.GetUserNick(),MOD_VERSION);
 				POSITION pos = selectedList.GetHeadPosition();
 				while (pos != NULL)
 				{
@@ -1149,7 +1242,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						newpath.ReleaseBuffer();
 						if (_trename(file->GetFilePath(), newpath) != 0){
 							CString strError;
-							strError.Format(GetResString(IDS_ERR_RENAMESF), file->GetFilePath(), newpath, _tcserror(errno)); //UNICODE FIX
+							strError.Format(GetResString(IDS_ERR_RENAMESF), file->GetFilePath(), newpath, strerror(errno));
 							AfxMessageBox(strError);
 							break;
 						}
@@ -1286,6 +1379,36 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			case MP_SHOWED2KLINK:
 				ShowFileDialog(selectedList, IDD_ED2KLINK);
 				break;
+ 			//FRTK(kts)+
+			// xMule_MOD: showSharePermissions
+			case MP_PERMNONE:
+			case MP_PERMFRIENDS:
+			case MP_PERMALL:
+			{
+				POSITION pos = selectedList.GetHeadPosition();
+				while (pos != NULL)
+				{
+					CKnownFile* file = selectedList.GetNext(pos);
+					switch (wParam)
+					{
+						case MP_PERMNONE:
+							file->SetPermissions(PERM_NOONE);
+							UpdateFile(file);
+							break;
+						case MP_PERMFRIENDS:
+							file->SetPermissions(PERM_FRIENDS);
+							UpdateFile(file);
+							break;
+						default : // case MP_PERMALL:
+							file->SetPermissions(PERM_ALL);
+							UpdateFile(file);
+							break;
+					}
+				}
+				break;
+			}
+			// xMule_MOD: showSharePermissions
+			//FRTK(kts)-
 			case MP_PRIOVERYLOW:
 			case MP_PRIOLOW:
 			case MP_PRIONORMAL:
@@ -1836,7 +1959,13 @@ break;	case 38:
 break;
 //<<-- ADDED STORMIT - SHARE_ONLY_THE_NEED //
 //<<-- ADDED STORMIT - Morph: PowerShare //
-		
+			// xMule_MOD: showSharePermissions
+		case 19: //permission asc
+			return item2->GetPermissions()-item1->GetPermissions();
+		case 39: //permission desc
+			return item1->GetPermissions()-item2->GetPermissions();
+		// xMule_MOD: showSharePermissions
+		//FRTK(kts)-
 
 		case 105: //all requests asc
 			iResult=CompareUnsigned(item1->statistic.GetAllTimeRequests(), item2->statistic.GetAllTimeRequests());
@@ -1934,6 +2063,9 @@ void CSharedFilesCtrl::CreateMenues()
 
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
 	if (m_CollectionsMenu) VERIFY( m_CollectionsMenu.DestroyMenu() );
+	//FRTK(kts)+
+	if (m_PermMenu) VERIFY( m_PermMenu.DestroyMenu() );	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	if (m_SharedFilesMenu) VERIFY( m_SharedFilesMenu.DestroyMenu() );
 
 	m_PrioMenu.CreateMenu();
@@ -2000,7 +2132,14 @@ void CSharedFilesCtrl::CreateMenues()
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_MODIFYCOLLECTION, GetResString(IDS_MODIFYCOLLECTION), _T("COLLECTION_EDIT"));
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_VIEWCOLLECTION, GetResString(IDS_VIEWCOLLECTION), _T("COLLECTION_VIEW"));
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_SEARCHAUTHOR, GetResString(IDS_SEARCHAUTHORCOLLECTION), _T("COLLECTION_SEARCH"));
-
+//FRTK(kts)+
+	// xMule_MOD: showSharePermissions
+	m_PermMenu.CreateMenu();
+	m_PermMenu.AppendMenu(MF_STRING,MP_PERMNONE, GetResString(IDS_HIDDEN));
+	m_PermMenu.AppendMenu(MF_STRING,MP_PERMFRIENDS, GetResString(IDS_FSTATUS_FRIENDSONLY));
+	m_PermMenu.AppendMenu(MF_STRING,MP_PERMALL, GetResString(IDS_FSTATUS_PUBLIC));
+	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	m_SharedFilesMenu.CreatePopupMenu();
 	m_SharedFilesMenu.AddMenuTitle(GetResString(IDS_SHAREDFILES), true);
 
@@ -2038,6 +2177,9 @@ void CSharedFilesCtrl::CreateMenues()
 
 //<<-- ADDED STORMIT - Morph: PowerShare //
 
+	//FRTK(kts)+
+	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PermMenu.m_hMenu, GetResString(IDS_PERMISSION), _T("SECURITY"));	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 
 
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_CollectionsMenu.m_hMenu, GetResString(IDS_META_COLLECTION), _T("COLLECTION"));
@@ -2062,6 +2204,8 @@ void CSharedFilesCtrl::CreateMenues()
 //MORPH START - Added by SiRoB, copy feedback feature
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_NOCODE, GetResString(IDS_COPYFEEDBACK_NOCODE), _T("COPY"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US_NOCODE, GetResString(IDS_COPYFEEDBACK_US_NOCODE), _T("COPY"));
 	m_SharedFilesMenu.AppendMenu(MF_SEPARATOR);
 	//MORPH END   - Added by SiRoB, copy feedback feature
 }

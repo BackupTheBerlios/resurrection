@@ -1465,6 +1465,7 @@
 #define IDS_RELEASEREMOVE               1581
 #define IDS_RELEASESET                  1582
 #define IDS_LOG_IACH                    1583
+#define IDS_DC_BLACK                    1584
 #define IDS_PW_WEBCACHE                 1596
 #define IDS_BTL_TEXT                    1597
 #define IDS_SF_UPLOADED_PARTS           1598
@@ -1519,6 +1520,11 @@
 #define IDS_FEEDBACK_REQUEST_FULL       1727
 #define IDS_FEEDBACK_ACCEPT_SESSION     1728
 #define IDS_FEEDBACK_ACCEPT_FULL        1729
+#define IDS_FEEDBACK_FROM_DE            1730
+#define IDS_FEEDBACK_FULL_SRC           1731
+#define IDS_FEEDBACK_COMPLETE_DE        1732
+#define IDS_COPYFEEDBACK_NOCODE         1733
+#define IDS_COPYFEEDBACK_US_NOCODE      1734
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002
@@ -2494,6 +2500,7 @@
 #define IDS_SIVKAFILESETTINGS           15008
 #define IDS_AHL_TIMERLABEL              15009
 #define IDS_SIVKAFILESETTINGS2          15010
+#define IDS_LSD_TOTAL_UP_DL             21600
 #define IDC_MORPH2_FILE                 50523
 #define IDC_MORPH2_SECURITY             50524
 #define IDC_MORPH2_COUNTRY              50525
@@ -2573,6 +2580,7 @@
 #define IDC_ANTILEECH_REASON            60107
 #define IDS_LEECHERBOX			60108
 #define IDC_SHOWLEECHERBOX              60109
+#define IDS_FN_TAG_AT_END              60110
 
 #define IDS_CD_UPOSITION                61055
 // Next default values for new objects

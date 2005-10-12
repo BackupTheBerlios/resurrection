@@ -93,8 +93,8 @@ m_htiClientPerc = NULL;
 	m_htiFineCredit = NULL; //Spe64 add
 	m_htiTK4Credit = NULL; //Spe64	added
         m_htiCreditsNone = NULL;
+// CreditSystem
 	
-	// CreditSystem
 
 // IP-to-Country +
 	m_htiIP2CountryName = NULL;
@@ -129,6 +129,7 @@ m_htiClientPerc = NULL;
 	m_htiFunnyNickTag_2 = NULL;
 	m_htiFunnyNickTag_3 = NULL;
 	m_htiFunnyNickTagCustom = NULL;
+	m_htiFnTagAtEnd = NULL;
 	// [ionix] - FunnyNick
 }
 
@@ -145,6 +146,8 @@ void CPPgVipeR::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_VP_OPTS, m_ctrlTreeOptions);
 	if (!m_bInitializedTreeOpts)
 	{
+		int iImgOpt = 8;
+
 //Telp+ Menu VipeR
 		int iImgAddTweaks = 8;
 //Telp- Menu VipeR
@@ -183,9 +186,12 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 //Telp+ Menu VipeR
 		m_AdditionalVipeR = m_ctrlTreeOptions.InsertGroup(_T("Misc Functions "), iImgAddTweaks, TVI_ROOT);
 //Telp- Menu VipeR 
-		m_secu = m_ctrlTreeOptions.InsertGroup(_T("Security"), iImgSecu, m_AdditionalVipeR);
+
+		m_secu = m_ctrlTreeOptions.InsertGroup(_T("Anti-Upload Ban"), iImgSecu, TVI_ROOT);
+        m_ctrlTreeOptions.SetItemState(m_secu, TVIS_BOLD, TVIS_BOLD);
+
 		m_ctrlTreeOptions.Expand(m_secu, TVE_EXPAND);
-		m_ctrlTreeOptions.SetItemState(m_secu, TVIS_BOLD, TVIS_BOLD);
+		m_ctrlTreeOptions.SetItemState(m_AdditionalVipeR, TVIS_BOLD, TVIS_BOLD);
 
 iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 
@@ -216,6 +222,7 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		// <== Anti Uploader Ban - Stulle
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);
+        m_ctrlTreeOptions.SetItemState(m_htiDropSources, TVIS_BOLD, TVIS_BOLD);
 		m_htiDropSourcesNNS = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DROPS1), m_htiDropSources, m_iDropSources = 1);
 		m_htiDropSourcesTimerNNS = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPS2), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
 		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerNNS, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -227,7 +234,6 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_ctrlTreeOptions.AddEditBox(m_htiDropSourcesTimerHQR, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_htiHqrBox = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPHQSLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
 		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_ctrlTreeOptions.Expand(m_htiDropSources, TVE_EXPAND);
 		//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
 //<<-- ADDED STORMIT -  Morph: PowerShared //
 		m_htiUM = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_UM), iImgUM, TVI_ROOT);
@@ -247,10 +253,8 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 		m_htiPowershareAuto =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_AUTO), m_htiPowershareMode, m_iPowershareMode == 2);
 		m_htiPowershareLimited =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_LIMITED), m_htiPowershareMode, m_iPowershareMode == 3);
 		m_htiPowerShareLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_POWERSHARE_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiPowershareLimited );
+// <--- Morph: PowerShare
 
-		m_ctrlTreeOptions.Expand(m_htiHideOS, TVE_EXPAND);
-		
-		// <--- Morph: PowerShare
 		//Telp Start push small file
 	        m_htiEnablePushSmallFile = m_ctrlTreeOptions.InsertCheckBox(_T("Push Small Files"),m_htiSFM, m_bEnablePushSmallFile); //Hawkstar, push small file
 //Telp End push small file
@@ -259,6 +263,7 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 //Telp End push rare file
 // [ionix] - Funny Nick
 		m_htiFunnyNick = m_ctrlTreeOptions.InsertGroup(_T("FunnyNick"), iImgFunnyNick, TVI_ROOT);
+        m_ctrlTreeOptions.SetItemState(m_htiFunnyNick, TVIS_BOLD, TVIS_BOLD);
 		m_htiFunnyNickEnabled = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DISPLAYFUNNYNICK), m_htiFunnyNick);
 		m_htiFunnyNickTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, m_htiFunnyNickEnabled);
 		m_htiFunnyNickTag_0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FN_TAG_NO), m_htiFunnyNickTag, m_iFunnyNickTag == 0);
@@ -267,8 +272,11 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 		m_htiFunnyNickTag_3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FN_TAG_CUSTOM), m_htiFunnyNickTag, m_iFunnyNickTag == 3);
 		m_htiFunnyNickTagCustom = m_ctrlTreeOptions.InsertItem(GetResString(IDS_FN_TAG_CUSTOMTEXT),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiFunnyNickTag_3);
 		m_ctrlTreeOptions.AddEditBox(m_htiFunnyNickTagCustom, RUNTIME_CLASS(CTreeOptionsEdit));
-		m_ctrlTreeOptions.Expand(m_htiFunnyNick, TVE_EXPAND);
+		m_htiFnTagAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FN_TAG_AT_END), m_htiFunnyNickTag, m_bFnTagAtEnd);
+		//m_ctrlTreeOptions.Expand(m_htiFunnyNick, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiFunnyNickTag, TVE_EXPAND);
+		m_ctrlTreeOptions.Expand(m_htiFunnyNickEnabled, TVE_EXPAND);
+
 		// [ionix] - Funny Nick
 		// Creditsystem  
 		m_htiCreditSystem = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CREDIT_SYSTEM), iImgCS, TVI_ROOT);
@@ -310,6 +318,7 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiFunnyNickTag, (int &)m_iFunnyNickTag);
 	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiFunnyNickTagCustom, m_strFunnyNickTagCustom);
 	DDV_MaxChars(pDX,m_strFunnyNickTagCustom, 50);
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiFnTagAtEnd, m_bFnTagAtEnd);
 	// [ionix] - FunnyNick
 DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystem
  // ==> Anti Uploader Ban - Stulle
@@ -356,6 +365,8 @@ m_iCreditSystem = thePrefs.GetCreditSystem(); // CreditSystem
 m_iSpreadbar = thePrefs.GetSpreadbarSetStatus(); //SpreadBar
 //client percentage
 m_bEnableClientPerc = thePrefs.enableClientPerc;
+//client percentage
+
 //Telp Start payback first
 	m_bPBF = thePrefs.m_bPBF;
 //Telp end payback first
@@ -393,6 +404,7 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 	m_bFunnyNickEnabled = thePrefs.DisplayFunnyNick();
 	m_iFunnyNickTag = thePrefs.GetFnTag();
 	m_strFunnyNickTagCustom = thePrefs.GetFnCustomTag();
+	m_bFnTagAtEnd = thePrefs.GetFnTagAtEnd();
 	// [ionix] - FunnyNick
 	CPropertyPage::OnInitDialog();
 	//LoadSettings();
@@ -469,6 +481,7 @@ void CPPgVipeR::Localize(void)
 		if (m_htiFunnyNickTag_0) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag_0, GetResString(IDS_FN_TAG_NO));
 		if (m_htiFunnyNickTag_3) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag_3, GetResString(IDS_FN_TAG_CUSTOM));
 		if (m_htiFunnyNickTagCustom) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTagCustom, GetResString(IDS_FN_TAG_CUSTOMTEXT));
+		if (m_htiFnTagAtEnd) m_ctrlTreeOptions.SetItemText(m_htiFnTagAtEnd, GetResString(IDS_FN_TAG_AT_END));
 		//<<< [ionix] - FunnyNick
 }
 }
@@ -477,15 +490,17 @@ void CPPgVipeR::Localize(void)
 
 BOOL CPPgVipeR::OnApply()
 {
-	thePrefs.enableClientPerc = m_bEnableClientPerc;
+		thePrefs.enableClientPerc = m_bEnableClientPerc;//Client Percentage
 
 thePrefs.SetCreditSystem(m_iCreditSystem); // CreditSystem
 
 // IP-to-Country +
 	if(	(thePrefs.m_iIP2CountryNameMode != IP2CountryName_DISABLE || thePrefs.m_bIP2CountryShowFlag) !=
-		((IP2CountryNameSelection)m_iIP2CountryName != IP2CountryName_DISABLE || m_bIP2CountryShowFlag)	){
+		((IP2CountryNameSelection)m_iIP2CountryName != IP2CountryName_DISABLE || m_bIP2CountryShowFlag)	)
+		{
 		//check if need to load or unload DLL and ip table
-		if((IP2CountryNameSelection)m_iIP2CountryName != IP2CountryName_DISABLE || m_bIP2CountryShowFlag){
+		if((IP2CountryNameSelection)m_iIP2CountryName != IP2CountryName_DISABLE || m_bIP2CountryShowFlag)
+		{
 			theApp.ip2country->Load();
 		}
 		else{
@@ -498,7 +513,8 @@ thePrefs.SetCreditSystem(m_iCreditSystem); // CreditSystem
 	// IP-to-Country -
 // ==> Anti Uploader Ban - Stulle
 thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
-	if(thePrefs.AntiUploaderBanCaseMode != m_iAntiUploaderBanCase){
+		if(thePrefs.AntiUploaderBanCaseMode != m_iAntiUploaderBanCase)
+		{
 		thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
 	}
 	// <== Anti Uploader Ban - Stulle
@@ -593,7 +609,9 @@ void CPPgVipeR::OnDestroy()
 	m_htiDropSourcesHQR = NULL;
     m_htiHqrBox = NULL;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-	m_htiPowerShareLimit = NULL; //MORPH - Added by SiRoB, POWERSHARE Limit
+
+//MORPH - Added by SiRoB, POWERSHARE Limit
+		m_htiPowerShareLimit = NULL; 
 	m_htiPowershareMode = NULL;
 	m_htiPowershareDisabled = NULL;
 	m_htiPowershareActivated = NULL;
@@ -618,6 +636,7 @@ void CPPgVipeR::OnDestroy()
 	m_htiFunnyNickTag_2 = NULL;
 	m_htiFunnyNickTag_3 = NULL;
 	m_htiFunnyNickTagCustom = NULL;
+	m_htiFnTagAtEnd = NULL;
 	// [ionix] - FunnyNick
 
 	CPropertyPage::OnDestroy();

@@ -47,7 +47,12 @@ public:
 	bool ReleaseViaWebCache; //JP webcache release
 	uint32 GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount); //JP webcache release
 	void SetReleaseViaWebCache(bool WCRelease) {ReleaseViaWebCache=WCRelease;} //JP webcache release
-	//KTS- webcache
+	//FRTK(kts)+
+	// xMule_MOD: showSharePermissions
+	uint8	GetPermissions(void) const { return m_iPermissions; };
+	void	SetPermissions(uint8 iNewPermissions) {m_iPermissions = iNewPermissions;};
+	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
 
 	const CString& GetPath() const { return m_strDirectory; }
@@ -191,6 +196,9 @@ uint8	HideOSInWork() const;
 //<<-- ADDED STORMIT - Morph: PowerShare //
 
 protected:
+	//FRTK(kts)+
+	uint8	m_iPermissions;	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	//preview
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);
 	bool	LoadTagsFromFile(CFileDataIO* file);
@@ -249,3 +257,11 @@ int		m_iSpreadbarSetStatus;
 bool	m_bHideOSAuthorized;
 
 };
+//FRTK(kts)+
+// xMule_MOD: showSharePermissions
+// permission values for shared files
+#define PERM_ALL		0
+#define PERM_FRIENDS	1
+#define PERM_NOONE		2
+// xMule_MOD: showSharePermissions
+//FRTK(kts)-

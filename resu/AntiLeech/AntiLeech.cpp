@@ -715,8 +715,8 @@ void CAntiLeech::CheckKeys()
 	}
 	catch(...)
 	{
-		AddModLogLine(LOG_ERROR, _T("AntiLeech: Failed to verify key! (%s)"), GetErrorMessage(GetLastError()));
-			AddModLogLine(LOG_WARNING, _T("AntiLeech: Disabled"));
+		AddModLogLine(true, _T("AntiLeech: Failed to verify key! (%s)"), GetErrorMessage(GetLastError()));
+			AddModLogLine(true, _T("AntiLeech: Disabled"));
 		//No banning in this case...
 		RemoveAllBadVers();
 		RemoveAllBadMods();

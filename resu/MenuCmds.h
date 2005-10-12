@@ -20,6 +20,8 @@
 //MORPH START - Added by IceCream, copy feedback feature
 #define	MP_COPYFEEDBACK			10197
 #define MP_COPYFEEDBACK_US		10198
+#define	MP_COPYFEEDBACK_NOCODE	10199
+#define MP_COPYFEEDBACK_US_NOCODE 10200
 //MORPH END   - Added by IceCream, copy feedback feature
 //<<-- ADDED STORMIT - Morph: PowerShare //
 #define MP_POWERSHARE_DEFAULT	10150

@@ -846,6 +846,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						for (POSITION pos = theApp.sharedfiles->m_Files_map.GetStartPosition();pos != 0;)
 						{
 							theApp.sharedfiles->m_Files_map.GetNextAssoc(pos,bufKey,cur_file);
+							//FRTK(kts)+
+							// xMule_MOD: showSharePermissions - filter out hidden files
+							if ( cur_file->GetPermissions() == PERM_NOONE
+								|| (cur_file->GetPermissions() == PERM_FRIENDS && !client->IsFriend()) )
+								continue;
+							// xMule_MOD: showSharePermissions
+							//FRTK(kts)-
 							list.AddTail((void*&)cur_file);
 						}
 						AddLogLine(true, GetResString(IDS_REQ_SHAREDFILES), client->GetUserName(), client->GetUserIDHybrid(), GetResString(IDS_ACCEPTED));
@@ -1007,6 +1014,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 								CCKey bufKey;
 								CKnownFile* cur_file;
 								theApp.sharedfiles->m_Files_map.GetNextAssoc(pos, bufKey, cur_file);
+								//FRTK(kts)+
+								// xMule_MOD: showSharePermissions - filter out hidden files
+								if ( cur_file->GetPermissions() == PERM_NOONE 
+									|| (cur_file->GetPermissions() == PERM_FRIENDS && !client->IsFriend()) )
+									continue;
+								// xMule_MOD: showSharePermissions
+								//FRTK(kts)-
 								CString strSharedFileDir(cur_file->GetPath());
 								PathRemoveBackslash(strSharedFileDir.GetBuffer());
 								strSharedFileDir.ReleaseBuffer();

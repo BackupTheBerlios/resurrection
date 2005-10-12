@@ -78,10 +78,7 @@ void CDownloadClientsCtrl::Init()
 	InsertColumn(5,	GetResString(IDS_CL_TRANSFDOWN), LVCFMT_LEFT, 115);
 	InsertColumn(6,	GetResString(IDS_CL_TRANSFUP), LVCFMT_LEFT, 115);
 	InsertColumn(7,	GetResString(IDS_META_SRCTYPE), LVCFMT_LEFT, 60);
-
-	// <CB Mod : Download List : Mod Version>
 	InsertColumn(8,	GetResString(IDS_MODVERSION_LABEL), LVCFMT_LEFT, 100);
-	// </CB Mod : Download List : Mod Version>
 
 	SetAllIcons();
 	Localize();

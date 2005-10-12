@@ -807,10 +807,17 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 					}
 
 					// old tags: as long as they are not needed, take the chance to purge them
-					case FT_PERMISSIONS:
+					//FRTK(kts)+
+					// xMule_MOD: showSharePermissions - load permissions
+					case FT_PERMISSIONS: {
 						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt())
+							SetPermissions(newtag->GetInt());
 						delete newtag;
 						break;
+					}
+					// xMule_MOD: showSharePermissions
+					//FRTK(kts)-
 					case FT_KADLASTPUBLISHKEY:
 						ASSERT( newtag->IsInt() );
 						delete newtag;
@@ -1287,6 +1294,13 @@ bool CPartFile::SavePartFile()
 		releasetag.WriteTagToFile(&file);
 		uTagCount++;
 		//Telp Super Release
+		//FRTK(kts)+
+		// xMule_MOD: showSharePermissions - save permissions
+		CTag permtag(FT_PERMISSIONS, GetPermissions());
+		permtag.WriteTagToFile(&file);
+		uTagCount++;
+		// xMule_MOD: showSharePermissions
+		//FRTK(kts)-
 
 		// statistics
 		if (statistic.GetAllTimeTransferred()){

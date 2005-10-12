@@ -33,9 +33,4 @@ protected:
 	bool	m_bChanged;
 	bool	IsModified() const							{return m_bChanged;}
 	void	PreSetModified(const bool& bChanged = true)	{m_bChanged = bChanged; /*SetModified(bChanged)*/;}	
-//>>> [ionix] - ionixguide
-protected:
-	afx_msg void OnHelp();
-	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-//<<< [ionix] - ionixguide
 };

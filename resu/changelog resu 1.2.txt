@@ -1,0 +1,49 @@
+ReSuRReCTIoN 1.2
+
+Fixed: Statistics (Secure Ident)
+Fixed: IP2Country im Serverwnd 
+Fixed: Chunk selection patch[Xman]/big thanx @-G6R- for crashreport (changed against Xtreme 4.5 Code)
+Fixed: error in ProcessHello
+Fixed: Friendfix [WiZaRd]
+Fixed: CheckDiskspacefix [slugfiller]
+Fixed: Rating Icons - thanx [WiZaRd]
+Fixed: Sorting Prob in Queuelist thanx [WiZaRd]
+Fixed: Renaming Prob in sharedfiiles again thanx [WiZaRd]
+Fixed: some little optical bugs in treecontrol [lama]
+
+Added: ModID to Statistic [Slugfiller]
+Added: Friendlinks [eMulespana]
+Added: WHOIS [KTS]
+Added: Import Parts[ionix]
+Added: CheckDiskSpaceFix [Slugfiller]
+Added: SuperRelease [KTS]
+Added: Don`t refresh Item if not needed [Morph]
+Added: Flood Ask Protection [Dark]
+Added: Total upload /Download Column [LSD]
+Added: Feedback in [code][/code] function[lama]
+Added: Sharing Permissions [XMUle]
+
+Re-Added: Hide Over Share
+Re-Added: Spreadbar
+Re-Added: Share only the need
+Re-Added: Powershare from Morph 
+
+Removed: Show Countryflags/ShowCLientFlags/ShowQueueFlags from menu Menu  
+Removed: Power-Release
+Removed: WiZaRds Powershare
+Removed: unused codes
+Removed: Rare/small file column
+Removed: Slot Number column
+
+Changed: Antileechclass (now from Ionix 4.33)
+
+
+
+
+
+
+
+
+
+
+

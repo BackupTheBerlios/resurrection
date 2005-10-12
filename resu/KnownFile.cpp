@@ -2177,7 +2177,7 @@ CString CKnownFile::GetFeedback(bool isUS)
 					feed.AppendFormat(_T("Volle Quellen : %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_REMOTEQUEUEFULL));
 
 		}
-					feed.AppendFormat(_T("Komplette Quellen : %i (%i) \r\n"),m_nCompleteSourcesCount, m_nCompleteSourcesCount);
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE_DE),m_nCompleteSourcesCount, m_nCompleteSourcesCount);
 	}
 	else
 	{
@@ -2223,7 +2223,7 @@ CString CKnownFile::GetFeedback(bool isUS)
 			feed.Append(_T(" \r\n"));
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
 			feed.Append(_T(" \r\n"));
-			feed.AppendFormat(_T("Full Sources : %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_REMOTEQUEUEFULL));
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_FULL_SRC),((CPartFile*)this)->GetSrcStatisticsValue(DS_REMOTEQUEUEFULL));
 
 		}
 		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE), m_nCompleteSourcesCount, m_nCompleteSourcesCount);

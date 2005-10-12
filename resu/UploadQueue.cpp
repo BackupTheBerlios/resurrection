@@ -164,14 +164,14 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 			}
 				else {
 					// cur_client is more worthy. Save it.
-		}
+			}
 		}
 			else {
 				// <--- Pawcio: PowerShare
                 // cur_client is more worthy than current best client that is ready to go (connected).
 			if ( cur_score > bestscore)
 			{
-				// cur_client is more worthy than current best client that is ready to go (connected).
+                // cur_client is more worthy than current best client that is ready to go (connected).
                 if(!cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected())) {
 					// this client is a HighID or a lowID client that is ready to go (connected)
 					// and it is more worthy

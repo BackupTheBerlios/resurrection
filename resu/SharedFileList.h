@@ -16,6 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #include "MapKey.h"
+#include "log.h"
 
 class CKnownFileList;
 class CServerConnect;

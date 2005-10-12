@@ -98,6 +98,7 @@ CPropertyPage::OnInitDialog();
 ((CComboBox*)GetDlgItem(IDC_DownloadColor))->InsertString(6,GetResString(IDS_DC_BROWN));
 ((CComboBox*)GetDlgItem(IDC_DownloadColor))->InsertString(7,GetResString(IDS_DC_BURLYWOOD));
 ((CComboBox*)GetDlgItem(IDC_DownloadColor))->InsertString(8,GetResString(IDS_DC_ORANGE));
+((CComboBox*)GetDlgItem(IDC_DownloadColor))->InsertString(9,GetResString(IDS_DC_BLACK));//lama added color
 //End download color
 //Start download color
 

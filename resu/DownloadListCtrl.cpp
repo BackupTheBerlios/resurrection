@@ -94,6 +94,9 @@ CDownloadListCtrl::CDownloadListCtrl()
 CDownloadListCtrl::~CDownloadListCtrl(){
 	if (m_PrioMenu)	VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_SourcesMenu)	VERIFY( m_SourcesMenu.DestroyMenu() );
+	//FRTK(kts)+
+	if (m_PermMenu) VERIFY( m_PermMenu.DestroyMenu() );	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	if (m_FileMenu)	VERIFY( m_FileMenu.DestroyMenu() );
 		while (m_ListItems.empty() == false) {
 		delete m_ListItems.begin()->second; // second = CtrlItem_Struct*
@@ -139,9 +142,7 @@ void CDownloadListCtrl::Init()
 	lsctitle.Remove(_T(':'));
 	InsertColumn(11, lsctitle,LVCFMT_LEFT, 220);
 	InsertColumn(12, GetResString(IDS_CAT) ,LVCFMT_LEFT, 100);
-	//KTS+ webcache
 	InsertColumn(13, _T("Webcache capable") ,LVCFMT_LEFT, 100); //JP Webcache column
-	//KTS- webcache
 	InsertColumn(14,GetResString(IDS_CHECKFAKE),LVCFMT_LEFT, 220); // [ionix] - Fakecheck
 
 	SetAllIcons();
@@ -210,9 +211,7 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Excellent")));
 	m_ImageList.Add(CTempIconLoader(_T("RedSmurf"))); // Mondgott :: Show RedSmurfIconOnClientDetect icon 20
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
-//KTS+ webcache
 	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // 22// jp webcacheclient icon
-	//KTS- webcache
 }
 
 void CDownloadListCtrl::Localize()
@@ -447,7 +446,7 @@ void CDownloadListCtrl::UpdateItem(void* toupdate)
 {
 	if (!theApp.emuledlg->IsRunning())
 		return;
-	//MORPH START - SiRoB, Don't Refresh item if not needed
+	//FRTK --> MORPH START - SiRoB, Don't Refresh item if not needed
 	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd)
 		return;
 	//MORPH END   - SiRoB, Don't Refresh item if not needed
@@ -510,6 +509,9 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				case 8:
 			        dc->SetTextColor(RGB(255,140,0)); //Dark Orange
 			break;
+                                case 9:
+			        dc->SetTextColor(RGB(0,0,0)); //Black
+			break;
 			}
 		}
 //>>> Show DL Bold
@@ -535,7 +537,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				}
 
 			if (thePrefs.ShowRatingIndicator() && (lpPartFile->HasComment() || lpPartFile->HasRating())){
-				m_ImageList.Draw(dc, lpPartFile->UserRating()+16, rcDraw.TopLeft(), ILD_NORMAL); // [ionix] - Changed 14 -> 16
+				m_ImageList.Draw(dc, lpPartFile->UserRating()+14, rcDraw.TopLeft(), ILD_NORMAL);
 				rcDraw.left += 16;
 			}
 
@@ -653,7 +655,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				    if(ncsc>0) buffer.AppendFormat(_T("/%i"), sc);
                     if(thePrefs.IsExtControlsEnabled() && lpPartFile->GetSrcA4AFCount() > 0) buffer.AppendFormat(_T("+%i"), lpPartFile->GetSrcA4AFCount());
 				    if(lpPartFile->GetTransferringSrcCount() > 0) buffer.AppendFormat(_T(" (%i)"), lpPartFile->GetTransferringSrcCount());
-					buffer.AppendFormat(_T(" [%u]"), lpPartFile->GetFileHardLimit()); //>>> WiZaRd - AutoHL added by lama
+					buffer.AppendFormat(_T(" [%u]"), lpPartFile->GetFileHardLimit()); //>>> WiZaRd - AutoHL
                 } else {
                     buffer = _T("");
 				}
@@ -742,7 +744,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
 			break;
-		//KTS+ webcache
+		//FRTK(kts)+ webcache
 		//JP Webcache START
 		//JP added code from Gnaddelwarz
 		case 13: //WebCache
@@ -912,11 +914,23 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			break;
 
-		case 2:// transferred
+		case 2:// transferred //LSD Total UL-DL
+			/*
 			if (!IsColumnHidden(3)) {
 				dc->DrawText(_T(""), 0, const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 				break;
 			}
+			*/
+			if //((lpCtrlItem->type == 2 && 
+				((lpUpDownClient->Credits()) && 
+				(lpUpDownClient->Credits()->GetUploadedTotal() || lpUpDownClient->Credits()->GetDownloadedTotal())
+				){
+				buffer.Format( _T("%s/%s"),
+				CastItoXBytes((float)lpUpDownClient->Credits()->GetUploadedTotal(), false, false),
+				CastItoXBytes((float)lpUpDownClient->Credits()->GetDownloadedTotal(), false, false));
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			}
+			break;
 		case 3:// completed
 			if (lpCtrlItem->type == AVAILABLE_SOURCE && lpUpDownClient->GetTransferredDown()) {
 				buffer = CastItoXBytes(lpUpDownClient->GetTransferredDown(), false, false);
@@ -1083,7 +1097,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			break;
 		case 12:	// category
 			break;
-		//KTS+ webcache
+		//FRTK(kts)+ webcache
 		//JP Webcache START
 		case 13: {
 			if (lpUpDownClient->SupportsWebCache())
@@ -1097,13 +1111,13 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 						buffer = _T("no proxy set");	// if no webcache info colour is black
 			}
 			else
-				buffer = "";
+				buffer = _T("");
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
  			dc->SetTextColor(RGB(0, 0, 0));
 			break;
 		}
 		//JP Webcache END
-		//KTS- webcache
+		//FRTK(kts)- webcache
 		}
 	}
 }
@@ -1487,6 +1501,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			bool bNonReleaseFileSelected = false;
 			//Telp Super Release		
 			UINT uPrioMenuItem = 0;
+			//FRTK(kts)+
+			UINT uPermMenuItem = 0;	// xMule_MOD: showSharePermissions
+			//FRTK(kts)-
 			const CPartFile* file1 = NULL;
 			POSITION pos = GetFirstSelectedItemPosition();
 			while (pos)
@@ -1524,6 +1541,24 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 					uPrioMenuItem = uCurPrioMenuItem;
                 else if (uPrioMenuItem != uCurPrioMenuItem)
 					uPrioMenuItem = 0;
+				//FRTK(kts)+
+				// xMule_MOD: showSharePermissions
+				UINT uCurPermMenuItem = 0;
+				if (pFile->GetPermissions() == PERM_ALL)
+					uCurPermMenuItem = MP_PERMALL;
+				else if (pFile->GetPermissions() == PERM_FRIENDS)
+					uCurPermMenuItem = MP_PERMFRIENDS;
+				else if (pFile->GetPermissions() == PERM_NOONE)
+					uCurPermMenuItem = MP_PERMNONE;
+				else
+					ASSERT(0);
+
+				if (bFirstItem)
+					uPermMenuItem = uCurPermMenuItem;
+				else if (uPermMenuItem != uCurPermMenuItem)
+					uPermMenuItem = 0;
+				// xMule_MOD: showSharePermissions
+				//FRTK(kts)-
 //Telp Super Release
 				if (pFile->IsReleaseFile())
 					bReleaseFileSelected = true;
@@ -1536,6 +1571,11 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
+			//FRTK(kts)+
+			// xMule_MOD: showSharePermissions
+			m_FileMenu.EnableMenuItem((UINT_PTR)m_PermMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+			m_PermMenu.CheckMenuRadioItem(MP_PERMALL, MP_PERMNONE, uPermMenuItem, 0);
+			// xMule_MOD: showSharePermissions
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 						//Telp Super Release
 			m_PrioMenu.EnableMenuItem(MP_RELEASESET, bNonReleaseFileSelected ? MF_ENABLED : MF_GRAYED);
@@ -1589,6 +1629,8 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
             m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_NOCODE, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US_NOCODE, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
 			CTitleMenu WebMenu;
 			WebMenu.CreateMenu();
 			WebMenu.AddMenuTitle(NULL, true);
@@ -1668,6 +1710,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	else{	// nothing selected
 		int total;
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, MF_GRAYED);//Ackronic - Aggiunto da Aenarion[ITA] - Drop
+		//FRTK(kts)+
+		m_FileMenu.EnableMenuItem((UINT_PTR)m_PermMenu.m_hMenu, MF_GRAYED);	// xMule_MOD: showSharePermissions
+		//FRTK(kts)-
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_CANCEL, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PAUSE, MF_GRAYED);
@@ -1682,12 +1727,14 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
         //MORPH START - Added by SiRoB, copy feedback feature
 		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, MF_GRAYED);
+		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_NOCODE, MF_GRAYED);
+		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US_NOCODE, MF_GRAYED);
 		//MORPH END   - Added by SiRoB, copy feedback feature
 		m_FileMenu.EnableMenuItem(MP_PREVIEW, MF_GRAYED);
-		//MORPH START - Added by [ionix], Import Parts [SR13]
+		//FRTK --> MORPH START - Added by SiRoB, Import Parts [SR13]
 		m_FileMenu.EnableMenuItem(MP_SR13_ImportParts,MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_SR13_InitiateRehash,MF_GRAYED);
-		//MORPH END   - Added by [ionix], Import Parts [SR13]
+		//FRTK --> MORPH END   - Added by SiRoB, Import Parts [SR13]
 		m_FileMenu.EnableMenuItem(MP_METINFO, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1878,6 +1925,32 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					}
 					SetRedraw(true);
 					break;
+//FRTK(kts)+
+				// xMule_MOD: showSharePermissions
+				case MP_PERMNONE:
+				case MP_PERMFRIENDS:
+				case MP_PERMALL: {
+					while(!selectedList.IsEmpty()) { 
+						CPartFile *file = selectedList.GetHead();
+						switch (wParam)
+						{
+							case MP_PERMNONE:
+								file->SetPermissions(PERM_NOONE);
+								break;
+							case MP_PERMFRIENDS:
+								file->SetPermissions(PERM_FRIENDS);
+								break;
+							default : // case MP_PERMALL:
+								file->SetPermissions(PERM_ALL);
+								break;
+						}
+						selectedList.RemoveHead();
+					}
+					Invalidate();
+					break;
+				}
+				// xMule_MOD: showSharePermissions
+				//FRTK(kts)-
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 				case MP_DROPLOWTOLOWIPSRCS: // Added by sivka
 					SetRedraw(false);
@@ -2097,7 +2170,39 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				case MP_COPYFEEDBACK_US:
 				{
 					CString feed;
-						feed.AppendFormat(_T("Bericht von %s mit emule %s"),thePrefs.GetUserNick(), MOD_VERSION);
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM_DE),thePrefs.GetUserNick(), MOD_VERSION);
+						feed.AppendFormat(_T(" \r\n"));
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback(true));
+						feed.Append(_T("\r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+				case MP_COPYFEEDBACK_NOCODE:
+					{
+						CString feed;
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
+						feed.AppendFormat(_T(" \r\n"));
+						POSITION pos = selectedList.GetHeadPosition();
+						while (pos != NULL)
+						{			
+							CKnownFile* file = selectedList.GetNext(pos);
+							feed.Append(file->GetFeedback());
+							feed.Append(_T("\r\n"));
+						}
+						//Todo: copy all the comments too
+						theApp.CopyTextToClipboard(feed);
+						break;
+					}
+				case MP_COPYFEEDBACK_US_NOCODE:
+					{
+						CString feed;
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM_DE),thePrefs.GetUserNick(), MOD_VERSION);
 						feed.AppendFormat(_T(" \r\n"));
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
@@ -2543,8 +2648,36 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 
 	case 1: //size but we use status asc
 		return client1->GetSourceFrom() - client2->GetSourceFrom();
+	case 2: //transfered asc // LSD Total UL-DL
+		//if ((!client1->Credits() || !client2->Credits()) && ((client1->GetDownloadState() != 2) || (client2->GetDownloadState() != 2)))
+		//	return -1;
+		{
+		uint32 a1,a2;
+		
+		if ( !client1->Credits() ) 
+			a1=0;
+		else
+			a1=client1->Credits()->GetUploadedTotal();
+		if ( !client2->Credits() ) 
+			a2=0;
+		else
+			a2=client2->Credits()->GetUploadedTotal();
 
-	case 2://transferred asc
+		if ((a1-a2)!=0) 
+			return (a1-a2);
+		else
+		{
+			if ( !client1->Credits() ) 
+				a1=0;
+			else
+				a1=client1->Credits()->GetDownloadedTotal();
+			if ( !client2->Credits() ) 
+				a2=0;
+			else
+				a2=client2->Credits()->GetDownloadedTotal();
+			return (a1-a2);
+		}
+		}
 	case 3://completed asc
 		return CompareUnsigned(client1->GetTransferredDown(), client2->GetTransferredDown());
 
@@ -2661,6 +2794,9 @@ void CDownloadListCtrl::OnNMDblclkDownloadlist(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 void CDownloadListCtrl::CreateMenues(){
+	//FRTK(kts)+
+	if (m_PermMenu) VERIFY( m_PermMenu.DestroyMenu() );	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
 	if (m_PrioMenu)  	VERIFY( m_PrioMenu.DestroyMenu() );
 	if (m_SourcesMenu)	VERIFY( m_SourcesMenu.DestroyMenu() );
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
@@ -2686,6 +2822,17 @@ void CDownloadListCtrl::CreateMenues(){
 	m_PrioMenu.AppendMenu(MF_STRING,MP_RELEASEREMOVE, GetResString(IDS_RELEASEREMOVE));
 	//Telp Super Release
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
+	//FRTK(kts)+
+	// xMule_MOD: showSharePermissions
+	m_PermMenu.CreateMenu();
+	m_PermMenu.AppendMenu(MF_STRING,MP_PERMNONE, GetResString(IDS_HIDDEN));
+	m_PermMenu.AppendMenu(MF_STRING,MP_PERMFRIENDS, GetResString(IDS_FSTATUS_FRIENDSONLY));
+	m_PermMenu.AppendMenu(MF_STRING,MP_PERMALL, GetResString(IDS_FSTATUS_PUBLIC));
+	// xMule_MOD: showSharePermissions
+	//FRTK(kts)-
+	//FRTK(kts)+
+	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PermMenu.m_hMenu, GetResString(IDS_PERMISSION), _T("SECURITY"));	// xMule_MOD: s
+	//FRTK(kts)-
 
 	m_FileMenu.AppendMenu(MF_STRING, MP_PAUSE, GetResString(IDS_DL_PAUSE), _T("PAUSE"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_STOP, GetResString(IDS_DL_STOP), _T("STOP"));
@@ -2693,7 +2840,7 @@ void CDownloadListCtrl::CreateMenues(){
 	m_FileMenu.AppendMenu(MF_STRING, MP_CANCEL, GetResString(IDS_MAIN_BTN_CANCEL), _T("DELETE"));
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	m_DropMenu.CreateMenu();
-	m_DropMenu.AddMenuTitle( _T("RIMUOVI"), true);
+	m_DropMenu.AddMenuTitle( _T("DROPS"), true);
 	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, GetResString(IDS_DROP_LOWIPTOLOWIP), _T("DROP"));
 	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, GetResString(IDS_DROP_UNKNOW_ERROR_BANNED), _T("DROP"));
 	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, GetResString(IDS_DROP_NNS), _T("DROP"));
@@ -2734,6 +2881,8 @@ void CDownloadListCtrl::CreateMenues(){
 	//MORPH START - Added by IceCream, copy feedback feature
 	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
 	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_NOCODE, GetResString(IDS_COPYFEEDBACK_NOCODE), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US_NOCODE, GetResString(IDS_COPYFEEDBACK_US_NOCODE), _T("COPY"));
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 	//MORPH END   - Added by IceCream, copy feedback feature
 }

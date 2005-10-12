@@ -55,8 +55,5 @@ protected:
 
 	afx_msg void OnOK();
 	afx_msg void OnCleanFilename();
-	// khaos::categorymod+
-	afx_msg void OnCancel();
-	// khaos::categorymod-
 	DECLARE_MESSAGE_MAP()
 };
