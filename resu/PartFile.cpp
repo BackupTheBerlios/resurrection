@@ -1974,54 +1974,35 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 		m_bitmapSharedStatusBar.SetBitmapDimension(iWidth,  iHeight); 
 		hOldBitmap = cdcStatus.SelectObject(m_bitmapSharedStatusBar);
 
-	const COLORREF crNotShared = RGB(224, 224, 224);
+	const COLORREF crMissing = RGB(255, 0, 0);
 	s_ChunkBar.SetFileSize(GetFileSize());
-	s_ChunkBar.SetHeight(rect->bottom - rect->top);
-	s_ChunkBar.SetWidth(rect->right - rect->left);
-	s_ChunkBar.Fill(crNotShared);
+		s_ChunkBar.SetHeight(iHeight);
+		s_ChunkBar.SetWidth(iWidth);
+	s_ChunkBar.Fill(crMissing);
 
-	if (!onlygreyrect){
-		const COLORREF crMissing = RGB(255, 0, 0);
+	if (!onlygreyrect && !m_SrcpartFrequency.IsEmpty()){
 		COLORREF crProgress;
 		COLORREF crHave;
 		COLORREF crPending;
-		COLORREF crNooneAsked;
 		if(bFlat) { 
 			crProgress = RGB(0, 150, 0);
 			crHave = RGB(0, 0, 0);
 			crPending = RGB(255,208,0);
-			crNooneAsked = RGB(0, 0, 0);
 		} else { 
 			crProgress = RGB(0, 224, 0);
 			crHave = RGB(104, 104, 104);
 			crPending = RGB(255, 208, 0);
-			crNooneAsked = RGB(104, 104, 104);
-		}
-		for (int i = 0; i < GetPartCount(); i++){
-			if(IsComplete(i*PARTSIZE,((i+1)*PARTSIZE)-1, true)) {
-				if(GetStatus() != PS_PAUSED || m_ClientUploadList.GetSize() > 0 || m_nCompleteSourcesCountHi > 0) {
-					uint32 frequency;
-					if(GetStatus() != PS_PAUSED && !m_SrcpartFrequency.IsEmpty()) {
-						frequency = m_SrcpartFrequency[i];
-					} else if(!m_AvailPartFrequency.IsEmpty()) {
-						frequency = max(m_AvailPartFrequency[i], m_nCompleteSourcesCountLo);
-					} else {
-						frequency = m_nCompleteSourcesCountLo;
+	
 					}
 
-					if(frequency > 0 ){
-						COLORREF color = RGB(0, (22*(frequency-1) >= 210) ? 0 : 210-(22*(frequency-1)), 255);
+		for (int i = 0; i < GetPartCount(); i++){
+			if(m_SrcpartFrequency[i] > 0 ){
+				COLORREF color = RGB(0, (210-(22*(m_SrcpartFrequency[i]-1)) < 0) ? 0 : 210-(22*(m_SrcpartFrequency[i]-1)), 255);
 						s_ChunkBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),color);
-					} else {
-						s_ChunkBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),crMissing);
-					}
-				} else {
-					s_ChunkBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),crNooneAsked);
 				}
 			}
 		}
-	}
-	s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat); 
+   		s_ChunkBar.Draw(&cdcStatus, 0, 0, bFlat);
 } 
 	else
 		hOldBitmap = cdcStatus.SelectObject(m_bitmapSharedStatusBar);

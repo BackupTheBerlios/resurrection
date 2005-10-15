@@ -10,6 +10,7 @@ Fixed: Rating Icons - thanx [WiZaRd]
 Fixed: Sorting Prob in Queuelist thanx [WiZaRd]
 Fixed: Renaming Prob in sharedfiiles again thanx [WiZaRd]
 Fixed: some little optical bugs in treecontrol [lama]
+Fixed: Showing sharedparts[big thanx at spe64]
 
 Added: ModID to Statistic [Slugfiller]
 Added: Friendlinks [eMulespana]

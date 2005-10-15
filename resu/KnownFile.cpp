@@ -219,16 +219,13 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 		m_bitmapSharedStatusBar.SetBitmapDimension(iWidth,  iHeight); 
 		hOldBitmap = cdcStatus.SelectObject(m_bitmapSharedStatusBar);
 
-	s_ShareStatusBar.SetFileSize(GetFileSize());
-	s_ShareStatusBar.SetHeight(rect->bottom - rect->top);
-	s_ShareStatusBar.SetWidth(rect->right - rect->left);
-
-    if(m_ClientUploadList.GetSize() > 0 || m_nCompleteSourcesCountHi > 1) {
-        // We have info about chunk frequency in the net, so we will color the chunks we have after perceived availability.
     	const COLORREF crMissing = RGB(255, 0, 0);
+	s_ShareStatusBar.SetFileSize(GetFileSize());
+		s_ShareStatusBar.SetHeight(iHeight);
+		s_ShareStatusBar.SetWidth(iWidth);
 	    s_ShareStatusBar.Fill(crMissing);
 
-	    if (!onlygreyrect) {
+	if (!onlygreyrect && !m_AvailPartFrequency.IsEmpty()) {
 		    COLORREF crProgress;
 		    COLORREF crHave;
 		    COLORREF crPending;
@@ -241,38 +238,14 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 			    crHave = RGB(104, 104, 104);
 			    crPending = RGB(255, 208, 0);
 	        }
-
-            uint32 tempCompleteSources = m_nCompleteSourcesCountLo;
-            if(tempCompleteSources > 0) {
-                tempCompleteSources--;
-            }
-
-		    for (int i = 0; i < GetPartCount(); i++){
-                uint32 frequency = tempCompleteSources;
-                if(!m_AvailPartFrequency.IsEmpty()) {
-                    frequency = max(m_AvailPartFrequency[i], tempCompleteSources);
-                }
-
-			    if(frequency > 0 ){
-				    COLORREF color = RGB(0, (22*(frequency-1) >= 210)? 0:210-(22*(frequency-1)), 255);
+			for (int i = 0; i < GetPartCount(); i++)
+			if(m_AvailPartFrequency[i] > 0 ){
+				COLORREF color = RGB(0, (210-(22*(m_AvailPartFrequency[i]-1)) <	0)? 0:210-(22*(m_AvailPartFrequency[i]-1)), 255);
 				    s_ShareStatusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),color);
 			    }
 	        }
+		s_ShareStatusBar.Draw(&cdcStatus, 0, 0, bFlat); 
 	    }
-    } else {
-        // We have no info about chunk frequency in the net, so just color the chunk we have as black.
-        COLORREF crNooneAsked;
-		if(bFlat) { 
-		    crNooneAsked = RGB(0, 0, 0);
-		} else { 
-		    crNooneAsked = RGB(104, 104, 104);
-	    }
-		s_ShareStatusBar.Fill(crNooneAsked);
-    }
-
-   	s_ShareStatusBar.Draw(dc, rect->left, rect->top, bFlat); 
-} 
-//-->KTS
 	else
 		hOldBitmap = cdcStatus.SelectObject(m_bitmapSharedStatusBar);
 	dc->BitBlt(rect->left, rect->top, iWidth, iHeight, &cdcStatus, 0, 0, SRCCOPY);

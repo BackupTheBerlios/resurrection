@@ -4782,7 +4782,7 @@ BEGIN
     IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
     IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
     IDS_FEEDBACK_COMPLETE   "Estimated complete sources: %i[/code]"
-    IDS_COPYFEEDBACK        "Copy feedback [code][/code] Function]"
+    IDS_COPYFEEDBACK        "Copy feedback [code][/code] Function"
     IDS_FEEDBACK_UPLOADED_FULL "Uploaded All Sessions : %i MB"
     IDS_FEEDBACK_UPLOADED_SESSION "Uploaded This Session : %i MB"
     IDS_FEEDBACK_REQUEST_SESSION "Requests This Session: %i"
