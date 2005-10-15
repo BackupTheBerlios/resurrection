@@ -218,6 +218,10 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 		m_ctrlTreeOptions.AddEditBox(m_htiHideOS, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_htiSelectiveShare = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SELECTIVESHARE), m_htiHideOS, m_iSelectiveShare);
  //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
+//Telp Start Slot Focus
+		m_htiSlotFocus = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SLOT_FOCUS),m_htiUM, m_bSlotFocus);
+//Telp End Slot Focus
+
 		m_htiSFM = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SFM), iImgSFM, TVI_ROOT);
 		m_ctrlTreeOptions.SetItemState(m_htiSFM, TVIS_BOLD, TVIS_BOLD);
 		m_htiShareOnlyTheNeed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHAREONLYTHENEED), m_htiSFM, m_iShareOnlyTheNeed);
@@ -388,6 +392,10 @@ void CPPgVipeR::Localize(void)
 		//Telp Start payback first
 		if(m_htiPBF) m_ctrlTreeOptions.SetItemText(m_htiPBF, _T("Payback First"));
 //Telp end payback first
+//Telp Start Slot Focus
+		if (m_htiSlotFocus) m_ctrlTreeOptions.SetItemText(m_htiSlotFocus, _T( "Disable Slot Focus"));
+//Telp End Slot Focus
+
 //Telp Start push small file
         if (m_htiEnablePushSmallFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushSmallFile, _T("Push Small Files")); //Hawkstar, push small file
 //Telp End push small file
@@ -496,9 +504,17 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 	theApp.sharedfiles->UpdatePartsInfo();
         // <--- Morph: PowerShare
  //<<-- ADDED STORMIT -  Morph: PowerShared //
+//Telp Start Slot Focus
+	thePrefs.SlotFocus = m_bSlotFocus;
+//Telp End Slot Focus
+
 //Telp start payback first
 	thePrefs.m_bPBF = m_bPBF;
 //Telp end payback first
+//Telp Start Slot Focus
+	thePrefs.SlotFocus = m_bSlotFocus;
+//Telp End Slot Focus
+
 //Telp Start push small file
     thePrefs.enablePushSmallFile = m_bEnablePushSmallFile; 
 //Telp End push small file

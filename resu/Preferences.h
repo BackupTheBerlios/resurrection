@@ -112,6 +112,10 @@ public:
 	static	char    olduserhash[64];
 	#endif
 	//KTS- Display User Hash
+//Start Slot Focus
+	static	bool	SlotFocus;
+//End Slot Focus
+
 //Telp start payback first
 	static	bool	m_bPBF;
 	static	bool	GetPBF()					{return m_bPBF;} 
@@ -753,6 +757,11 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 
 	static	void	Init();
 	static	void	Uninit();
+//Telp Start Slot Focus
+	static	bool	GetSlotFocus()					{return SlotFocus;}
+	static	void	SetSlotFocus(bool in)			{SlotFocus=in;}
+//Telp End Slot Focus
+
 //Start push rare file
     static bool	GetEnablePushRareFile()				{return enablePushRareFile;} //Hawkstar, push rare file
 //Telp End push rare file

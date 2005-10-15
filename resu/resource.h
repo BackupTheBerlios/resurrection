@@ -1501,6 +1501,7 @@
 #define IDS_INVMODE_HOTKEY              1662
 #define IDS_INVMODE_MODKEY              1663
 #define IDS_INVMODE_VKEY                1664
+#define IDS_SLOT_FOCUS                  1665
 #define IDS_FEEDBACK_CREATE             1701
 #define IDS_FEEDBACK_FROM               1713
 #define IDS_FEEDBACK_FILENAME           1714

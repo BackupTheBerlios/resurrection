@@ -883,11 +883,6 @@ void CSharedFileList::CreateOfferedFilePacket(const CKnownFile* cur_file, CSafeM
 
 	tags.Add(new CTag(FT_FILENAME, cur_file->GetFileName()));
 	tags.Add(new CTag(FT_FILESIZE, cur_file->GetFileSize()));
-	//>>> Rating support 
-	//Don't publish "not rated" to save overhead 
-	if((const_cast<CKnownFile*>(cur_file))->GetFileRating()) 
-		tags.Add(new CTag(FT_FILERATING, (const_cast<CKnownFile*>(cur_file))->GetFileRating()));  
-	//<<< Rating support
 
 	// NOTE: Archives and CD-Images are published with file type "Pro"
 	CString strED2KFileType(GetED2KFileTypeSearchTerm(GetED2KFileTypeID(cur_file->GetFileName())));

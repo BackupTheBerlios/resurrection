@@ -76,6 +76,12 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	int m_iPowerShareLimit; //MORPH - Added by SiRoB, POWERSHARE Limit
         // <--- Morph: PowerShare
  //<<-- ADDED STORMIT - PowerShare - //
+//Telp Start Slot Focus
+	int m_SlotFocus;
+	int m_bSlotFocus;
+	HTREEITEM m_htiSlotFocus;
+	//Telp End Slot Focus
+
 //Telp Start push small file
     int m_bEnablePushSmallFile;
 	HTREEITEM m_htiEnablePushSmallFile;

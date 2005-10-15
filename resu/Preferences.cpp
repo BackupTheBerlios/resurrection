@@ -106,6 +106,10 @@ bool	CPreferences::enableClientPerc;
 //Telp Start payback first
 bool	CPreferences::m_bPBF;
 //Telp End payback first
+//Telp - Start Slot Focus
+bool	CPreferences::SlotFocus;
+//Telp End Slot Focus
+
 //Telp Start push rare file
 bool	CPreferences::enablePushRareFile; //Hawkstar, push rare file
 //Telp End push rare file
@@ -1882,7 +1886,9 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("DownloadingIpFilterVersion"), m_dwDLingIpFilterVersion);
 	ini.WriteString(_T("DownloadingIpFilterLink"), m_strDLingIpFilterLink);
 	//<<< [ionix]: e+ - Fakecheck - modified
-	
+		//Telp - Start Slot Focus
+	ini.WriteBool(_T("SlotFocus"), SlotFocus,_T("eMule"));
+	//Telp End Slot Focus
 //Telp Start payback first
 	ini.WriteBool(_T("PBF"),m_bPBF ,_T("eMule"));
 	//Telp End payback First
@@ -2612,6 +2618,9 @@ void CPreferences::LoadPreferences()
 	if (_tcslen(datetimeformat4log)==0) _tcscpy(datetimeformat4log,_T("%c"));
 
 	m_bSmartServerIdCheck=ini.GetBool(_T("SmartIdCheck"),true);
+	//Telp Start Slot focus
+	SlotFocus = ini.GetBool(_T("SlotFocus"), false);
+	//Telp End Slot focus
 //Telp Start payback first
 	m_bPBF=ini.GetBool(_T("PBF"), false); 
 //Telp End payback first

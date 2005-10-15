@@ -498,7 +498,15 @@ void CUploadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	CTitleMenu ClientMenu;
 	ClientMenu.CreatePopupMenu();
 	ClientMenu.AddMenuTitle(GetResString(IDS_CLIENTS), true);
+//Telp Start Slot Focus
+	ClientMenu.AppendMenu(MF_STRING , MP_SLOTFOCUS, _T("Disable Slotfocus"), _T("CANCEL"));
+	if(thePrefs.GetSlotFocus())
+		ClientMenu.CheckMenuItem(MP_SLOTFOCUS,MF_CHECKED);
+	else
+		ClientMenu.CheckMenuItem(MP_SLOTFOCUS,MF_UNCHECKED);
+	ClientMenu.SetDefaultItem(MP_SLOTFOCUS);
 ClientMenu.AppendMenu(MF_SEPARATOR);
+//Telp End Slot Focus
 	ClientMenu.AppendMenu(MF_STRING | (client ? MF_ENABLED : MF_GRAYED), MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
@@ -596,7 +604,16 @@ BOOL CUploadListCtrl::OnCommand(WPARAM wParam,LPARAM lParam ){
 					break;
 }
 		}
+
+		}
+		//Telp Start Slot Focus
+	if(wParam == MP_SLOTFOCUS){
+		if(thePrefs.GetSlotFocus())
+			thePrefs.SetSlotFocus(false);
+		else
+			thePrefs.SetSlotFocus(true);
 	}
+	//Telp End Slot Focus
 	return true;
 }
 

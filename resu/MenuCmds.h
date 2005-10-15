@@ -199,6 +199,7 @@
 #define	MP_SKIN_PROFILE			11100	// reserve 100 entries for skin profiles
 #define	MP_PREVIEW_APP_MIN		11200	// reserve 50 entries for preview apps
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
+#define MP_SLOTFOCUS			10270 //Telp
 
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 #define MP_DROPLOWTOLOWIPSRCS		17001
