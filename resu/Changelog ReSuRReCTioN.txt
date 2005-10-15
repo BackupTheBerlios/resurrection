@@ -24,6 +24,7 @@ Added: Feedback in [code][/code] function[lama]
 Added: Sharing Permissions [XMUle]
 Added: FakeCheck + IPFilter Update via eD2K [WiZaRd/Aireoreion/emuleplus] 
 Added: Fake check on Downloadlistctrl and Downloadclientctrl [IONIX]
+Added: Slot Focus 
 
 Re-Added: Hide Over Share
 Re-Added: Spreadbar
