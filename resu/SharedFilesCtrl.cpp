@@ -64,7 +64,7 @@ END_MESSAGE_MAP()
 CSharedFilesCtrl::CSharedFilesCtrl()
 	: CListCtrlItemWalk(this)
 {
-	memset(&sortstat, 0, sizeof(sortstat));
+	MEMSET(&sortstat, 0, sizeof(sortstat));
 	nAICHHashing = 0;
 	m_pDirectoryFilter = NULL;
 }
@@ -1286,7 +1286,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						else{
 							// delete to recycle bin :(
 							TCHAR todel[MAX_PATH+1];
-							MEMZERO(todel, sizeof todel);
+							MEMSET(todel, 0, sizeof todel);
 							_tcsncpy(todel, myfile->GetFilePath(), ARRSIZE(todel)-2);
 
 							SHFILEOPSTRUCT fp = {0};

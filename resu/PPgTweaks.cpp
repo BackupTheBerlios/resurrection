@@ -18,7 +18,6 @@
 #include "emule.h"
 #include "SearchDlg.h"
 #include "PPgTweaks.h"
-//#include "Scheduler.h" removed scheduler [lama]
 #include "DownloadQueue.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
@@ -26,7 +25,6 @@
 #include "emuledlg.h"
 #include "SharedFilesWnd.h"
 #include "ServerWnd.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "Log.h"
 #include "UserMsgs.h"
 #include ".\ppgtweaks.h"
@@ -446,7 +444,6 @@ BOOL CPPgTweaks::OnApply()
 		return FALSE;
 
 	thePrefs.SetMaxConsPerFive(m_iMaxConnPerFive ? m_iMaxConnPerFive : DFLT_MAXCONPERFIVE);
-	//theApp.scheduler->original_cons5s = thePrefs.GetMaxConperFive(); removed scheduler [lama]
 	thePrefs.SetMaxHalfConnections(m_iMaxHalfOpen ? m_iMaxHalfOpen : DFLT_MAXHALFOPEN);
 	thePrefs.m_bConditionalTCPAccept = m_bConditionalTCPAccept;
 
@@ -702,27 +699,6 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-/*void CPPgTweaks::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Extended_Settings);
-}
-
-BOOL CPPgTweaks::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgTweaks::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/
 void CPPgTweaks::OnStnClickedWarning()
 {
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.

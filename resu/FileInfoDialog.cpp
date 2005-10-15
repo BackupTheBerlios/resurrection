@@ -181,14 +181,14 @@ struct SMediaInfo
 
 		iVideoStreams = 0;
 		(void)strVideoFormat;
-		MEMZERO(&video, sizeof video);
+		MEMSET(&video, 0, sizeof video);
 		fVideoLengthSec = 0.0;
 		fVideoFrameRate = 0.0;
 		fVideoAspectRatio = 0.0;
 
 		iAudioStreams = 0;
 		(void)strAudioFormat;
-		MEMZERO(&audio, sizeof audio);
+		MEMSET(&audio, 0, sizeof audio);
 		fAudioLengthSec = 0.0;
 	}
 
@@ -457,9 +457,9 @@ CFileInfoDialog::CFileInfoDialog()
 	m_strCaption = GetResString(IDS_FILEINFO);
 	m_psp.pszTitle = m_strCaption;
 	m_psp.dwFlags |= PSP_USETITLE;
-//	memset(&m_cfDef, 0, sizeof m_cfDef);
-//	memset(&m_cfBold, 0, sizeof m_cfBold);
-//	memset(&m_cfRed, 0, sizeof m_cfRed);
+//	MEMSET(&m_cfDef, 0, sizeof m_cfDef);
+//	MEMSET(&m_cfBold, 0, sizeof m_cfBold);
+//	MEMSET(&m_cfRed, 0, sizeof m_cfRed);
 }
 
 CFileInfoDialog::~CFileInfoDialog()

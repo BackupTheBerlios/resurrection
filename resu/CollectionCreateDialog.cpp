@@ -331,7 +331,7 @@ void CCollectionCreateDialog::OnBnClickedOk()
 			else
 			{
 				TCHAR todel[MAX_PATH+1];
-				MEMZERO(todel, sizeof todel);
+				MEMSET(todel, 0, sizeof todel);
 				_tcsncpy(todel, sFilePath, ARRSIZE(todel)-2);
 
 				SHFILEOPSTRUCT fp = {0};

@@ -44,9 +44,6 @@
 #include "AddSourceDlg.h"
 #include "ToolTipCtrlX.h"
 #include "CollectionViewDialog.h"
-// IP-to-Country +
-#include "IP2Country.h" 
-// IP-to-Country -
 #include "Clientlist.h"//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 #include "fakecheck.h" // [ionix] - Fakecheck
 #include "SR13-ImportParts.h"//MORPH - Added by [ionix], Import Parts [SR13]
@@ -876,15 +873,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				else
 					m_ImageList.Draw(dc, 7, point2, ILD_NORMAL | uOvlImg);
 				cur_rec.left += 20;
-               // IP-to-Country +
-				if(theApp.ip2country->ShowCountryFlag() ){
-					POINT point3= {cur_rec.left,cur_rec.top+1};
-					theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, lpUpDownClient->GetCountryFlagIndex(), point3, CSize(18,16), CPoint(0,0), ILD_NORMAL);
-					cur_rec.left+=20;
-				}
-				// IP-to-Country + 
-				buffer = lpUpDownClient->GetCountryName(); 
-				// IP-to-Country - 
+              
 				if (!lpUpDownClient->GetUserName()) 
 					buffer.Append(_T("?")); 
 				else 
@@ -1118,7 +1107,6 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 		}
 		//JP Webcache END
 		//MORPH END   - Added by SiRoB, WebCache 1.2f
-		//MORPH START - Added by SiRoB, IP2Country		
 		}
 	}
 }

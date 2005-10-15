@@ -28,7 +28,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
+#pragma warning(disable:4702) //unreachable code
 #include <list>
+#pragma warning(default:4702) //unreachable code
 #include <vector>
 
 #define HTC_WORDWRAP			1	// word wrap text

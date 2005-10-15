@@ -22,7 +22,6 @@
 #include "TransferWnd.h"
 #include "emuledlg.h"
 #include "Preferences.h"
-//#include "HelpIDs.h" removed help [lama]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -286,27 +285,6 @@ void CPPgFiles::BrowseVideoplayer()
 	}
 }
 
-/*void CPPgFiles::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Files);
-}
-
-BOOL CPPgFiles::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgFiles::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/
 void CPPgFiles::OnSettingsChange() {
 		SetModified();
 		GetDlgItem(IDC_STARTNEXTFILECAT)->EnableWindow( IsDlgButtonChecked(IDC_STARTNEXTFILE) );

@@ -603,7 +603,7 @@ void CreateItemReport(CListCtrl& lv, CString& rstrReport)
 		TCHAR szItem[512];
 		int iItems = lv.GetItemCount();
 
-		MEMZERO(paiColWidths, sizeof(*paiColWidths) * iCols);
+		MEMSET(paiColWidths, 0, sizeof(*paiColWidths) * iCols);
 		for (int iCol = 0; iCol < iCols; iCol++)
 		{
 			LVCOLUMN lvc;

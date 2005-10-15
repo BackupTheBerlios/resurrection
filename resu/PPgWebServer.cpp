@@ -23,7 +23,6 @@
 #include "emuledlg.h"
 #include "Preferences.h"
 #include "ServerWnd.h"
-//#include "HelpIDs.h" removed help [lama]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -295,24 +294,3 @@ void CPPgWebServer::SetTmplButtonState(){
 	GetDlgItem(IDC_WSRELOADTMPL)->EnableWindow( thePrefs.GetWSIsEnabled() && (buffer.CompareNoCase(thePrefs.GetTemplate())==0));
 }
 
-/*void CPPgWebServer::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_WebInterface);
-}
-
-BOOL CPPgWebServer::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgWebServer::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/

@@ -29,7 +29,6 @@
 #include "Opcodes.h"
 #include "Log.h"
 #include "ToolTipCtrlX.h"
-#include "IP2Country.h"//Ackronic - Aggiunto da Aenarion[ITA] - IP to Country
 #include "MemDC.h"//""
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -120,12 +119,6 @@ void CServerListCtrl::SetAllIcons()
 	HIMAGELIST himl = ApplyImageList(iml.Detach());
 	if (himl)
 		ImageList_Destroy(himl);
-	//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
-	imagelist.DeleteImageList();
-	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
-	imagelist.SetBkColor(CLR_NONE);
-	imagelist.Add(CTempIconLoader(_T("Server")));
-	//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
 }
 
 void CServerListCtrl::Localize()
@@ -267,13 +260,8 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	int itemnr = FindItem(&find);
 	if (itemnr == -1)
 		return;
-	//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
-	Update(itemnr);
-	return;
-	//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
 
-	//Ackronic START - Tolto da Aenarion[ITA] - IP to Country
-	/*CString temp;
+	CString temp;
 	temp.Format(_T("%s : %i"), server->GetAddress(), server->GetPort());
 	SetItemText(itemnr, 1, temp);
 	SetItemText(itemnr, 0, server->GetListName());
@@ -362,19 +350,9 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	if (server->GetLowIDUsers())
 		SetItemText(itemnr, 13, CastItoIShort(server->GetLowIDUsers()));
 	else
-		SetItemText(itemnr, 13, _T(""));*/
-//Ackronic END - Tolto da Aenarion[ITA] - IP to Country
-}
-//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
-void CServerListCtrl::RefreshAllServer(){
-
-	for(POSITION pos = server_list->list.GetHeadPosition(); pos != NULL;){
-		RefreshServer(server_list->list.GetAt(pos));
-		server_list->list.GetNext(pos);
+		SetItemText(itemnr, 13, _T(""));
 	}
 
-}
-//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country
 void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 { 
 	// get merged settings
@@ -999,226 +977,3 @@ void CServerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *plResult)
 
 	*plResult = CDRF_DODEFAULT;
 }
-//Ackronic START - Aggiunto da Aenarion[ITA] - IP to Country
-#define DLC_DT_TEXT (DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX|DT_END_ELLIPSIS)
-
-void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
-{
-	if( !theApp.emuledlg->IsRunning() )
-		return;
-	if (!lpDrawItemStruct->itemData)
-		return;
-	
-	//MORPH START - Added by SiRoB, Don't draw hidden Rect
-	RECT clientRect;
-	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
-	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
-		return;
-	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
-
-	CDC* odc = CDC::FromHandle(lpDrawItemStruct->hDC);
-	BOOL bCtrlFocused = ((GetFocus() == this ) || (GetStyle() & LVS_SHOWSELALWAYS));
-	const CServer* server = (CServer*)lpDrawItemStruct->itemData;
-	const CServer* cur_srv;
-	if( (lpDrawItemStruct->itemAction | ODA_SELECT) && (lpDrawItemStruct->itemState & ODS_SELECTED )
-		||
-		(
-		theApp.serverconnect->IsConnected()
-		&& (cur_srv = theApp.serverconnect->GetCurrentServer()) != NULL
-		&& cur_srv->GetPort() == server->GetPort()
-		//&& cur_srv->GetConnPort() == server->GetConnPort()//Morph - added by AndCycle, aux Ports, by lugdunummaster
-		&& _tcsicmp(cur_srv->GetAddress(), server->GetAddress()) == 0)
-		){
-			if(bCtrlFocused)
-				odc->SetBkColor(m_crHighlight);
-			else
-				odc->SetBkColor(m_crNoHighlight);
-		}
-	else
-		odc->SetBkColor(GetBkColor());
-	CMemDC dc(CDC::FromHandle(lpDrawItemStruct->hDC), &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(GetFont());
-	//RECT cur_rec = lpDrawItemStruct->rcItem; //MORPH - Moved by SiRoB, Don't draw hidden Rect
-	COLORREF crOldTextColor = dc.SetTextColor(m_crWindowText);
-
-	int iOldBkMode;
-	if (m_crWindowTextBk == CLR_NONE){
-		DefWindowProc(WM_ERASEBKGND, (WPARAM)(HDC)dc, 0);
-		iOldBkMode = dc.SetBkMode(TRANSPARENT);
-	}
-	else
-		iOldBkMode = OPAQUE;
-
-	CString Sbuffer;
-	CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
-	int iCount = pHeaderCtrl->GetItemCount();
-	cur_rec.right = cur_rec.left - 8;
-	cur_rec.left += 4;
-
-	for(int iCurrent = 0; iCurrent < iCount; iCurrent++){
-		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
-		if( !IsColumnHidden(iColumn) ){
-			cur_rec.right += GetColumnWidth(iColumn);
-			switch(iColumn){
-
-				case 0:{
-					uint8 image;
-					image = 0;
-
-					//POINT point = {cur_rec.left, cur_rec.top+1};
-					Sbuffer = server->GetListName();
-
-					//Draw Country Flag
-
-						POINT point2= {cur_rec.left,cur_rec.top+1};
-					if(theApp.ip2country->ShowCountryFlag() ){
-						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, server->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
-					}
-					else
-						imagelist.DrawIndirect(dc, 0, point2, CSize(16,16), CPoint(0,0), ILD_NORMAL);
-
-					cur_rec.left +=20;
-					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
-					cur_rec.left -=20;
-
-					break;
-					   }
-				case 1:{
-					Sbuffer.Format(_T("%s : %i"), server->GetAddress(), server->GetPort());
-					break;
-					   }
-				case 2:{
-					Sbuffer = server->GetDescription();
-					break;
-					   }
-				case 3:{
-					if(server->GetPing())
-						Sbuffer.Format(_T("%i"), server->GetPing());
-					else
-						Sbuffer = "";
-					break;
-					   }
-				case 4:{
-					if(server->GetUsers())
-						Sbuffer.Format(_T("%i"), server->GetUsers());
-					else
-						Sbuffer = "";
-					break;
-					   }
-				case 5:{
-					if(server->GetMaxUsers())
-						Sbuffer.Format(_T("%i"), server->GetMaxUsers());
-					else
-						Sbuffer = "";
-					break;
-					   }
-				case 6:{
-					if(server->GetFiles())
-						Sbuffer.Format(_T("%i"), server->GetFiles());
-					else
-						Sbuffer = "";
-					break;
-					   }
-				case 7:{
-					switch(server->GetPreferences()){
-				case SRV_PR_LOW:
-					Sbuffer = GetResString(IDS_PRIOLOW);
-					break;
-				case SRV_PR_NORMAL:
-					Sbuffer = GetResString(IDS_PRIONORMAL);
-					break;
-				case SRV_PR_HIGH:
-					Sbuffer = GetResString(IDS_PRIOHIGH);
-					break;
-				default:
-					Sbuffer = GetResString(IDS_PRIONOPREF);
-					}
-					break;
-					   }
-				case 8:{
-					Sbuffer.Format(_T("%i"), server->GetFailedCount());
-					break;
-					   }
-				case 9:{
-					if (server->IsStaticMember())
-						Sbuffer = GetResString(IDS_YES); 
-					else
-						Sbuffer = GetResString(IDS_NO);
-					break;
-					   }
-				case 10:{
-					if(server->GetSoftFiles())
-						Sbuffer.Format(_T("%i"), server->GetSoftFiles());
-					else
-						Sbuffer = "";
-					break;
-						}
-				case 11:{
-					if(server->GetHardFiles())
-						Sbuffer.Format(_T("%i"), server->GetHardFiles());
-					else
-						Sbuffer = "";
-					break;
-						}
-				case 12:{
-					Sbuffer = server->GetVersion();
-					if (thePrefs.GetDebugServerUDPLevel() > 0){
-						if (server->GetUDPFlags() != 0){
-							if (!Sbuffer.IsEmpty())
-								Sbuffer += _T("; ");
-							Sbuffer.AppendFormat(_T("ExtUDP=%x"), server->GetUDPFlags());
-						}
-					}
-					if (thePrefs.GetDebugServerTCPLevel() > 0){
-						if (server->GetTCPFlags() != 0){
-							if (!Sbuffer.IsEmpty())
-								Sbuffer += _T("; ");
-							Sbuffer.AppendFormat(_T("ExtTCP=%x"), server->GetTCPFlags());
-						}
-					}
-					break;
-						}
-						//Commander - Lowid Column
-				case 13:{
-					if (server->GetLowIDUsers()){
-						CString tempStr2;
-						tempStr2.Format(_T("%s"), CastItoIShort(server->GetLowIDUsers()));
-						Sbuffer = tempStr2;
-					}
-					else{
-						Sbuffer = _T("");
-					}
-					break;
-						}
-
-
-			}//End of Switch
-
-			if(iColumn != 0 && iColumn != 15)
-				dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec, DT_LEFT);
-			cur_rec.left += GetColumnWidth(iColumn);
-		}
-	}
-	//draw rectangle around selected item(s)
-	if ((lpDrawItemStruct->itemAction | ODA_SELECT) && (lpDrawItemStruct->itemState & ODS_SELECTED))
-	{
-		RECT outline_rec = lpDrawItemStruct->rcItem;
-		outline_rec.top--;
-		outline_rec.bottom++;
-		dc->FrameRect(&outline_rec, &CBrush(GetBkColor()));
-		outline_rec.top++;
-		outline_rec.bottom--;
-		outline_rec.left++;
-		outline_rec.right--;
-		if(bCtrlFocused)
-			dc->FrameRect(&outline_rec, &CBrush(m_crFocusLine));
-		else
-			dc->FrameRect(&outline_rec, &CBrush(m_crNoFocusLine));
-	}
-	if (m_crWindowTextBk == CLR_NONE)
-		dc.SetBkMode(iOldBkMode);
-	dc.SelectObject(pOldFont);
-	dc.SetTextColor(crOldTextColor);
-}
-//Ackronic END - Aggiunto da Aenarion[ITA] - IP to Country

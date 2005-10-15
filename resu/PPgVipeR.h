@@ -118,16 +118,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiDropSourcesTimerHQR;
 	HTREEITEM m_htiHqrBox;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-// IP-to-Country +
-	IP2CountryNameSelection	m_iIP2CountryName;
-	HTREEITEM m_htiIP2CountryName;
-	HTREEITEM m_htiIP2CountryName_DISABLE;
-	HTREEITEM m_htiIP2CountryName_SHORT;
-	HTREEITEM m_htiIP2CountryName_MID;
-	HTREEITEM m_htiIP2CountryName_LONG;
-	int m_bIP2CountryShowFlag;
-	HTREEITEM m_htiIP2CountryShowFlag;
-	// IP-to-Country -
 // [ionix] - FunnyNick
 	HTREEITEM m_htiFunnyNick;
 	HTREEITEM m_htiFunnyNickEnabled;

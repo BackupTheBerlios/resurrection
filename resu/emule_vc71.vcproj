@@ -317,9 +317,6 @@
 				RelativePath="Ini2.cpp">
 			</File>
 			<File
-				RelativePath=".\IP2Country.cpp">
-			</File>
-			<File
 				RelativePath="IPFilter.cpp">
 			</File>
 			<File
@@ -816,9 +813,6 @@
 			</File>
 			<File
 				RelativePath="Ini2.h">
-			</File>
-			<File
-				RelativePath=".\IP2Country.h">
 			</File>
 			<File
 				RelativePath="IPFilter.h">

@@ -171,7 +171,7 @@ bool CArchiveRecovery::performRecovery(CPartFile *partFile, CTypedPtrList<CPtrLi
 			if (preview)
 			{
 				SHELLEXECUTEINFO SE;
-				MEMZERO(&SE,sizeof(SE));
+				MEMSET(&SE,0,sizeof(SE));
 				SE.fMask = SEE_MASK_NOCLOSEPROCESS ;
 				SE.lpVerb = _T("open");
 				SE.lpFile = outputFileName.GetBuffer();

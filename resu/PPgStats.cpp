@@ -21,7 +21,6 @@
 #include "emuledlg.h"
 #include "Preferences.h"
 #include "StatisticsDlg.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "UserMsgs.h"
 
 #ifdef _DEBUG
@@ -321,24 +320,3 @@ LONG CPPgStats::OnColorPopupSelChange(UINT lParam, LONG wParam)
 	return TRUE;
 }
 
-/*void CPPgStats::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Statistics);
-}
-
-BOOL CPPgStats::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgStats::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/

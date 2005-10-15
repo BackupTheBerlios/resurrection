@@ -73,8 +73,4 @@ private:
 	CTypedPtrList<CPtrList, CServer*> list;
 	uint32		delservercount;
 	uint32		m_nLastSaved;
-// IP-to-Country +
-public:
-	void ResetIP2Country();
-// IP-to-Country -
 };

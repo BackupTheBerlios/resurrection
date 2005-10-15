@@ -288,7 +288,9 @@ SetSpecialFile(NULL); //>>> [ionix] - WiZaRd::eD2K Updates
 		m_bAutoDownPriority = false;
 	}
 	srcarevisible = false;
-	MEMZERO(m_anStates,sizeof(m_anStates));
+	MEMSET(m_anStates,0,sizeof(m_anStates));
+	MEMSET(src_stats,0,sizeof(src_stats));
+	MEMSET(net_stats,0,sizeof(net_stats));
 	datarate = 0;
 	m_uMaxSources = 0;
 	hashsetneeded = true;
@@ -311,8 +313,8 @@ SetSpecialFile(NULL); //>>> [ionix] - WiZaRd::eD2K Updates
 	m_category=0;
 	m_lastRefreshedDLDisplay = 0;
 	m_bLocalSrcReqQueued = false;
-	MEMZERO(src_stats,sizeof(src_stats));
-	MEMZERO(net_stats,sizeof(net_stats));
+	MEMSET(src_stats,0,sizeof(src_stats));
+	MEMSET(net_stats,0,sizeof(net_stats));
 	m_nCompleteSourcesTime = time(NULL);
 	m_nCompleteSourcesCount = 0;
 	m_nCompleteSourcesCountLo = 0;
@@ -2242,7 +2244,7 @@ void CPartFile::WritePartStatus(CSafeMemFile* file, CUpDownClient* client) /*con
 			client->m_abyUpPartStatusHidden = NULL;
 		}
 		client->m_abyUpPartStatusHidden = new uint8[parts];
-		MEMZERO(client->m_abyUpPartStatusHidden,parts);
+		MEMSET(client->m_abyUpPartStatusHidden,0,parts);
 	}
 	//MORPH END   - Added by SiRoB, See chunk that we hide by HideOS feature
 	
@@ -3601,10 +3603,9 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 	insufficient = false;
 	m_iUpdateHL = NULL; //>>> WiZaRd - AutoHL added by lama
 	datarate = 0;
-	MEMZERO(m_anStates,sizeof(m_anStates));
-	MEMZERO(src_stats,sizeof(src_stats));	//Xman Bugfix
-	MEMZERO(net_stats,sizeof(net_stats));	//Xman Bugfix
-
+	MEMSET(m_anStates,0,sizeof(m_anStates));
+	MEMSET(src_stats,0,sizeof(src_stats));
+	MEMSET(net_stats,0,sizeof(net_stats));
 	if (!bCancel)
 		FlushBuffer(true);
 	//KTS+ webcache

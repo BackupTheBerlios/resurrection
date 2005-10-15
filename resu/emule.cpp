@@ -76,9 +76,6 @@
 #include "Log.h"
 #include "./AntiLeech/AntiLeech.h" //>>> AntiLeech Class
 #include "Collection.h"
-//KTS+ IP to Country
-#include "IP2Country.h"
-//KTS- IP to Country
 #include "fakecheck.h" //MORPH - Added by SiRoB
 
 CLogFile theLog;
@@ -438,10 +435,10 @@ BOOL CemuleApp::InitInstance()
 	CWinApp::InitInstance();
  m_reset_app = FALSE;      // [iONiX] - WiZaRd - Multiple Instances added by lama
 	//Spe64 eWombat [WINSOCK2]
-	MEMZERO(&m_wsaData,sizeof(WSADATA));
+	MEMSET(&m_wsaData,0,sizeof(WSADATA));
 	if (!InitWinsock2(&m_wsaData)) // <<< eWombat first try it with winsock2
 	{
-		MEMZERO(&m_wsaData,sizeof(WSADATA));
+		MEMSET(&m_wsaData,0,sizeof(WSADATA));
 		if (!AfxSocketInit(&m_wsaData)) // <<< eWombat then try it with old winsock
 		{
 		AfxMessageBox(GetResString(IDS_SOCKETS_INIT_FAILED));
@@ -523,9 +520,7 @@ BOOL CemuleApp::InitInstance()
 	CemuleDlg dlg;
 	emuledlg = &dlg;
 	m_pMainWnd = &dlg;
-	//Start Optimizer Spe64
-	OptimizerInfo();
-	//Start Optimizer Spe64
+	OptimizerInfo(); // [ionix] - Optimizer
 
 //KTS+// sicks ajout [lama]
 	sysinfo = new CSystemInfo(); // sicks
@@ -586,9 +581,6 @@ BOOL CemuleApp::InitInstance()
 	webserver = new CWebServer(); // Webserver [kuchin]
 	mmserver = new CMMServer();
 	m_pPeerCache = new CPeerCacheFinder();
-	//KTS+ IP to Country
-	ip2country = new CIP2Country(); 
-	//KTS- IP to Country
 FakeCheck 	= new CFakecheck(); //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updating
 thePerfLog.Startup();
 	dlg.DoModal();
@@ -1750,6 +1742,36 @@ void CemuleApp::ClearLogQueue(bool bDebugPendingMsgs)
 }
 // Elandal:ThreadSafeLogging <--
 
+// -->[ionix] - Optimizer
+void CemuleApp::OptimizerInfo(void)
+{
+if (!emuledlg)
+	return;
+	AddLogLine(false,_T("********   Optimizer   ********"));
+	AddLogLine(false,_T("%s"),(CString)cpu.GetExtendedProcessorName());
+	switch (get_cpu_type())
+	{
+		case 1:
+			AddLogLine(false,_T("FPU optimizations active"));
+			break;
+		case 2:
+			AddLogLine(false,_T("MMX optimizations active"));
+			break;
+		case 3:
+			AddLogLine(false,_T("AMD optimizations active"));
+			break;
+		case 4:
+		case 5:
+			AddLogLine(false,_T("SSE optimizations active"));
+			break;
+		default:
+			AddLogLine(false,_T("Optimizations disabled"));
+			break;
+	}
+	AddLogLine(false,_T("********   Optimizer   ********"));
+}
+//<--[ionix] - Optimizer
+
 void CemuleApp::CreateAllFonts()
 {
 	///////////////////////////////////////////////////////////////////////////
@@ -1823,80 +1845,4 @@ void CemuleApp::UpdateDesktopColorDepth()
 		g_bLowColorDesktop = (GetProfileInt(_T("eMule"), _T("LowColorRes"), 0) != 0);
 #endif
 }
-//Start Optimizer Spe64
-void CemuleApp::OptimizerInfo(void)
-{
-if (!emuledlg)
-	return;
-	AddModLogLine(false,_T("********Optimizer********"));
-	USES_CONVERSION;
-	AddModLogLine(false,_T("%s"), A2CT(cpu.GetExtendedProcessorName()));
-	switch (get_cpu_type())
-	{
-		case 1:
-			AddModLogLine(false, GetResString(IDS_FPU_ACTIVE));
-			break;
-		case 2:
-			AddModLogLine(false, GetResString(IDS_MMX_ACTIVE));
-			break;
-		case 3:
-			AddModLogLine(false, GetResString(IDS_AMD_ACTIVE));
-			break;
-		case 4:
-		case 5:
-			AddModLogLine(false, GetResString(IDS_SSE_ACTIVE));
-			break;
-		default:
-			AddModLogLine(false, GetResString(IDS_OPTIMIZATIONS_DISABLED));
-			break;
-	}
-	//LSD Extra Cpu Info
-	CString strCPU; //Cpu Extensions
-	CString strLXcache; //Lx-Cache Size
-	if (cpu.DoesCPUSupportFeature(MMX_FEATURE))
-		strCPU += _T("MMX ");
-
-	if (cpu.DoesCPUSupportFeature(MMX_PLUS_FEATURE))
-		strCPU += _T("MMX+ ");	
-
-	if (cpu.DoesCPUSupportFeature(SSE_FEATURE))
-		strCPU += _T("SSE ");
-
-	if (cpu.DoesCPUSupportFeature(SSE2_FEATURE))
-		strCPU += _T("SSE2 ");
-
-	if (cpu.DoesCPUSupportFeature(AMD_3DNOW_FEATURE))
-		strCPU += _T("3DNOW ");
-
-	if (cpu.DoesCPUSupportFeature(AMD_3DNOW_PLUS_FEATURE))
-		strCPU += _T("3DNOW+ ");
-
-	if (cpu.DoesCPUSupportFeature(IA64_FEATURE))
-		strCPU += _T("IA64 ");
-
-	if (cpu.DoesCPUSupportFeature(MP_CAPABLE))
-		strCPU += _T("MP_CAPABLE ");
-
-	if (cpu.DoesCPUSupportFeature(L1CACHE_FEATURE)) {
-		strLXcache+=_T("L1->");
-		strLXcache+=CastItoXBytes ( (uint32) cpu.GetProcessorCacheXSize (L1CACHE_FEATURE)*1024);
-		}
-	if (cpu.DoesCPUSupportFeature(L2CACHE_FEATURE)) {
-		strLXcache+=_T(" L2->");
-		strLXcache+=CastItoXBytes ( (uint32) cpu.GetProcessorCacheXSize (L2CACHE_FEATURE)*1024);
-		}
-	if (cpu.DoesCPUSupportFeature(L3CACHE_FEATURE)) {
-		strLXcache+=_T(" L3->");
-		strLXcache+=CastItoXBytes ( (uint32) cpu.GetProcessorCacheXSize (L3CACHE_FEATURE)*1024);
-			}
-
-	AddModLogLine(false, strLXcache); //Lx-Cache Size
-	AddModLogLine(false, strCPU); //Cpu Extensions
-
-	//LSD Extra Cpu Info End
-
-	AddModLogLine(false,_T("********Optimizer********"));
-		}
-//End Optimizer Spe64
-
 

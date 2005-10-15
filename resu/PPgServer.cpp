@@ -21,7 +21,6 @@
 #include "PPgServer.h"
 #include "OtherFunctions.h"
 #include "Preferences.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "Opcodes.h"
 
 #ifdef _DEBUG
@@ -143,24 +142,3 @@ void CPPgServer::OnBnClickedEditadr()
 	ShellExecute(NULL, _T("open"), thePrefs.GetTxtEditor(), _T("\"") + thePrefs.GetConfigDir() + _T("addresses.dat\""), NULL, SW_SHOW); 
 }
 
-/*void CPPgServer::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Server);
-}
-
-BOOL CPPgServer::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgServer::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/

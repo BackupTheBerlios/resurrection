@@ -40,7 +40,6 @@
 #define USE_FLEX
 #include "Parser.hpp"
 #include "Scanner.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "Exceptions.h"
 #include "StringConversion.h"
 #include "UserMsgs.h"
@@ -93,7 +92,6 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
 	ON_WM_CREATE()
-	//ON_WM_HELPINFO() removed help [lama]
 	ON_MESSAGE(WM_IDLEUPDATECMDUI, OnIdleUpdateCmdUI)
 	ON_BN_CLICKED(IDC_OPEN_PARAMS_WND, OnBnClickedOpenParamsWnd)
 	ON_WM_SYSCOMMAND()
@@ -1608,13 +1606,6 @@ void CSearchResultsWnd::OnClose()
 	//__super::OnClose();
 }
 
-/*BOOL CSearchResultsWnd::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	theApp.ShowHelp(eMule_FAQ_Search);
-	return TRUE;
-}
-removed help [lama]
-*/
 LRESULT CSearchResultsWnd::OnIdleUpdateCmdUI(WPARAM wParam, LPARAM lParam)
 {
 	GetDlgItem(IDC_OPEN_PARAMS_WND)->ShowWindow( theApp.emuledlg->searchwnd->IsSearchParamsWndVisible() ? SW_HIDE : SW_SHOW );

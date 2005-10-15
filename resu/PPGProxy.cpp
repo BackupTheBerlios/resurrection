@@ -20,7 +20,6 @@
 #include "opcodes.h"
 #include "OtherFunctions.h"
 #include "Preferences.h"
-//#include "HelpIDs.h" removed help [lama]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -207,24 +206,3 @@ void CPPgProxy::OnBnClickedAscwop()
 	SetModified(true);
 }
 
-/*void CPPgProxy::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Proxy);
-}
-
-BOOL CPPgProxy::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgProxy::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/

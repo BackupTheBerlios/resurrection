@@ -1,11 +1,11 @@
 //this file is part of eMule
 //Copyright (C)2002-2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
-//Ackronic START - PowerRelease
+//
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
 //as published by the Free Software Foundation; either
 //version 2 of the License, or (at your option) any later version.
-//Ackronic START - Aggiunto da Aenarion[ITA] - Feature Share
+//
 //This program is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the

@@ -658,7 +658,7 @@ bool __cdecl CPUInfo::RetrieveClassicalCPUCacheDetails ()
 			return false;
 		}
 
-		int bob = ((TLBCacheData[0] & 0x00FF0000) >> 16);
+		//int bob = ((TLBCacheData[0] & 0x00FF0000) >> 16);
 
 		// Process the returned TLB and cache information.
 		for (int nCounter = 0; nCounter < TLBCACHE_INFO_UNITS; nCounter ++) {

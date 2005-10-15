@@ -249,7 +249,7 @@ HTREEITEM CDirectoryTreeCtrl::AddChildItem(HTREEITEM hRoot, CString strText)
 		strPath += _T("\\");
 	CString strDir = strPath + strText;
 	TV_INSERTSTRUCT itInsert;
-	MEMZERO(&itInsert, sizeof(itInsert));
+	MEMSET(&itInsert, 0, sizeof(itInsert));
 	
 	// START: changed by FoRcHa /////
 	WORD wWinVer = thePrefs.GetWindowsVersion();

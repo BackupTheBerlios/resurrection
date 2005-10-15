@@ -35,9 +35,6 @@
 #include "ServerWnd.h"
 #include "Log.h"
 #include "Fakecheck.h" //MORPH - Added by SiRoB
-//KTS IP-to-Country +
-#include "IP2Country.h"
-//KTS IP-to-Country -
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -130,12 +127,6 @@ bool CServerList::Init()
 	// insert static servers from textfile
 	strPath.Format(_T("%sstaticservers.dat"), thePrefs.GetConfigDir());
 	AddServersFromTextFile(strPath);
-        //Ip to Country
-	//Commander - Added: IP2Country auto-updating - Start
-	if (thePrefs.IsAutoUPdateIP2CountryEnabled())
-	theApp.ip2country->UpdateIP2CountryURL();
-	//Commander - Added: IP2Country auto-updating - End
-	//Ip to Country
  //MORPH START added by Yun.SF3: Ipfilter.dat update
 	if (thePrefs.IsAutoUPdateIPFilterEnabled())
 	theApp.ipfilter->UpdateIPFilterURL();
@@ -865,14 +856,4 @@ void CServerList::Process()
 	if (::GetTickCount() - m_nLastSaved > MIN2MS(17))
 		SaveServermetToFile();
 }
-// IP-to-Country +
-void CServerList::ResetIP2Country(){
 
-	CServer *cur_server;
-
-	for(POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos)){
-		cur_server = list.GetAt(pos);
-		cur_server->ResetIP2Country();
-	}
-}
-// IP-to-Country -

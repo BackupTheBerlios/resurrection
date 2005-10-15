@@ -36,7 +36,7 @@ CKadContactHistogramCtrl::CKadContactHistogramCtrl()
 {
 	ASSERT( (1 << KAD_CONTACT_HIST_NEEDED_BITS) <= KAD_CONTACT_HIST_SIZE );
 
-	MEMZERO(m_aHist,  sizeof m_aHist);
+	MEMSET(m_aHist, 0, sizeof m_aHist);
 
 	m_penAxis.CreatePen(PS_SOLID, 1, RGB(128, 128, 128));
 	m_penAux.CreatePen(PS_DOT, 1, RGB(192, 192, 192));

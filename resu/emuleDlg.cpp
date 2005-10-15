@@ -99,9 +99,6 @@
 #include "TextToSpeech.h"
 #include "Collection.h"
 #include "CollectionViewDialog.h"
-//KTS+ IP to Country
-#include "IP2Country.h" 
-//KTS- IP to Country
 
 #include "fakecheck.h" //MORPH - Added by SiRoB
 // MORPH START - Added by Commander, Friendlinks [emulEspaña]
@@ -252,9 +249,9 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
      m_bstartUpInvisibleChecked = false;  
      m_bStartInvisible = false;   
 	//<<< [WiZaRd] - StartUp InvisibleMode Enhancement
-	MEMZERO(&m_wpFirstRestore, sizeof m_wpFirstRestore);
-	m_uUpDatarate = 0;
-	m_uDownDatarate = 0;
+	MEMSET(&m_wpFirstRestore, 0, sizeof m_wpFirstRestore);
+	m_uUpDatarate = 0.0f;
+	m_uDownDatarate = 0.0f;
 	status = 0;
 	activewnd = NULL;
 	for (int i = 0; i < ARRSIZE(connicons); i++)
@@ -1923,9 +1920,6 @@ void CemuleDlg::OnClose()
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
 	delete theApp.m_pFirewallOpener;theApp.m_pFirewallOpener = NULL;
-	//KTS+ IP to Country
-	delete theApp.ip2country;		theApp.ip2country = NULL;
-	//KTS- IP to Country
 	delete theApp.uploadBandwidthThrottler; theApp.uploadBandwidthThrottler = NULL;
 	delete theApp.lastCommonRouteFinder; theApp.lastCommonRouteFinder = NULL;
 
@@ -2167,7 +2161,7 @@ void CemuleDlg::RestoreWindow()
 	if (m_wpFirstRestore.length)
 	{
 		SetWindowPlacement(&m_wpFirstRestore);
-		MEMZERO(&m_wpFirstRestore, sizeof m_wpFirstRestore);
+		MEMSET(&m_wpFirstRestore, 0, sizeof m_wpFirstRestore);
 		SetForegroundWindow();
 		BringWindowToTop();
 	}

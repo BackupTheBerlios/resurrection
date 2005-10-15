@@ -75,22 +75,10 @@ struct Category_Struct{
 	CString	regexp;
 };
 #pragma pack()
-//KTS+ IP to Country
-enum IP2CountryNameSelection{
-	IP2CountryName_DISABLE = 0,
-	IP2CountryName_SHORT,
-	IP2CountryName_MID,
-	IP2CountryName_LONG
-};
-//KTS- IP to Country
 class CPreferences
 {
 public:
-	//KTS+ IP to Country
-	static IP2CountryNameSelection	m_iIP2CountryNameMode;
-	static bool		m_bIP2CountryShowFlag;
-	//KTS- IP to Country
-
+	
 	//Start Download Color
 	static	bool	EnableDownloadInColor;
 	static	int		DownloadColor;
@@ -138,16 +126,6 @@ public:
 //Telp Start push small file
     static  bool	enablePushSmallFile; //Hawkstar, push small file
 //Telp End push small file
-	static bool		AutoUpdateIP2Country; 
-	static uint32	m_IP2CountryVersion;
-	static TCHAR	UpdateURLIP2Country[256]; //Commander - Added: IP2Country auto-updating
-	static TCHAR	UpdateVerURLIP2Country[256];//Commander - Added: IP2Country auto-updating
-	static CString	GetUpdateURLIP2Country()			{return CString(UpdateURLIP2Country);}//Commander - Added: IP2Country auto-updating
-	static CString	GetUpdateVerURLIP2Country()			{return CString(UpdateVerURLIP2Country);}//Commander - Added: IP2Country auto-updating
-	static uint32   GetIP2CountryVersion()				{return m_IP2CountryVersion;}//Commander - Added: IP2Country auto-updating
-	static void		SetIP2CountryVersion(uint32 version){m_IP2CountryVersion = version;}
-	static bool		IsAutoUPdateIP2CountryEnabled()		{return AutoUpdateIP2Country;} //Commander - Added: IP2Country Auto-updating
-	// IP-to-Country -
 static  int     m_iCreditSystem; // Credit System
 static  uint8	m_uScoreRatioThres;	
 //	static	uint16	maxupload;
@@ -786,12 +764,6 @@ static bool	GetQuickStart()						{return m_QuickStart;} // [TPT] - quick start a
 	static bool		UpdateFakeStartup;
 static	bool	IsUpdateFakeStartupEnabled()		{ return UpdateFakeStartup; }
 //MORPH END - Added by milobac, FakeCheck, FakeReport, Auto-updating
-
-
-    //KTS+ IP to Country
-	IP2CountryNameSelection	GetIP2CountryNameMode()	{return m_iIP2CountryNameMode;}
-	bool	IsIP2CountryShowFlag()					{return m_bIP2CountryShowFlag;}
-	//KTS- IP to Country
 
 //eMulefan83 Show Client Percentage added by lama
 	static bool GetEnableClientPerc()					{return enableClientPerc;}

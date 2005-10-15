@@ -228,8 +228,6 @@ BEGIN
     LTEXT           "-",IDC_FRIENDS_DESCARGADO_EDIT,72,258,60,8,SS_NOPREFIX
     CONTROL         "",IDC_SPLITTER_FRIEND,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,139,5,3,278
-    LTEXT           "Country:",IDC_FRIENDS_COUNTRY,12,270,42,8
-    LTEXT           "-",IDC_FRIENDS_COUNTRY_EDIT,72,270,60,8,SS_NOPREFIX
 END
 
 IDD_STATISTICS DIALOGEX 0, 35, 511, 290
@@ -1078,7 +1076,6 @@ BEGIN
     RTEXT           "Kad:",IDC_CLIENTDETAIL_KAD,195,57,20,8
     CONTROL         "Static",IDC_CLIENTDETAIL_KADCON,"Static",
                     SS_LEFTNOWORDWRAP | SS_NOPREFIX | WS_GROUP,219,57,92,8
-    ICON            "",IDC_COUNTRYFLAG,68,68,21,20
     GROUPBOX        "Webcache",IDC_STATIC,7,215,313,47
     LTEXT           "WebCache:",IDC_STATIC,19,225,82,9
     LTEXT           "Successfull/Requested:",IDC_STATIC,19,236,83,10
@@ -1587,24 +1584,10 @@ BEGIN
     LTEXT           "URL for updating",IDC_URL_FOR_UPDATING2,12,108,202,8,0,
                     WS_EX_TRANSPARENT
     GROUPBOX        "File",IDC_MORPH2_FILE,6,6,216,72,BS_FLAT
-    PUSHBUTTON      "Update",IDC_UPDATEIPCURL,168,246,48,14,BS_FLAT
     LTEXT           "Static",IDC_IPFILTER_VERSION,12,138,93,8
     LTEXT           "Static",IDC_FAKELIST_VERSION,12,60,94,8
     PUSHBUTTON      "Reset",IDC_RESETFAKESURL,114,60,48,14,BS_FLAT
     PUSHBUTTON      "Reset",IDC_RESETIPFURL,114,138,48,14,BS_FLAT
-    PUSHBUTTON      "Reset",IDC_RESETIPCURL,114,246,48,14,BS_FLAT
-    GROUPBOX        "IP2Country Update",IDC_STATIC,6,164,216,100
-    CONTROL         "Update Ip-to-country.csv on startup",
-                    IDC_AUTOUPIP2COUNTRY,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,176,183,8
-    LTEXT           "File-URL for updating",IDC_URL_FOR_UPDATING_IP2COUNTRY,
-                    12,188,168,8
-    EDITTEXT        IDC_UPDATE_URL_IP2COUNTRY,12,200,202,12,ES_AUTOHSCROLL
-    LTEXT           "Version-File-URL for updating",
-                    IDC_URL_FOR_UPDATING_IP2COUNTRY_VERFILE,12,216,170,8
-    EDITTEXT        IDC_UPDATE_VER_URL_IP2COUNTRY,12,228,202,12,
-                    ES_AUTOHSCROLL
-    LTEXT           "version",IDC_IP2COUNTRY_VERSION,12,245,64,8
     GROUPBOX        "Security",IDC_MORPH2_SECURITY,6,84,216,72,BS_FLAT
 END
 
@@ -3541,7 +3524,6 @@ STRINGTABLE
 BEGIN
     IDS_PW_CON_CAPFRM       "Capacities"
     IDS_STATS_MNUTREECPYSPE "Resurrection Stat"
-    IDS_COUNTRY             "Country"
     IDS_EnableDownloadInColor "Download files in color"
     IDS_WC_ADDRESS          "Address"
     IDS_WEB_REMOTE_LINK_ADDED "Link added: "
@@ -4574,6 +4556,13 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_PW_WEBCACHE         "Webcache"
+    IDS_BTL_TEXT            "Buffer time limit"
+    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_LSD_TOTAL_UP_DL     "Total UP/DL"
 END
 
@@ -4597,27 +4586,6 @@ BEGIN
     IDS_ANTI_CASE_1         "UL >= Limit"
     IDS_ANTI_CASE_2         "UL-DL >= Limit"
     IDS_ANTI_CASE_3         "UL-DL >= Limit till 1:1"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_PW_WEBCACHE         "Webcache"
-    IDS_BTL_TEXT            "Buffer time limit"
-    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_IP2COUNTRY          "IP2Country"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_COUNTRYNAME_SHORT   "Display 2 letters"
-    IDS_COUNTRYNAME_MID     "Display 3 letters"
-    IDS_COUNTRYNAME_LONG    "Display full name"
-    IDS_COUNTRYNAME_SHOWFLAG "ShowFlag"
-    IDS_COUNTRYNAME_LONG2   "Display full name"
 END
 
 STRINGTABLE 
@@ -4700,12 +4668,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_URL_FOR_UPDATING_IP2COUNTRY_VERFILE "Version-File-URL for updating"
-    IDC_URL_FOR_UPDATING_IP2COUNTRY "File-URL for updating"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_WEBCACHE_ISP        "ISP Proxyserver Settings"
     IDS_WrongPortforWebcache 
                             "Webcache Download disabled: Only transfers on Port   21, 70,  80, 210, 443, 563 and in the range from 1025 to 65535 are cached. Please use one of these Ports if you want to enable the Webcache Feature"
@@ -4724,13 +4686,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_AUTOUPIP2COUNTRY    "Update Ip-to-country.csv on startup"
     IDS_UPDATEIPCURL        "Update"
-    IDS_URL_FOR_UPDATING_IP2COUNTRY "File-URL for updating"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_LOG_IPFILTER_LOADED "Loaded IP filters from ""%s"" in %ums"
     IDS_LOG_IPFILTER_INFO   "Parsed lines:%u  Found IP ranges:%u  Duplicate:%u  Merged:%u"
     IDS_IPFILTER_SAVERR     "Failed to save IP filter to file ""%s"" - %hs"

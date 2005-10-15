@@ -51,7 +51,7 @@ CHTRichEditCtrl::CHTRichEditCtrl()
 	m_bNoPaint = false;
 	m_bEnErrSpace = false;
 	m_bRestoreFormat = false;
-	MEMZERO(&m_cfDefault, sizeof m_cfDefault);
+	MEMSET(&m_cfDefault, 0, sizeof m_cfDefault);
 	m_bForceArrowCursor = false;
 	m_hArrowCursor = ::LoadCursor(NULL, IDC_ARROW);
 }
@@ -355,7 +355,7 @@ void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORRE
 	if (bLink)
 	{
 		CHARFORMAT2 cf;
-		MEMZERO(&cf, sizeof cf);
+		MEMSET(&cf, 0, sizeof cf);
 		GetSelectionCharFormat(cf);
 		cf.dwMask |= CFM_LINK;
 		cf.dwEffects |= CFE_LINK;

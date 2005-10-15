@@ -24,9 +24,6 @@ public:
 	void	ShowServerCount();
 	bool	StaticServerFileAppend(CServer* pServer);
 	bool	StaticServerFileRemove(CServer* pServer);
-// IP-to-Country +
-	void	RefreshAllServer();
-	// IP-to-Country -
 protected:
 	CServerList*	server_list;
 	CToolTipCtrlX*	m_tooltip;
@@ -35,10 +32,6 @@ protected:
 	static int CALLBACK SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-// IP-to-Country +
-	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
-	CImageList imagelist;
-	// IP-to-Country -
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnSysColorChange();
 	afx_msg	void OnColumnClick(NMHDR *pNMHDR, LRESULT *pResult);

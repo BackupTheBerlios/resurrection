@@ -55,12 +55,12 @@ void CPPgDebug::ClearAllMembers()
 	m_bInitializedTreeOpts = false;
 	m_htiServer = NULL;
 	m_htiClient = NULL;
-	memset(m_cb, 0, sizeof m_cb);
-	memset(m_lv, 0, sizeof m_lv);
-	memset(m_checks, 0, sizeof m_checks);
-	memset(m_levels, 0, sizeof m_levels);
-	memset(m_htiInteger, 0, sizeof m_htiInteger);
-	memset(m_iValInteger, 0, sizeof m_iValInteger);
+	MEMSET(m_cb, 0, sizeof m_cb);
+	MEMSET(m_lv, 0, sizeof m_lv);
+	MEMSET(m_checks, 0, sizeof m_checks);
+	MEMSET(m_levels, 0, sizeof m_levels);
+	MEMSET(m_htiInteger, 0, sizeof m_htiInteger);
+	MEMSET(m_iValInteger, 0, sizeof m_iValInteger);
 }
 
 void CPPgDebug::DoDataExchange(CDataExchange* pDX)

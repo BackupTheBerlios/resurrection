@@ -1203,7 +1203,7 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 
 void CDownloadQueue::GetDownloadStats(SDownloadStats& results)
 {
-	MEMZERO(&results, sizeof results);
+	MEMSET(&results, 0, sizeof results);
 	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; )
 	{
 		const CPartFile* cur_file = filelist.GetNext(pos);
@@ -1655,7 +1655,7 @@ void CSourceHostnameResolveWnd::AddToResolve(const uchar* fileid, LPCSTR pszHost
 	if (bResolving)
 		return;
 
-	MEMZERO(m_aucHostnameBuffer,sizeof(m_aucHostnameBuffer));
+	MEMSET(m_aucHostnameBuffer, 0, sizeof(m_aucHostnameBuffer));
 	if (WSAAsyncGetHostByName(m_hWnd, WM_HOSTNAMERESOLVED, entry->strHostname, m_aucHostnameBuffer, sizeof m_aucHostnameBuffer) != 0)
 		return;
 	m_toresolve.RemoveHead();
@@ -1702,7 +1702,7 @@ LRESULT CSourceHostnameResolveWnd::OnHostnameResolved(WPARAM wParam,LPARAM lPara
 	while (!m_toresolve.IsEmpty())
 	{
 		Hostname_Entry* entry = m_toresolve.GetHead();
-		MEMZERO(m_aucHostnameBuffer, sizeof(m_aucHostnameBuffer));
+		MEMSET(m_aucHostnameBuffer, 0, sizeof(m_aucHostnameBuffer));
 		if (WSAAsyncGetHostByName(m_hWnd, WM_HOSTNAMERESOLVED, entry->strHostname, m_aucHostnameBuffer, sizeof m_aucHostnameBuffer) != 0)
 			return TRUE;
 		m_toresolve.RemoveHead();

@@ -76,7 +76,7 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 								CMap<uint32, uint32, uint32, uint32>& clientVersionAMule)
 {
 	ruTotalClients = list.GetCount();
-	MEMZERO(stats,sizeof(stats[0]) * NUM_CLIENTLIST_STATS);
+	MEMSET(stats, 0, sizeof(stats[0]) * NUM_CLIENTLIST_STATS);
 
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL; )
 	{
@@ -930,18 +930,6 @@ void CClientList::ProcessA4AFClients() const {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
-//KTS+ IP to Country
-void CClientList::ResetIP2Country(){
-
-	CUpDownClient *cur_client;
-
-	for(POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos)) { 
-		cur_client = theApp.clientlist->list.GetAt(pos); 
-		cur_client->ResetIP2Country();
-	}
-
-}
-//KTS- IP to Country
 //KTS+ webcache
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 // yonatan - not 2 be confused with the one in CUploadQueue!

@@ -289,7 +289,7 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 					if (!ip)
 					{ //No IP return, use the IP of the proxy server
 						SOCKADDR SockAddr;
-						MEMZERO(&SockAddr,sizeof(SockAddr));
+						MEMSET(&SockAddr,0,sizeof(SockAddr));
 						int SockAddrLen=sizeof(SockAddr);
 						if (GetPeerName(&SockAddr, &SockAddrLen ))
 						{
@@ -454,7 +454,7 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 			USES_CONVERSION;
 			LPCSTR lpszAsciiHost = m_pProxyPeerHost ? T2A(m_pProxyPeerHost) : "";
 			char *command=new char[10+strlen(lpszAsciiHost)+1];
-			MEMZERO(command,10+strlen(lpszAsciiHost)+1);
+			MEMSET(command,0,10+strlen(lpszAsciiHost)+1);
 			command[0]=5;
 			command[1]=(m_nProxyOpID==PROXYOP_CONNECT)?1:2;
 			command[2]=0;
@@ -527,7 +527,7 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 				USES_CONVERSION;
 				LPCSTR lpszAsciiHost = m_pProxyPeerHost ? T2A(m_pProxyPeerHost) : "";
 				char *command=new char[10+strlen(lpszAsciiHost)+1];
-				MEMZERO(command,10+strlen(lpszAsciiHost)+1);
+				MEMSET(command,0,10+strlen(lpszAsciiHost)+1);
 				command[0]=5;
 				command[1]=(m_nProxyOpID==PROXYOP_CONNECT)?1:2;
 				command[2]=0;
@@ -723,7 +723,7 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 				strcpy(m_pStrBuffer + strlen(tmp), buffer);
 				delete [] tmp;
 			}
-			MEMZERO(buffer, 9);
+			MEMSET(buffer, 0, 9);
 			const char start[] = "HTTP/";
 			if (memcmp(start, m_pStrBuffer, (strlen(start)>strlen(m_pStrBuffer)) ? strlen(m_pStrBuffer) : strlen(start)))
 			{
@@ -775,7 +775,7 @@ BOOL CAsyncProxySocketLayer::Connect( LPCTSTR lpszHostAddress, UINT nHostPort )
 	ASSERT(lpszHostAddress != NULL);
 
 	SOCKADDR_IN sockAddr;
-	MEMZERO(&sockAddr,sizeof(sockAddr));
+	MEMSET(&sockAddr,0,sizeof(sockAddr));
 
 	LPCSTR lpszAscii = T2A((LPTSTR)lpszHostAddress);
 	sockAddr.sin_family = AF_INET;
@@ -902,7 +902,7 @@ void CAsyncProxySocketLayer::OnConnect(int nErrorCode)
 			USES_CONVERSION;
 			LPCSTR lpszAscii = m_pProxyPeerHost ? T2A(m_pProxyPeerHost) : "";
 			char *command=new char [9+strlen(lpszAscii)+1];
-			MEMZERO(command,9+strlen(lpszAscii)+1);
+			MEMSET(command,0,9+strlen(lpszAscii)+1);
 			int len=9;
 			command[0]=4;
 			command[1]=(m_nProxyOpID==PROXYOP_CONNECT)?1:2; //CONNECT or BIND request
@@ -952,7 +952,7 @@ void CAsyncProxySocketLayer::OnConnect(int nErrorCode)
 		{ //SOCKS5 proxy
 			//Send initialization request
 			unsigned char command[10];
-			MEMZERO(command,10);
+			MEMSET(command,0,10);
 			command[0]=5;
 			//CAsyncProxySocketLayer supports to logon types: No logon and
 			//cleartext username/password (if set) logon

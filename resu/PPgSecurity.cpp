@@ -23,7 +23,6 @@
 #include "CustomAutoComplete.h"
 #include "HttpDownloadDlg.h"
 #include "emuledlg.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "ZipFile.h"
 #include "GZipFile.h"
 #include "Log.h"
@@ -395,34 +394,14 @@ void CPPgSecurity::OnEnChangeUpdateUrl()
 	GetDlgItem(IDC_LOADURL)->EnableWindow(!strUrl.IsEmpty());
 }
 
-void CPPgSecurity::OnDDClicked()
-{
+void CPPgSecurity::OnDDClicked() {
+	
 	CWnd* box=GetDlgItem(IDC_UPDATEURL);
 	box->SetFocus();
 	box->SetWindowText(_T(""));
 	box->SendMessage(WM_KEYDOWN,VK_DOWN,0x00510001);
 }
 
-/*void CPPgSecurity::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Security);
-}
-
-BOOL CPPgSecurity::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgSecurity::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}removed help [lama]*/
 
 void CPPgSecurity::OnBnClickedRunasuser()
 {

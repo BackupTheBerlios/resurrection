@@ -287,8 +287,8 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 			}
 		}
 
-		AddModLogLine,false (bShowResponse, m_iplist.GetCount() == 0 ? LOG_WARNING : LOG_SUCCESS, GetResString(IDS_IPFILTERLOADED), m_iplist.GetCount());
-		if (thePrefs.GetVerbose())
+AddModLogLine(bShowResponse, GetResString(IDS_IPFILTERLOADED), m_iplist.GetCount());
+if (thePrefs.GetVerbose())
 		{
 			DWORD dwEnd = GetTickCount();
 			AddDebugLogLine(false, _T("Loaded IP filters from \"%s\""), pszFilePath);
@@ -342,7 +342,7 @@ void CIPFilter::SaveToFile(const CString& path)
 bool CIPFilter::ParseFilterLine1(const CString& sbuffer, uint32& ip1, uint32& ip2, UINT& level, CString& desc) const
 {
 	TCHAR szDesc[256];
-	MEMZERO(szDesc, sizeof szDesc);
+	MEMSET(szDesc, 0, sizeof szDesc);
 	UINT u1, u2, u3, u4, u5, u6, u7, u8, uLevel = DFLT_FILTER_LEVEL;
 	int iItems = _stscanf(sbuffer, _T("%u.%u.%u.%u - %u.%u.%u.%u , %u , %255c"), &u1, &u2, &u3, &u4, &u5, &u6, &u7, &u8, &uLevel, szDesc);
 	if (iItems < 8)

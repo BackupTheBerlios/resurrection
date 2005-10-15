@@ -35,7 +35,6 @@
 #include "Log.h"
 // MORPH END - Added by Commander, Friendlinks [emulEspaña]
 
-#include "IP2Country.h" //Commander - Added: IP2Country
 #include ".\chatwnd.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -68,7 +67,6 @@ BEGIN_MESSAGE_MAP(CChatWnd, CResizableDialog)
 	// MORPH START - Added by Commander, Friendlinks [emulEspaña]
 	ON_BN_CLICKED(IDC_BTN_MENU, OnBnClickedBnmenu)
 	// MORPH END - Added by Commander, Friendlinks [emulEspaña]
-	ON_STN_CLICKED(IDC_FRIENDS_COUNTRY, OnStnClickedFriendsCountry)
 END_MESSAGE_MAP()
 
 CChatWnd::CChatWnd(CWnd* pParent /*=NULL*/)
@@ -180,19 +178,7 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 			GetDlgItem(IDC_FRIENDS_SUBIDO_EDIT)->SetWindowText(CastItoXBytes(pFriend->GetLinkedClient()->Credits()->GetUploadedTotal(), false, false));
 		else
 			GetDlgItem(IDC_FRIENDS_SUBIDO_EDIT)->SetWindowText(_T("?"));
-                // IP2Country - Start
-	if (pFriend->GetLinkedClient())
-	{   
-		if(theApp.ip2country->IsIP2Country())
-
-			GetDlgItem(IDC_FRIENDS_COUNTRY_EDIT)->SetWindowText(pFriend->GetLinkedClient()->GetCountryName(true));
-		        else
-			GetDlgItem(IDC_FRIENDS_COUNTRY_EDIT)->SetWindowText(GetResString(IDS_DISABLED));
-		}
-	else
-		GetDlgItem(IDC_FRIENDS_COUNTRY_EDIT)->SetWindowText(_T("?"));
-
-	        // IP2Country - End
+  
 	}
 	else
 	{
@@ -258,9 +244,6 @@ BOOL CChatWnd::OnInitDialog()
 	AddAnchor(IDC_FRIENDS_IDENT, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_UPLOADED, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_DOWNLOADED, BOTTOM_LEFT);
-	// IP2Country - Start
-	AddAnchor(IDC_FRIENDS_COUNTRY, BOTTOM_LEFT);
-	// IP2Country - End
 
 	Localize();
 	theApp.friendlist->ShowFriends();
@@ -279,9 +262,6 @@ void CChatWnd::DoResize(int delta)
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_IDENTIFICACION_EDIT), delta);
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_SUBIDO_EDIT), delta);
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_DESCARGADO_EDIT), delta);
-	// IP2Country - Start
-	CSplitterControl::ChangeWidth(GetDlgItem(IDC_FRIENDS_COUNTRY_EDIT), delta);
-    // IP2Country - End
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_CHATSEL), -delta, CW_RIGHTALIGN);
 	CSplitterControl::ChangePos(GetDlgItem(IDC_MESSAGES_LBL), -delta, 0);
 	CSplitterControl::ChangePos(GetDlgItem(IDC_MESSAGEICON), -delta, 0);
@@ -328,10 +308,6 @@ void CChatWnd::DoResize(int delta)
 	AddAnchor(IDC_FRIENDS_SUBIDO_EDIT, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_DESCARGADO_EDIT, BOTTOM_LEFT);
 
-	// IP2Country - Start
-	RemoveAnchor(IDC_FRIENDS_COUNTRY_EDIT);
-	AddAnchor(IDC_FRIENDS_COUNTRY_EDIT, BOTTOM_LEFT);
-    // IP2Country - End
 
 	m_wndSplitterchat.SetRange(rcW.left+SPLITTER_RANGE_WIDTH, rcW.left+SPLITTER_RANGE_HEIGHT);
 
@@ -456,9 +432,6 @@ void CChatWnd::Localize()
 	GetDlgItem(IDC_FRIENDS_POSITION)->SetWindowText(GetResString(IDS_CD_UPOSITION));// QR Position lama
 	GetDlgItem(IDC_FRIENDS_USERHASH)->SetWindowText(GetResString(IDS_CD_UHASH));	
 
-	//MORPH START - New friend message window
-	GetDlgItem(IDC_FRIENDS_COUNTRY)->SetWindowText(GetResString(IDS_COUNTRY) + _T(":"));
-	//MORPH END   - New friend message window
 	chatselector.Localize();
 	m_FriendListCtrl.Localize();
 }
@@ -625,7 +598,4 @@ void CChatWnd::OnBnClickedBnmenu()
 }
 // MORPH END - Added by Commander, Friendlinks [emulEspaña]
 
-void CChatWnd::OnStnClickedFriendsCountry()
-{
-	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-}
+

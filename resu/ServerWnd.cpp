@@ -80,8 +80,8 @@ CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
 	m_pacServerMetURL=NULL;
 	m_uLangID = MAKELANGID(LANG_ENGLISH,SUBLANG_DEFAULT);
 	icon_srvlist = NULL;
-	MEMZERO(&m_cfDef, sizeof m_cfDef);
-	MEMZERO(&m_cfBold,sizeof m_cfBold);
+	MEMSET(&m_cfDef, 0, sizeof m_cfDef);
+	MEMSET(&m_cfBold, 0, sizeof m_cfBold);
 	StatusSelector.m_bCloseable = false;
 	//KTS+ Display User Hash
 	MEMZERO(&m_cfRed, sizeof m_cfRed);

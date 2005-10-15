@@ -356,7 +356,7 @@ eResult CSecRunAsUser::RestartAsUser(){
 
 		// remove the current mutex, so that the restart emule can create its own without problems
 		// in the rare case CreateProcessWithLogonW fails, this will allow mult. instances, but if that function fails we have other problems anyway
-		::CloseHandle(theApp.m_hMutexOneInstance);
+		//::CloseHandle(theApp.m_hMutexOneInstance);		// [iONiX] - WiZaRd - Multiple Instances
 		
 		bResult = CreateProcessWithLogonW(EMULEACCOUNTW, m_strDomain, m_strPassword,
 			LOGON_WITH_PROFILE, NULL, (LPWSTR)T2CW(strAppName), 0, NULL, NULL, &StartInf, &ProcessInfo);
@@ -509,7 +509,7 @@ eResult CSecRunAsUser::RestartAsRestricted(){
 
 		// remove the current mutex, so that the restart emule can create its own without problems
 		// in the rare case CreateProcessWithLogonW fails, this will allow mult. instances, but if that function fails we have other problems anyway
-		::CloseHandle(theApp.m_hMutexOneInstance);
+		//::CloseHandle(theApp.m_hMutexOneInstance); - [ionix] Multiple Instances
 		
 		if(!CreateProcessAsUser(hRestrictedToken, NULL, strAppName.GetBuffer(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &StartInf, &ProcessInfo) ){
 			CString e;

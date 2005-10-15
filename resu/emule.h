@@ -18,10 +18,8 @@
 #ifndef __AFXWIN_H__
 	#error include 'stdafx.h' before including this file for PCH
 #endif
+#include ".\Optimizer\cpu_info.h" // [ionix] - Optimizer
 #include "resource.h"
-//Start Optimizer Spe64
-#include ".\Optimizer\cpu_info.h" 
-//End Optimizer Spe64
 
 #define	DEFAULT_NICK		thePrefs.GetHomepageBaseURL()
 #define	DEFAULT_TCP_PORT	4662
@@ -55,9 +53,6 @@ class CFakecheck; //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updati
 //KTS+// sicks ajout [lama]
 class CSystemInfo;  
 //KTS-// sicks ajout [lama]
-//KTS+ IP to Country
-class CIP2Country; 
-//KTS- IP to Country
 struct SLogItem;
 
 enum AppState{
@@ -75,13 +70,7 @@ public:
     LastCommonRouteFinder* lastCommonRouteFinder;
 	// ZZ:UploadSpeedSense <--
 
-	//Start Optimizer Spe64
-	CPUInfo 			cpu; 
-	//End Optimizer Spe64
-
-	//KTS+ IP to Country
-	CIP2Country*		ip2country; 
-	//KTS- IP to Country
+	CPUInfo 			cpu; 		// [ionix] - Optimizer
 	CemuleDlg*			emuledlg;
 	CClientList*		clientlist;
 	CKnownFileList*		knownfiles;
@@ -231,9 +220,7 @@ protected:
 	WSADATA				m_wsaData; 
 	//Spe64 added eWombat [WINSOCK2]
 	
-	//Start Optimizer Spe64
-	void OptimizerInfo(void); 
-	//End Optimizer Spe64
+	void OptimizerInfo(void); // [ionix] - Optimizer
 };
 
 extern CemuleApp theApp;

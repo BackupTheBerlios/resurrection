@@ -639,7 +639,7 @@ void CClientCreditsList::LoadList()
 		uint32 cDeleted = 0;
 		for (UINT i = 0; i < count; i++){
 			CreditStruct* newcstruct = new CreditStruct;
-			MEMZERO(newcstruct, sizeof(CreditStruct));
+			MEMSET(newcstruct, 0, sizeof(CreditStruct));
 			if (version == CREDITFILE_VERSION_29)
 				file.Read(newcstruct, sizeof(CreditStruct_29a));
 			else
@@ -753,7 +753,7 @@ void CClientCreditsList::Process()
 void CClientCredits::InitalizeIdent()
 {
 	if (m_pCredits->nKeySize == 0 ){
-		MEMZERO(m_abyPublicKey,80); // for debugging
+		MEMSET(m_abyPublicKey,0,80); // for debugging
 		m_nPublicKeyLen = 0;
 		IdentState = IS_NOTAVAILABLE;
 	}
@@ -816,7 +816,7 @@ using namespace CryptoPP;
 void CClientCreditsList::InitalizeCrypting()
 {
 	m_nMyPublicKeyLen = 0;
-	MEMZERO(m_abyMyPublicKey,80); // not really needed; better for debugging tho
+	MEMSET(m_abyMyPublicKey,0,80); // not really needed; better for debugging tho
 	m_pSignkey = NULL;
 	if (!thePrefs.IsSecureIdentEnabled())
 		return;
@@ -927,8 +927,7 @@ uint8 CClientCreditsList::CreateSignature(CClientCredits* pTarget, uchar* pachOu
 	return nResult;
 }
 
-bool CClientCreditsList::VerifyIdent(CClientCredits* pTarget, const uchar* pachSignature, uint8 nInputSize, 
-									 uint32 dwForIP, uint8 byChaIPKind)
+bool CClientCreditsList::VerifyIdent(CClientCredits* pTarget, const uchar* pachSignature, uint8 nInputSize, uint32 dwForIP, uint8 byChaIPKind)
 {
 	ASSERT( pTarget );
 	ASSERT( pachSignature );
@@ -1016,19 +1015,19 @@ bool CClientCreditsList::Debug_CheckCrypting()
 	uint32 challenge = rand();
 	// create fake client which pretends to be this emule
 	CreditStruct* newcstruct = new CreditStruct;
-	MEMZERO(newcstruct, sizeof(CreditStruct));
+	MEMSET(newcstruct, 0, sizeof(CreditStruct));
 	CClientCredits* newcredits = new CClientCredits(newcstruct);
 	newcredits->SetSecureIdent(m_abyMyPublicKey,m_nMyPublicKeyLen);
 	newcredits->m_dwCryptRndChallengeFrom = challenge;
 	// create signature with fake priv key
 	uchar pachSignature[200];
-	MEMZERO(pachSignature,200);
+	MEMSET(pachSignature,200,0);
 	uint8 sigsize = CreateSignature(newcredits,pachSignature,200,0,false, &priv);
 
 
 	// next fake client uses the random created public key
 	CreditStruct* newcstruct2 = new CreditStruct;
-	MEMZERO(newcstruct2, sizeof(CreditStruct));
+	MEMSET(newcstruct2, 0, sizeof(CreditStruct));
 	CClientCredits* newcredits2 = new CClientCredits(newcstruct2);
 	newcredits2->m_dwCryptRndChallengeFor = challenge;
 

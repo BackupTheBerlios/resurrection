@@ -23,7 +23,6 @@
 #include "InputBox.h"
 #include "SharedFileList.h"
 #include "Preferences.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "UserMsgs.h"
 
 #ifdef _DEBUG
@@ -42,7 +41,6 @@ BEGIN_MESSAGE_MAP(CPPgDirectories, CPropertyPage)
 	ON_EN_CHANGE(IDC_TEMPFILES, OnSettingsChange)
 	ON_BN_CLICKED(IDC_UNCADD,	OnBnClickedAddUNC)
 	ON_BN_CLICKED(IDC_UNCREM,	OnBnClickedRemUNC)
-	//ON_WM_HELPINFO() removed help [lama]
 	ON_BN_CLICKED(IDC_SELTEMPDIRADD, OnBnClickedSeltempdiradd)
 END_MESSAGE_MAP()
 

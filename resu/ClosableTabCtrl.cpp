@@ -54,7 +54,7 @@ END_MESSAGE_MAP()
 CClosableTabCtrl::CClosableTabCtrl()
 {
 	m_bCloseable = true;
-	MEMZERO(&m_iiCloseButton, sizeof m_iiCloseButton);
+	MEMSET(&m_iiCloseButton, 0, sizeof m_iiCloseButton);
 	m_ptCtxMenu.SetPoint(-1, -1);
 }
 

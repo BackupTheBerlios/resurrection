@@ -128,7 +128,7 @@ public:
 	{
 		//Initialize data
 		m_pAsyncSocketExWindowData=new t_AsyncSocketExWindowData[512]; //Reserve space for 512 active sockets
-		MEMZERO(m_pAsyncSocketExWindowData,  512*sizeof(t_AsyncSocketExWindowData));
+		MEMSET(m_pAsyncSocketExWindowData, 0, 512*sizeof(t_AsyncSocketExWindowData));
 		m_nWindowDataSize=512;
 		m_nSocketCount=0;
 		m_nWindowDataPos=0;
@@ -180,7 +180,7 @@ public:
 			ASSERT(!m_nSocketCount);
 			m_nWindowDataSize=512;
 			m_pAsyncSocketExWindowData=new t_AsyncSocketExWindowData[512]; //Reserve space for 512 active sockets
-			MEMZERO(m_pAsyncSocketExWindowData, 512*sizeof(t_AsyncSocketExWindowData));
+			MEMSET(m_pAsyncSocketExWindowData, 0, 512*sizeof(t_AsyncSocketExWindowData));
 		}
 
 		if (nSocketIndex!=-1)
@@ -203,7 +203,7 @@ public:
 			t_AsyncSocketExWindowData *tmp=m_pAsyncSocketExWindowData;
 			m_pAsyncSocketExWindowData = new t_AsyncSocketExWindowData[m_nWindowDataSize];
 			MEMCOPY(m_pAsyncSocketExWindowData, tmp, nOldWindowDataSize * sizeof(t_AsyncSocketExWindowData));
-			MEMZERO(m_pAsyncSocketExWindowData+nOldWindowDataSize, (m_nWindowDataSize-nOldWindowDataSize)*sizeof(t_AsyncSocketExWindowData));
+			MEMSET(m_pAsyncSocketExWindowData+nOldWindowDataSize, 0, (m_nWindowDataSize-nOldWindowDataSize)*sizeof(t_AsyncSocketExWindowData));
 			delete [] tmp;
 		}
 
@@ -405,7 +405,7 @@ public:
 				}
 
 				SOCKADDR_IN sockAddr;
-				MEMZERO(&sockAddr,sizeof(sockAddr));
+				MEMSET(&sockAddr,0,sizeof(sockAddr));
 				sockAddr.sin_family=AF_INET;
 				sockAddr.sin_addr.s_addr = ((LPIN_ADDR)((LPHOSTENT)pSocket->m_pAsyncGetHostByNameBuffer)->h_addr)->s_addr;
 
@@ -574,7 +574,7 @@ BOOL CAsyncSocketEx::Bind(UINT nSocketPort, LPCTSTR lpszSocketAddress)
 	USES_CONVERSION;
 
 	SOCKADDR_IN sockAddr;
-	MEMZERO(&sockAddr,sizeof(sockAddr));
+	MEMSET(&sockAddr,0,sizeof(sockAddr));
 
 	LPSTR lpszAscii = T2A((LPTSTR)lpszSocketAddress);
 	sockAddr.sin_family = AF_INET;
@@ -797,7 +797,7 @@ BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 		ASSERT(lpszHostAddress != NULL);
 
 		SOCKADDR_IN sockAddr;
-		MEMZERO(&sockAddr,sizeof(sockAddr));
+		MEMSET(&sockAddr,0,sizeof(sockAddr));
 
 		LPSTR lpszAscii = T2A((LPTSTR)lpszHostAddress);
 		sockAddr.sin_family = AF_INET;
@@ -843,7 +843,7 @@ BOOL CAsyncSocketEx::GetPeerName( CString& rPeerAddress, UINT& rPeerPort )
 #endif NOLAYERS
 
 	SOCKADDR_IN sockAddr;
-	MEMZERO(&sockAddr, sizeof(sockAddr));
+	MEMSET(&sockAddr, 0, sizeof(sockAddr));
 
 	int nSockAddrLen = sizeof(sockAddr);
 	BOOL bResult = GetPeerName((SOCKADDR*)&sockAddr, &nSockAddrLen);
@@ -873,7 +873,7 @@ BOOL CAsyncSocketEx::GetPeerName( SOCKADDR* lpSockAddr, int* lpSockAddrLen )
 BOOL CAsyncSocketEx::GetSockName(CString& rSocketAddress, UINT& rSocketPort)
 {
 	SOCKADDR_IN sockAddr;
-	MEMZERO(&sockAddr,sizeof(sockAddr));
+	MEMSET(&sockAddr, 0, sizeof(sockAddr));
 
 	int nSockAddrLen = sizeof(sockAddr);
 	BOOL bResult = GetSockName((SOCKADDR*)&sockAddr, &nSockAddrLen);

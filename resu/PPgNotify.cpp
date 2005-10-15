@@ -21,7 +21,6 @@
 #include "Preferences.h"
 #include "OtherFunctions.h"
 #include "Preferences.h"
-//#include "HelpIDs.h" removed help [lama]
 #include "TextToSpeech.h"
 #include "TaskbarNotifier.h"
 
@@ -257,27 +256,6 @@ void CPPgNotify::OnBnClickedTestNotification()
 	thePrefs.notifierOnImportantError = bCurNotifyOnImportantError;
 }
 
-/*void CPPgNotify::OnHelp()
-{
-	theApp.ShowHelp(eMule_FAQ_Preferences_Notifications);
-}
-
-BOOL CPPgNotify::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam == ID_HELP)
-	{
-		OnHelp();
-		return TRUE;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-BOOL CPPgNotify::OnHelpInfo(HELPINFO* pHelpInfo)
-{
-	OnHelp();
-	return TRUE;
-}
-removed help [lama]*/
 void CPPgNotify::OnBnClickedCbEnablenotifications()
 {
 	UpdateControls();

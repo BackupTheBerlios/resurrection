@@ -754,7 +754,7 @@ bool DecodeBase16(const TCHAR *base16Buffer, unsigned int base16BufLen, byte *bu
 	unsigned int uDecodeLengthBase16 = DecodeLengthBase16(base16BufLen);
 	if (uDecodeLengthBase16 > bufflen)
 		return false;
-    memset(buffer, 0, uDecodeLengthBase16);
+    MEMSET(buffer, 0, uDecodeLengthBase16);
   
     for(unsigned int i = 0; i < base16BufLen; i++) {
 		int lookup = toupper(base16Buffer[i]) - '0';
@@ -1103,7 +1103,7 @@ CStringA md4strA(const uchar* hash)
 
 bool strmd4(const char* pszHash, uchar* hash)
 {
-	memset(hash, 0, 16);
+	MEMSET(hash, 0, 16);
 	for (int i = 0; i < 16; i++)
 	{
 		char byte[3];
@@ -1121,7 +1121,7 @@ bool strmd4(const char* pszHash, uchar* hash)
 
 bool strmd4(const CString& rstr, uchar* hash)
 {
-	memset(hash, 0, 16);
+	MEMSET(hash, 0, 16);
 	if (rstr.GetLength() != 16*2)
 		return false;
 	for (int i = 0; i < 16; i++)

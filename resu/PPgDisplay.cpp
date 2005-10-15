@@ -25,7 +25,6 @@
 #include "emuledlg.h"
 #include "TransferWnd.h"
 #include "ServerWnd.h"
-//#include "HelpIDs.h" removed help [lama]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

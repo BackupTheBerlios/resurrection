@@ -21,7 +21,6 @@
 #include "OtherFunctions.h"
 #include "Preferences.h"
 #include "Opcodes.h"
-#include "Ip2Country.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

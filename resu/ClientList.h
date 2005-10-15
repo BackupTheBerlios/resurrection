@@ -145,8 +145,4 @@ private:
 	CUpDownClient* m_pBuddy;
 	uint8 m_nBuddyStatus;
 	CUpDownClientPtrList m_KadList;
-// IP-to-Country +
-	public: 
-	void ResetIP2Country();
-// IP-to-Country -
 };

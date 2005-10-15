@@ -567,7 +567,7 @@ void CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 	{
 		m_nUpPartCount = tempreqfile->GetPartCount();
 		m_abyUpPartStatus = new uint8[m_nUpPartCount];
-		MEMZERO(m_abyUpPartStatus, m_nUpPartCount);
+		MEMSET(m_abyUpPartStatus,0,m_nUpPartCount);
 	}
 	else
 	{
@@ -1025,7 +1025,7 @@ void CUpDownClient::SendRankingInfo(){
 		return;
 	Packet* packet = new Packet(OP_QUEUERANKING,12,OP_EMULEPROT);
 	PokeUInt16(packet->pBuffer+0, nRank);
-	MEMZERO(packet->pBuffer+2, 10);
+	MEMSET(packet->pBuffer+2, 0, 10);
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		DebugSend("OP__QueueRank", this);
 	theStats.AddUpDataOverheadFileRequest(packet->size);
