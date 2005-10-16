@@ -1063,9 +1063,7 @@ default:
 	if (thePrefs.IsExtControlsEnabled())
 	//MORPH START - Added by IceCream, copy feedback feature
 	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
-	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_US, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_NOCODE, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
-	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_US_NOCODE, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	//MORPH END   - Added by IceCream, copy feedback feature
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
@@ -1132,68 +1130,21 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 
 									 //MORPH START - Added by IceCream, copy feedback feature
 			case MP_COPYFEEDBACK:
-			{
-				CString feed;
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
-					feed.AppendFormat(_T(" \r\n"));
-				POSITION pos = selectedList.GetHeadPosition();
-				while (pos != NULL)
-				{
-					CKnownFile* file = selectedList.GetNext(pos);
-						feed.Append(file->GetFeedback());
-						feed.Append(_T(" \r\n"));
-				}
-					//Todo: copy all the comments too
-				theApp.CopyTextToClipboard(feed);
-				break;
-			}
-			case MP_COPYFEEDBACK_US:
-			{
-				CString feed;
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM_DE),thePrefs.GetUserNick(),MOD_VERSION);
-					POSITION pos = selectedList.GetHeadPosition();
-					while (pos != NULL)
-					{
-						CKnownFile* file = selectedList.GetNext(pos);
-						feed.Append(file->GetFeedback(true));
-						feed.Append(_T("\r\n"));
-					}
-					//Todo: copy all the comments too
-					theApp.CopyTextToClipboard(feed);
-					break;
-				}
 			case MP_COPYFEEDBACK_NOCODE:
 				{
-					CString feed;
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), MOD_VERSION);
-					feed.AppendFormat(_T(" \r\n"));
-					POSITION pos = selectedList.GetHeadPosition();
+					CString feed = _T("");
+						POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
 					{
 						CKnownFile* file = selectedList.GetNext(pos);
-						feed.Append(file->GetFeedback());
-						feed.Append(_T(" \r\n"));
+						feed.Append(file->GetFeedback(wParam==MP_COPYFEEDBACK));
+						feed.Append(_T("\r\n"));
 					}
 					//Todo: copy all the comments too
 					theApp.CopyTextToClipboard(feed);
 					break;
 				}
-			case MP_COPYFEEDBACK_US_NOCODE:
-				{
-					CString feed;
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM_DE),thePrefs.GetUserNick(),MOD_VERSION);
-				POSITION pos = selectedList.GetHeadPosition();
-				while (pos != NULL)
-				{
-					CKnownFile* file = selectedList.GetNext(pos);
-						feed.Append(file->GetFeedback(true));
-						feed.Append(_T("\r\n"));
-				}
-					//Todo: copy all the comments too
-				theApp.CopyTextToClipboard(feed);
-				break;
-			}
-				//MORPH END - Added by IceCream, copy feedback feature
+				//MORPH END - Added by IceCream, copy feedback feature 
 			// file operations
 			case MP_OPEN:
 				if (file && !file->IsPartFile())
@@ -2203,9 +2154,7 @@ void CSharedFilesCtrl::CreateMenues()
 #endif
 //MORPH START - Added by SiRoB, copy feedback feature
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_NOCODE, GetResString(IDS_COPYFEEDBACK_NOCODE), _T("COPY"));
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US_NOCODE, GetResString(IDS_COPYFEEDBACK_US_NOCODE), _T("COPY"));
 	m_SharedFilesMenu.AppendMenu(MF_SEPARATOR);
 	//MORPH END   - Added by SiRoB, copy feedback feature
 }

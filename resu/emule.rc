@@ -4764,16 +4764,13 @@ STRINGTABLE
 BEGIN
     IDS_FEEDBACK_ACCEPT_SESSION "Accepted Requests This Session: %i"
     IDS_FEEDBACK_ACCEPT_FULL "Accepted Requests All Sessions: %i"
-    IDS_FEEDBACK_FROM_DE    "[code]Feedback von %s mit %s "
     IDS_FEEDBACK_FULL_SRC   "full sources"
-    IDS_FEEDBACK_COMPLETE_DE "Komplette Quellen: %i (%i)[/code]"
-    IDS_COPYFEEDBACK_NOCODE "Kopiere Bericht in die Zwischenablage"
-    IDS_COPYFEEDBACK_US_NOCODE "Copy Feedback to clipboard"
+    IDS_COPYFEEDBACK_NOCODE "Copy Feeback to clipboard"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_FEEDBACK_FROM       "[code]Feedback from %s on eMule %s "
+    IDS_FEEDBACK_FROM       "Feedback from %s on eMule %s "
     IDS_FEEDBACK_FILENAME   "File name: %s"
     IDS_FEEDBACK_FILETYPE   "File type: %s"
     IDS_FEEDBACK_FILESIZE   "Size: %i MB"
@@ -4781,7 +4778,7 @@ BEGIN
     IDS_FEEDBACK_TOTAL      "Total sources: %i"
     IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
     IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
-    IDS_FEEDBACK_COMPLETE   "Estimated complete sources: %i[/code]"
+    IDS_FEEDBACK_COMPLETE   "Estimated complete sources: %i"
     IDS_COPYFEEDBACK        "Copy feedback [code][/code] Function"
     IDS_FEEDBACK_UPLOADED_FULL "Uploaded All Sessions : %i MB"
     IDS_FEEDBACK_UPLOADED_SESSION "Uploaded This Session : %i MB"

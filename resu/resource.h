@@ -1520,11 +1520,8 @@
 #define IDS_FEEDBACK_REQUEST_FULL       1727
 #define IDS_FEEDBACK_ACCEPT_SESSION     1728
 #define IDS_FEEDBACK_ACCEPT_FULL        1729
-#define IDS_FEEDBACK_FROM_DE            1730
 #define IDS_FEEDBACK_FULL_SRC           1731
-#define IDS_FEEDBACK_COMPLETE_DE        1732
 #define IDS_COPYFEEDBACK_NOCODE         1733
-#define IDS_COPYFEEDBACK_US_NOCODE      1734
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002

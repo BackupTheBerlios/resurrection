@@ -178,9 +178,9 @@ uint8	HideOSInWork() const;
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
-//MORPH START - Added by SiRoB, copy feedback feature
-	CString GetFeedback(bool isUS = false);
-	//MORPH END   - Added by SiRoB, copy feedback feature
+//MORPH START - Added by SiRoB, copy feedback feature //changed by WiZaRd
+	CString GetFeedback(const bool& bAddCode);
+	//MORPH END   - Added by SiRoB, copy feedback feature //changed by WiZaRd
 //<<-- ADDED STORMIT - Morph: PowerShare //
 	void    SetPowerShared(int newValue) {m_powershared = newValue;};
 	bool    GetPowerShared() const;

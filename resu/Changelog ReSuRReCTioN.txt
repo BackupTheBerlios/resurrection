@@ -42,7 +42,7 @@ Removed: IP2Country (maybe it reason of Runtime error - I will re add this in fu
 
 Changed: Antileechclass (now from Ionix 4.33)
 Changed: Optimizer (now from iONix)
-
+Changed and fixed: Feedback function [thanx @ WiZaRd]
 
 
 
