@@ -77,8 +77,8 @@ void CQueueListCtrl::Init()
 	InsertColumn(7,GetResString(IDS_ENTERQUEUE),LVCFMT_LEFT,110,7);
 	InsertColumn(8,GetResString(IDS_BANNED),LVCFMT_LEFT,60,8);
 	InsertColumn(9,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,9);
-	InsertColumn(10,GetResString(IDS_SOFTWARE_LABEL),LVCFMT_LEFT,100,10); //Spe64
-	InsertColumn(11,GetResString(IDS_LSD_TOTAL_UP_DL),LVCFMT_LEFT,100,11); //LSD Total UP-DL
+        InsertColumn(10,GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90); 
+        InsertColumn(11,GetResString(IDS_LSD_TOTAL_UP_DL),LVCFMT_LEFT,100,11); //LSD Total UP-DL
 	InsertColumn(12, _T("Webcache capable") ,LVCFMT_LEFT, 100,14); //JP Webcache column
 	SetAllIcons();
 	Localize();
@@ -184,6 +184,11 @@ void CQueueListCtrl::Localize()
 		hdi.pszText = strRes.GetBuffer();
 		pHeaderCtrl->SetItem(9, &hdi);
 		strRes.ReleaseBuffer();
+
+                strRes = GetResString(IDS_CD_CSOFT);
+        	hdi.pszText = strRes.GetBuffer();
+        	pHeaderCtrl->SetItem(10, &hdi);
+        	strRes.ReleaseBuffer();
 
 		//LSD Total UP-DL
 		strRes = GetResString(IDS_LSD_TOTAL_UP_DL);//LSD
@@ -303,6 +308,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	cur_rec.right = cur_rec.left - 8;
 	cur_rec.left += 4;
 	CString Sbuffer;
+
 	for(int iCurrent = 0; iCurrent < iCount; iCurrent++){
 		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
 		if( !IsColumnHidden(iColumn) ){
@@ -310,6 +316,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			switch(iColumn){
 				case 0:{
 					uint8 image;
+
+
 					if (client->IsFriend())
 						image = 4;
 							// Mondgott :: Show RedSmurfIconOnClientDetect
@@ -460,6 +468,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}
+					break;
+case 10:				Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer());//KTS
 					break;
 		case 11: // LSD Total UP/DL
 					if (client->Credits()){
@@ -819,20 +829,18 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		case 109: 
 			iResult=item2->GetUpPartCount() - item1->GetUpPartCount();
 			break;
-        case 10:
-		case 110: 
-			if(item1->DbgGetFullClientSoftVer() && item2->DbgGetFullClientSoftVer()) {
-				iResult = _tcsicmp(item1->DbgGetFullClientSoftVer(), item2->DbgGetFullClientSoftVer());
-
-                if(lParamSort == 110) {
-                    iResult = -iResult;
-                }
-			} else if(item1->DbgGetFullClientSoftVer())
-			    iResult =  1;
+		case 10:
+		    if (item1->GetClientSoft() == item2->GetClientSoft())
+			    iResult=item2->GetVersion() - item1->GetVersion();
+		    else 
+				iResult=item1->GetClientSoft() - item2->GetClientSoft();
+			break;
+	    case 110:
+		    if (item1->GetClientSoft() == item2->GetClientSoft())
+			    iResult=item1->GetVersion() - item2->GetVersion();
 		    else
-			    iResult =  -1;
-
-            break;
+				iResult=item2->GetClientSoft() - item1->GetClientSoft();
+			break;
 	case 11: //LSD Total UP-DL
 			if (item2->Credits() && item1->Credits())
 				iResult=item2->Credits()->GetUploadedTotal() - item1->Credits()->GetUploadedTotal();

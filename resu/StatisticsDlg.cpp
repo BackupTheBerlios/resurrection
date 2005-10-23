@@ -21,7 +21,6 @@
 #include "Statistics.h"
 #include "emuledlg.h"
 #include "OtherFunctions.h"
-#include "WebServer.h"
 #include "DownloadQueue.h"
 #include "ClientList.h"
 #include "Preferences.h"
@@ -686,13 +685,7 @@ void CStatisticsDlg::SetCurrentRate(float uploadrate, float downloadrate)
 	m_dPlotDataMore[3] = myStats.a[1];
 	m_Statistics.AppendPoints(m_dPlotDataMore);
 
-	// Websever
-	UpDown updown;
-	updown.upload = uploadrate;
-	updown.download = downloadrate;
-	updown.connections = theApp.listensocket->GetActiveConnections();
-	theApp.webserver->AddStatsLine(updown);
-}
+	}
 
 
 void CStatisticsDlg::ShowStatistics(bool forceUpdate) 

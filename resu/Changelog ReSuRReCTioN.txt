@@ -39,6 +39,7 @@ Removed: unused codes
 Removed: Rare/small file column
 Removed: Slot Number column
 Removed: IP2Country (maybe it reason of Runtime error - I will re add this in further version) 
+Removed: Webinterface & MobileMule
 
 Changed: Antileechclass (now from Ionix 4.33)
 Changed: Optimizer (now from iONix)

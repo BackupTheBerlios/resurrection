@@ -60,9 +60,6 @@ enum FnTagSelection {
 };
 // <== FunnyNick Tag - Stulle
 
-//KTS+ SNAFU
-class CTag; 
-//KTS+ SNAFU
 class CWebCacheDownSocket;
 class CWebCacheUpSocket;
 //KTS- webcache
@@ -207,7 +204,7 @@ enum ESourceFrom{
 	SF_KADEMLIA			= 1,
 	SF_SOURCE_EXCHANGE	= 2,
 	SF_PASSIVE			= 3,
-	SF_LINK				= 4,
+	SF_LINK				= 4
 };
 
 struct PartFileStamp{

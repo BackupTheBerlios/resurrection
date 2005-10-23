@@ -47,6 +47,10 @@ m_htiClientPerc = NULL;
 //Telp Start payback first
 	m_htiPBF = NULL;
 //Telp End payback first
+	//Telp + Start Slot Focus
+	m_htiSlotFocus = NULL;
+//Telp - End Slot Focus
+
  //Telp Start push small file
     m_htiEnablePushSmallFile = NULL; 
 //Telp End push small file  
@@ -87,11 +91,18 @@ m_htiClientPerc = NULL;
 	m_htiRatioCredit = NULL;
 	m_htiPawcioCredit = NULL;
 	m_htiESCredit = NULL; 
-	m_htiFineCredit = NULL; //Spe64 add
-	m_htiTK4Credit = NULL; //Spe64	added
         m_htiCreditsNone = NULL;
 // CreditSystem
 	
+	// ==> FunnyNick Tag - Stulle
+	m_htiFnTag = NULL;
+	m_htiNoTag = NULL;
+	m_htiShortTag = NULL;
+	m_htiFullTag = NULL;
+	m_htiCustomTag = NULL;
+	m_htiFnCustomTag = NULL;
+	m_htiFnTagAtEnd = NULL;
+	// <== FunnyNick Tag - Stulle
 
 	// ==> Anti Uploader Ban - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
@@ -109,17 +120,7 @@ m_htiClientPerc = NULL;
 	m_htiDropSourcesHQR = NULL;
     m_htiHqrBox = NULL;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-	// [ionix] - FunnyNick
-	m_htiFunnyNick = NULL;
-	m_htiFunnyNickEnabled = NULL;
-	m_htiFunnyNickTag = NULL;
-	m_htiFunnyNickTag_0 = NULL;
-	m_htiFunnyNickTag_1 = NULL;
-	m_htiFunnyNickTag_2 = NULL;
-	m_htiFunnyNickTag_3 = NULL;
-	m_htiFunnyNickTagCustom = NULL;
-	m_htiFnTagAtEnd = NULL;
-	// [ionix] - FunnyNick
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -140,7 +141,6 @@ void CPPgVipeR::DoDataExchange(CDataExchange* pDX)
 //Telp+ Menu VipeR
 		int iImgAddTweaks = 8;
 //Telp- Menu VipeR
-		int iImgFunnyNick = 8; // [ionix] - FunnyNick
 int iImgSecu = 8; 
 int iImgCS = 8; // Creditsystems
  //<<-- ADDED STORMIT -  Morph: PowerShared //
@@ -149,6 +149,8 @@ int iImgUM = 8; // default icon
 		int iImgDrop = 8;//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 		int iImgPS = 8;
 		int iImgSFM = 8;
+		int iImgFunnyNick = 8;
+
 CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
 //Telp+ Menu VipeR
@@ -163,8 +165,8 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 			// <--- Morph: PowerShare
  //<<-- ADDED STORMIT -  Morph: PowerShared //
 					iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
-			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));// [ionix] - FunnyNick
- 
+ 			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));
+
 
 //Telp+ Menu VipeR
 		m_AdditionalVipeR = m_ctrlTreeOptions.InsertGroup(_T("Misc Functions "), iImgAddTweaks, TVI_ROOT);
@@ -194,6 +196,17 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_htiAntiCase3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_3), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 2);
 		m_ctrlTreeOptions.Expand(m_htiAntiUploaderBanLimit, TVE_EXPAND);
 		// <== Anti Uploader Ban - Stulle
+	// ==> FunnyNick Tag - Stulle
+		m_htiFnTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, TVI_ROOT);
+		m_htiNoTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_NO_TAG), m_htiFnTag, m_iFnTag == 0);
+		m_htiShortTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHORT_TAG), m_htiFnTag, m_iFnTag == 1);
+		m_htiFullTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FULL_TAG), m_htiFnTag, m_iFnTag == 2);
+		m_htiCustomTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CUSTOM_TAG),m_htiFnTag,m_iFnTag == 3);
+		m_htiFnCustomTag = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SET_CUSTOM_TAG), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiCustomTag);
+		m_ctrlTreeOptions.AddEditBox(m_htiFnCustomTag, RUNTIME_CLASS(CTreeOptionsEdit));
+		m_htiFnTagAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FN_TAG_AT_END), m_htiFnTag, m_bFnTagAtEnd);
+		m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
+		// <== FunnyNick Tag - Stulle
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);
         m_ctrlTreeOptions.SetItemState(m_htiDropSources, TVIS_BOLD, TVIS_BOLD);
@@ -239,23 +252,6 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 //Telp Start push rare file
        		 m_htiEnablePushRareFile = m_ctrlTreeOptions.InsertCheckBox(_T("Push Rare Files"),m_htiSFM, m_bEnablePushRareFile); //Hawkstar, push rare file
 //Telp End push rare file
-// [ionix] - Funny Nick
-		m_htiFunnyNick = m_ctrlTreeOptions.InsertGroup(_T("FunnyNick"), iImgFunnyNick, TVI_ROOT);
-        m_ctrlTreeOptions.SetItemState(m_htiFunnyNick, TVIS_BOLD, TVIS_BOLD);
-		m_htiFunnyNickEnabled = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DISPLAYFUNNYNICK), m_htiFunnyNick);
-		m_htiFunnyNickTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, m_htiFunnyNickEnabled);
-		m_htiFunnyNickTag_0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FN_TAG_NO), m_htiFunnyNickTag, m_iFunnyNickTag == 0);
-		m_htiFunnyNickTag_1 = m_ctrlTreeOptions.InsertRadioButton(_T("[FN]"), m_htiFunnyNickTag, m_iFunnyNickTag == 1);
-		m_htiFunnyNickTag_2 = m_ctrlTreeOptions.InsertRadioButton(_T("[FunnyNick]"), m_htiFunnyNickTag, m_iFunnyNickTag == 2);
-		m_htiFunnyNickTag_3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FN_TAG_CUSTOM), m_htiFunnyNickTag, m_iFunnyNickTag == 3);
-		m_htiFunnyNickTagCustom = m_ctrlTreeOptions.InsertItem(GetResString(IDS_FN_TAG_CUSTOMTEXT),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiFunnyNickTag_3);
-		m_ctrlTreeOptions.AddEditBox(m_htiFunnyNickTagCustom, RUNTIME_CLASS(CTreeOptionsEdit));
-		m_htiFnTagAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FN_TAG_AT_END), m_htiFunnyNickTag, m_bFnTagAtEnd);
-		//m_ctrlTreeOptions.Expand(m_htiFunnyNick, TVE_EXPAND);
-		m_ctrlTreeOptions.Expand(m_htiFunnyNickTag, TVE_EXPAND);
-		m_ctrlTreeOptions.Expand(m_htiFunnyNickEnabled, TVE_EXPAND);
-
-		// [ionix] - Funny Nick
 		// Creditsystem  
 		m_htiCreditSystem = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CREDIT_SYSTEM), iImgCS, TVI_ROOT);
 		m_ctrlTreeOptions.SetItemState(m_htiCreditSystem, TVIS_BOLD, TVIS_BOLD);
@@ -267,8 +263,6 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 		m_htiSwatCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SWAT_CREDIT), m_htiCreditSystem, m_iCreditSystem == 5);
 		m_htiPawcioCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_PAWCIO_CREDIT), m_htiCreditSystem, m_iCreditSystem == 6);
 		m_htiESCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_EASTSHARE_CREDIT), m_htiCreditSystem, m_iCreditSystem == 7);
-        m_htiFineCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FINE_CREDIT), m_htiCreditSystem, m_iCreditSystem == 8); //Add by Spe64
-         m_htiTK4Credit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_TK4_CREDIT), m_htiCreditSystem, m_iCreditSystem == 9); //Add by Spe64
 		m_htiCreditsNone = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CREDITS_NONE), m_htiCreditSystem, m_iCreditSystem == 10); //Spe64 change 
 	
 		// CreditSystem
@@ -287,19 +281,17 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 //Telp Start push rare file
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiEnablePushRareFile, m_bEnablePushRareFile); //eMulefan83 push rare file
 //Telp End push rare file
-	// [ionix] - FunnyNick
-	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiFunnyNickEnabled, m_bFunnyNickEnabled);
-	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiFunnyNickTag, (int &)m_iFunnyNickTag);
-	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiFunnyNickTagCustom, m_strFunnyNickTagCustom);
-	DDV_MaxChars(pDX,m_strFunnyNickTagCustom, 50);
-	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiFnTagAtEnd, m_bFnTagAtEnd);
-	// [ionix] - FunnyNick
 DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystem
  // ==> Anti Uploader Ban - Stulle
 	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
 	DDV_MinMaxInt(pDX, m_iAntiUploaderBanLimit, 0, 20);
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, (int &)m_iAntiUploaderBanCase);
 	// ==> Anti Uploader Ban - Stulle
+// ==> FunnyNick Tag - Stulle
+	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiFnTag, (int &)m_iFnTag);
+	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiFnCustomTag, m_sFnCustomTag);
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiFnTagAtEnd, m_bFnTagAtEnd);
+	// <== FunnyNick Tag - Stulle
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 		DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiHqrBox, iMaxRemoveQRS);
 		DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiDropSourcesNNS, m_iDropSourcesNNS);
@@ -321,6 +313,9 @@ DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // C
 	DDV_MinMaxInt(pDX, m_iShareOnlyTheNeed, 0, INT_MAX);
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiPowershareMode, m_iPowershareMode);
         // <--- Morph: PowerShare
+//Telp + Start Slot Focus
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiSlotFocus, m_bSlotFocus);
+//Telp - End Slot Focus
 
 }
 
@@ -339,6 +334,10 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 //Telp Start payback first
 	m_bPBF = thePrefs.m_bPBF;
 //Telp end payback first
+//Telp + Start Slot Focus
+	m_bSlotFocus = thePrefs.SlotFocus;
+//Telp - End Slot Focus
+
 // ==> Anti Uploader Ban - Stulle
 	m_iAntiUploaderBanLimit = thePrefs.m_iAntiUploaderBanLimit;
 	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
@@ -368,13 +367,12 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 	m_iPowerShareLimit = thePrefs.PowerShareLimit; //MORPH - Added by SiRoB, POWERSHARE Limit
         // <--- Morph: PowerShare
  //<<-- ADDED STORMIT -  Morph: PowerShared //
-
-		// [ionix] - FunnyNick
-	m_bFunnyNickEnabled = thePrefs.DisplayFunnyNick();
-	m_iFunnyNickTag = thePrefs.GetFnTag();
-	m_strFunnyNickTagCustom = thePrefs.GetFnCustomTag();
+	// ==> FunnyNick Tag - Stulle
+	m_iFnTag = thePrefs.GetFnTag();
+	m_sFnCustomTag = thePrefs.m_sFnCustomTag;
 	m_bFnTagAtEnd = thePrefs.GetFnTagAtEnd();
-	// [ionix] - FunnyNick
+	// <== FunnyNick Tag - Stulle
+
 	CPropertyPage::OnInitDialog();
 	//LoadSettings();
 	InitWindowStyles(this);
@@ -437,25 +435,16 @@ void CPPgVipeR::Localize(void)
 			m_ctrlTreeOptions.SetItemText(m_htiSwatCredit, GetResString(IDS_SWAT_CREDIT));
 		if (m_htiESCredit) 
 			m_ctrlTreeOptions.SetItemText(m_htiESCredit, GetResString(IDS_EASTSHARE_CREDIT));
-		if (m_htiFineCredit) 
-			m_ctrlTreeOptions.SetItemText(m_htiFineCredit, GetResString(IDS_FINE_CREDIT)); //Add by Spe64
-        if (m_htiTK4Credit) 
-			m_ctrlTreeOptions.SetItemText(m_htiTK4Credit, GetResString(IDS_TK4_CREDIT)); //Add by Spe64
 		if (m_htiCreditsNone)
 			m_ctrlTreeOptions.SetItemText(m_htiCreditsNone, GetResString(IDS_CREDITS_NONE));
 		//CreditSystem -
 		// ==> Anti Uploader Ban - Stulle
 	    if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 // <== Anti Uploader Ban - Stulle
-
-	//>>> [ionix] - FunnyNick
-		if (m_htiFunnyNickEnabled) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickEnabled, GetResString(IDS_DISPLAYFUNNYNICK));
-		if (m_htiFunnyNickTag) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag, GetResString(IDS_FN_TAG));
-		if (m_htiFunnyNickTag_0) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag_0, GetResString(IDS_FN_TAG_NO));
-		if (m_htiFunnyNickTag_3) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTag_3, GetResString(IDS_FN_TAG_CUSTOM));
-		if (m_htiFunnyNickTagCustom) m_ctrlTreeOptions.SetItemText(m_htiFunnyNickTagCustom, GetResString(IDS_FN_TAG_CUSTOMTEXT));
+	// ==> FunnyNick Tag - Stulle
+		if (m_htiFnCustomTag) m_ctrlTreeOptions.SetEditLabel(m_htiFnCustomTag, GetResString(IDS_SET_CUSTOM_TAG));
 		if (m_htiFnTagAtEnd) m_ctrlTreeOptions.SetItemText(m_htiFnTagAtEnd, GetResString(IDS_FN_TAG_AT_END));
-		//<<< [ionix] - FunnyNick
+		// <== FunnyNick Tag - Stulle
 }
 }
 
@@ -474,6 +463,13 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 		thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
 	}
 	// <== Anti Uploader Ban - Stulle
+// ==> FunnyNick Tag - Stulle
+	if(thePrefs.FnTagMode != m_iFnTag){
+		thePrefs.FnTagMode = m_iFnTag;
+	}
+	_stprintf (thePrefs.m_sFnCustomTag,_T("%s"), m_sFnCustomTag);
+	thePrefs.m_bFnTagAtEnd = m_bFnTagAtEnd;
+	// <== FunnyNick Tag - Stulle
 
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	if(m_iDropSourcesTimerNNS < 2)
@@ -521,11 +517,6 @@ thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 //Telp Start push rare file
     thePrefs.enablePushRareFile = m_bEnablePushRareFile; 
 //Telp End push rare file
-		// [ionix] - FunnyNick
-	thePrefs.m_bFunnyNick = m_bFunnyNickEnabled;
-	thePrefs.FnTagMode = m_iFunnyNickTag;
-	thePrefs.SetFnCustomTag(m_strFunnyNickTagCustom);
-	// [ionix] - FunnyNick
 
 	return CPropertyPage::OnApply();
 }
@@ -547,6 +538,18 @@ void CPPgVipeR::OnDestroy()
 	m_htiAntiCase2 = NULL;
 	m_htiAntiCase3 = NULL;
 	// <== Anti Uploader Ban - Stulle
+	// ==> FunnyNick Tag - Stulle
+	m_htiFnTag = NULL;
+	m_htiNoTag = NULL;
+	m_htiShortTag = NULL;
+	m_htiFullTag = NULL;
+	m_htiCustomTag = NULL;
+	m_htiFnCustomTag = NULL;
+	m_htiFnTagAtEnd = NULL;
+	// <== FunnyNick Tag - Stulle
+//Telp + Slot focus
+	m_htiSlotFocus = NULL;
+//Telp - End Slot Focus
 
 //Telp Start push small file
     m_htiEnablePushSmallFile = NULL; //Hawkstar, push small file
@@ -583,17 +586,6 @@ void CPPgVipeR::OnDestroy()
 	m_htiPowershareLimited = NULL;
  //<<-- ADDED STORMIT -  Morph: PowerShared //	
 
-	// [ionix] - FunnyNick
-	m_htiFunnyNick;
-	m_htiFunnyNickEnabled = NULL;
-	m_htiFunnyNickTag = NULL;
-	m_htiFunnyNickTag_0 = NULL;
-	m_htiFunnyNickTag_1 = NULL;
-	m_htiFunnyNickTag_2 = NULL;
-	m_htiFunnyNickTag_3 = NULL;
-	m_htiFunnyNickTagCustom = NULL;
-	m_htiFnTagAtEnd = NULL;
-	// [ionix] - FunnyNick
 
 	CPropertyPage::OnDestroy();
 }

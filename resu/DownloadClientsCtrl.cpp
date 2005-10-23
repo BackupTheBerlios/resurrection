@@ -262,6 +262,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	cur_rec.right = cur_rec.left - 8;
 	cur_rec.left += 4;
 	CString Sbuffer;	
+	
 	for(int iCurrent = 0; iCurrent < iCount; iCurrent++){
 		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
 		if( !IsColumnHidden(iColumn) ){
@@ -270,6 +271,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 0:{
 					uint8 image;
 					if (client->credits != NULL){
+						
 						if (client->IsFriend())
 							image = 4;
 					// Mondgott :: Show RedSmurfIconOnClientDetect

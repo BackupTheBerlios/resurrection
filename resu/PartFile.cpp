@@ -41,7 +41,6 @@
 #include "kademlia/kademlia/Entry.h"
 #include "DownloadQueue.h"
 #include "IPFilter.h"
-#include "MMServer.h"
 #include "OtherFunctions.h"
 #include "Packets.h"
 #include "Preferences.h"
@@ -3330,7 +3329,6 @@ void CPartFile::PerformFileCompleteEnd(DWORD dwResult)
 		SetStatus(PS_COMPLETE); // (set status and) update status-modification related GUI elements
 		theApp.knownfiles->SafeAddKFile(this);
 		theApp.downloadqueue->RemoveFile(this);
-		theApp.mmserver->AddFinishedFile(this);
 		if (thePrefs.GetRemoveFinishedDownloads())
 			theApp.emuledlg->transferwnd->downloadlistctrl.RemoveFile(this);
 		else

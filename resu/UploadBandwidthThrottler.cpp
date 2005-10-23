@@ -539,11 +539,11 @@ UINT UploadBandwidthThrottler::RunInternal() {
                 }
 		    }
     
+              // Any bandwidth that hasn't been used yet are used first to last.
+//Telp + Add Slot focus
+   			if((thePrefs.GetSlotFocus() == true)){
 		    // Equal bandwidth for all slots
-           // uint32 maxSlot = (uint32)m_StandardOrder_list.GetSize();
-            //DkD - modified -> based on variable upload datarate by sivka <-
-            uint32 maxSlot = (((thePrefs.maxupload==UNLIMITED?thePrefs.maxGraphUploadRate:thePrefs.maxupload)*1024)/thePrefs.UpDataratePerClient)+1;
-            //end
+            uint32 maxSlot = (uint32)m_StandardOrder_list.GetSize();
 			if(maxSlot > 0 && allowedDataRate/maxSlot < UPLOAD_CLIENT_DATARATE) {
                 maxSlot = allowedDataRate/UPLOAD_CLIENT_DATARATE;
             }
@@ -592,6 +592,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			}
 
 		    // Any bandwidth that hasn't been used yet are used first to last.
+		}
 			for(uint32 slotCounter = 0; slotCounter < (uint32)m_StandardOrder_list.GetSize() && bytesToSpend > 0 && spentBytes < (uint64)bytesToSpend; slotCounter++) {
 				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(slotCounter);
 

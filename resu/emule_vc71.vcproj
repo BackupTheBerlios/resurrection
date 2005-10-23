@@ -413,12 +413,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="MMServer.cpp">
-			</File>
-			<File
-				RelativePath="MMSocket.cpp">
-			</File>
-			<File
 				RelativePath=".\NumEdit.cpp">
 			</File>
 			<File
@@ -645,9 +639,6 @@
 				RelativePath="Version.cpp">
 			</File>
 			<File
-				RelativePath="WebSocket.cpp">
-			</File>
-			<File
 				RelativePath=".\xSkinButton.cpp">
 			</File>
 			<File
@@ -851,12 +842,6 @@
 				RelativePath="Mdump.h">
 			</File>
 			<File
-				RelativePath="MMServer.h">
-			</File>
-			<File
-				RelativePath="MMSocket.h">
-			</File>
-			<File
 				RelativePath=".\NumEdit.h">
 			</File>
 			<File
@@ -1002,9 +987,6 @@
 			</File>
 			<File
 				RelativePath="WebServices.h">
-			</File>
-			<File
-				RelativePath="WebSocket.h">
 			</File>
 			<File
 				RelativePath=".\xSkinButton.h">
@@ -1303,9 +1285,6 @@
 				RelativePath=".\PPgVipeR.cpp">
 			</File>
 			<File
-				RelativePath="PPgWebServer.cpp">
-			</File>
-			<File
 				RelativePath="PreferencesDlg.cpp">
 			</File>
 			<File
@@ -1385,9 +1364,6 @@
 			</File>
 			<File
 				RelativePath="VisualStylesXP.cpp">
-			</File>
-			<File
-				RelativePath="WebServer.cpp">
 			</File>
 			<Filter
 				Name="Lists"
@@ -1693,9 +1669,6 @@
 				RelativePath=".\PPgVipeR.h">
 			</File>
 			<File
-				RelativePath="PPgWebServer.h">
-			</File>
-			<File
 				RelativePath="PreferencesDlg.h">
 			</File>
 			<File
@@ -1787,9 +1760,6 @@
 			</File>
 			<File
 				RelativePath="VisualStylesXP.h">
-			</File>
-			<File
-				RelativePath="WebServer.h">
 			</File>
 			<File
 				RelativePath="Wizard.h">

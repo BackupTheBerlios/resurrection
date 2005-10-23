@@ -265,6 +265,7 @@ void CSharedFilesCtrl::Localize()
 	//<<-- ADDED STORMIT - SHARE ONLY THE NEED - //
 	// <--- Morph: PowerShare
 	//<<-- ADDED STORMIT - Morph: PowerShare //
+
 	//FRTK(kts)+
 	// xMule_MOD: showSharePermissions
 	strRes = GetResString(IDS_PERMISSION);

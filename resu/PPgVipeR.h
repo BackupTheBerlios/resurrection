@@ -36,6 +36,11 @@ protected:
 	bool m_iDropSourcesHQR;
 	int m_iDropSourcesTimerHQR;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+	// ==> FunnyNick Tag - Stulle
+	int m_iFnTag;
+	CString   m_sFnCustomTag;
+	bool m_bFnTagAtEnd;
+	// <== FunnyNick Tag - Stulle
 //CreditSyst
 int m_iCreditSystem;
 	HTREEITEM m_htiCreditSystem;
@@ -48,8 +53,6 @@ int m_iCreditSystem;
 	HTREEITEM m_htiRatioCredit;
 	HTREEITEM m_htiPawcioCredit;
 	HTREEITEM m_htiESCredit;
-HTREEITEM m_htiFineCredit; //Add by Spe64
-HTREEITEM m_htiTK4Credit; //Add by Spe64
         HTREEITEM m_htiCreditsNone;
 		//CreditSyst
 //Telp start payback first
@@ -66,6 +69,15 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiAntiCase2;
 	HTREEITEM m_htiAntiCase3;
 	// <== Anti Uploader Ban - Stulle
+	// ==> FunnyNick Tag - Stulle
+	HTREEITEM m_htiFnTag;
+	HTREEITEM m_htiNoTag;
+	HTREEITEM m_htiShortTag;
+	HTREEITEM m_htiFullTag;
+	HTREEITEM m_htiCustomTag;
+	HTREEITEM m_htiFnCustomTag;
+	HTREEITEM m_htiFnTagAtEnd;
+	// <== FunnyNick Tag - Stulle
 //<<-- ADDED STORMIT - PowerShare - //
 	int m_iPowershareMode; //MORPH - Added by SiRoB, Avoid misusing of powersharing
  //<<-- ADDED STORMIT - SLUGFILLER: hideOS - //
@@ -108,12 +120,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	int	m_iSpreadbar;
 	HTREEITEM m_htiSpreadbar;
 
-// [ionix] - FunnyNick
-	bool m_bFunnyNickEnabled;
-	int m_iFunnyNickTag;
-	CString m_strFunnyNickTagCustom;
-	bool m_bFnTagAtEnd;
-	// [ionix] - FunnyNick
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	HTREEITEM m_htiDropSources;
 	HTREEITEM m_htiDropSourcesNNS;
@@ -124,17 +130,6 @@ HTREEITEM m_htiTK4Credit; //Add by Spe64
 	HTREEITEM m_htiDropSourcesTimerHQR;
 	HTREEITEM m_htiHqrBox;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-// [ionix] - FunnyNick
-	HTREEITEM m_htiFunnyNick;
-	HTREEITEM m_htiFunnyNickEnabled;
-	HTREEITEM m_htiFunnyNickTag;
-	HTREEITEM m_htiFunnyNickTag_0;
-	HTREEITEM m_htiFunnyNickTag_1;
-	HTREEITEM m_htiFunnyNickTag_2;
-	HTREEITEM m_htiFunnyNickTag_3;
-	HTREEITEM m_htiFunnyNickTagCustom;
-	HTREEITEM m_htiFnTagAtEnd;
-	// [ionix] - FunnyNick
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();

@@ -1513,7 +1513,6 @@
 #define IDS_FEEDBACK_NONEEDPART         1720
 #define IDS_FEEDBACK_COMPLETE           1721
 #define IDS_COPYFEEDBACK                1722
-#define IDS_COPYFEEDBACK_DE             1723
 #define IDS_FEEDBACK_UPLOADED_FULL      1724
 #define IDS_FEEDBACK_UPLOADED_SESSION   1725
 #define IDS_FEEDBACK_REQUEST_SESSION    1726
@@ -2532,10 +2531,6 @@
 #define IDS_DROPS3                      60078
 #define IDS_DROPS4                     60079
 #define IDS_DISPLAYFUNNYNICK            60080
-#define IDS_FN_TAG                      60081
-#define IDS_FN_TAG_NO			60082
-#define IDS_FN_TAG_CUSTOM		60083
-#define IDS_FN_TAG_CUSTOMTEXT		60084
 #define IDS_HASHING_PROGRESS		60085
 #define IDS_HASHING_FINISHED		60086
 #define IDB_BITMAP_LAMA               60090
@@ -2558,9 +2553,17 @@
 #define IDC_ANTILEECH_REASON            60107
 #define IDS_LEECHERBOX			60108
 #define IDC_SHOWLEECHERBOX              60109
-#define IDS_FN_TAG_AT_END              60110
-
 #define IDS_CD_UPOSITION                61055
+// ==> FunnyNick Tag - Stulle
+#define IDS_FN_TAG                      60140
+#define IDS_NO_TAG                      60141
+#define IDS_SHORT_TAG                   60142
+#define IDS_FULL_TAG                    60143
+#define IDS_CUSTOM_TAG                  60144
+#define IDS_SET_CUSTOM_TAG              60145
+#define IDS_FN_TAG_AT_END               60146
+// <== FunnyNick Tag - Stulle
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

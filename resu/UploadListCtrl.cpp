@@ -317,6 +317,8 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	cur_rec.right = cur_rec.left - 8;
 	cur_rec.left += 4;
 	CString Sbuffer;
+
+
 	for (int iCurrent = 0; iCurrent < iCount; iCurrent++)
 	{
 		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);

@@ -41,7 +41,6 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndDirectories.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndFiles.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndStats.m_psp.dwFlags &= ~PSH_HASHELP;
-	m_wndWebServer.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndTweaks.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndProxy.m_psp.dwFlags &= ~PSH_HASHELP;
@@ -67,7 +66,6 @@ m_wndSpe3.m_psp.dwFlags &= ~PSH_HASHELP;  //Spe64
 	CTreePropSheet::SetPageIcon(&m_wndNotify, _T("NOTIFICATIONS"));
 	CTreePropSheet::SetPageIcon(&m_wndStats, _T("STATISTICS"));
 	CTreePropSheet::SetPageIcon(&m_wndSecurity, _T("SECURITY"));
-	CTreePropSheet::SetPageIcon(&m_wndWebServer, _T("WEB"));
 	CTreePropSheet::SetPageIcon(&m_wndTweaks, _T("TWEAK"));
 	CTreePropSheet::SetPageIcon(&m_wndAckronicII, _T("ACKRONIC"));//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
  CTreePropSheet::SetPageIcon(&m_wndVipeR, _T("CONTACT4")); //Added by Spe64  Pref1
@@ -90,7 +88,6 @@ CTreePropSheet::SetPageIcon(&m_wndSpe3, _T("DOWNLOADFILES"));  //Spe64
 	AddPage(&m_wndNotify);
 	AddPage(&m_wndStats);
 	AddPage(&m_wndSecurity);
-	AddPage(&m_wndWebServer);
 	AddPage(&m_wndTweaks);
 	AddPage(&m_wndAckronicII);//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
 AddPage(&m_wndVipeR);  //Added by Spe64  Pref1
@@ -168,7 +165,6 @@ void CPreferencesDlg::Localize()
 	m_wndNotify.Localize();
 	m_wndSecurity.Localize();
 	m_wndTweaks.Localize();
-	m_wndWebServer.Localize();
 	m_wndProxy.Localize();
 	m_wndAckronicII.Localize();//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
  m_wndVipeR.Localize(); //Added by Spe64  Pref1
@@ -189,14 +185,13 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(7), RemoveAmbersand(GetResString(IDS_PW_EKDEV_OPTIONS))); 
 		pTree->SetItemText(GetPageTreeItem(8), RemoveAmbersand(GetResString(IDS_STATSSETUPINFO))); 
 		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_SECURITY))); 
-		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_WS)));
-		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
-		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(GetResString(IDS_ACKRONICII)));//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
-        pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_VipeR))); //Spe64 Pref1
-		pTree->SetItemText(GetPageTreeItem(14), RemoveAmbersand(GetResString(IDS_PW_NE))); //Spe64 Pref2
-	    pTree->SetItemText(GetPageTreeItem(15), RemoveAmbersand(GetResString(IDS_PW_Spe3))); //Spe64 Pref3
+		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
+		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_ACKRONICII)));//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
+        pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(GetResString(IDS_PW_VipeR))); //Spe64 Pref1
+		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_NE))); //Spe64 Pref2
+	    pTree->SetItemText(GetPageTreeItem(14), RemoveAmbersand(GetResString(IDS_PW_Spe3))); //Spe64 Pref3
 				//pTree->SetItemText(GetPageTreeItem(i++), RemoveAmbersand(_T("AntiLeech"))); //>>> AntiLeech Class
-pTree->SetItemText(GetPageTreeItem(16), RemoveAmbersand(GetResString(IDS_PW_WEBCACHE)));//KTS
+pTree->SetItemText(GetPageTreeItem(15), RemoveAmbersand(GetResString(IDS_PW_WEBCACHE)));//KTS
 
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 		pTree->SetItemText(GetPageTreeItem(20), _T("Debug"));

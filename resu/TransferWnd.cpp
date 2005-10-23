@@ -78,7 +78,6 @@ BEGIN_MESSAGE_MAP(CTransferWnd, CResizableDialog)
 	ON_NOTIFY(UM_TABMOVED, IDC_DLTAB, OnTabMovement)
 	ON_NOTIFY(LVN_BEGINDRAG, IDC_DOWNLOADLIST, OnLvnBegindrag)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_DOWNLOADLIST, OnLvnKeydownDownloadlist)
-	//ON_NOTIFY(LVN_HOTTRACK, IDC_DOWNLOADCLIENTS, OnHoverUploadList) //MORPH - Added by SiRoB, Fix
 END_MESSAGE_MAP()
 
 CTransferWnd::CTransferWnd(CWnd* pParent /*=NULL*/)
@@ -426,7 +425,6 @@ BOOL CTransferWnd::PreTranslateMessage(MSG* pMsg)
 					break;
 				case wnd2Downloading:
 					downloadclientsctrl.ShowSelectedUserDetails();
-					//downloadclientsctrl.ShowSelectedUserDetails(); //MORPH - Added by SiRoB, DownloadClientsCtrl
 					break;
 				default:
 					ASSERT(0);

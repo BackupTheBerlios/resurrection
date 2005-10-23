@@ -67,8 +67,6 @@
 #include "version.h" //[lama] ModVersion
 #include "DropTarget.h"
 #include "LastCommonRouteFinder.h"
-#include "WebServer.h"
-#include "MMServer.h"
 #include "DownloadQueue.h"
 #include "ClientUDPSocket.h"
 #include "UploadQueue.h"
@@ -768,10 +766,6 @@ BOOL CemuleDlg::OnInitDialog()
 		m_bStartMinimizedChecked = true;
 	}
 	SetWindowPlacement(&wp);
-
-	if (thePrefs.GetWSIsEnabled())
-		theApp.webserver->StartServer();
-	theApp.mmserver->Init();
 
 	VERIFY( (m_hTimer = ::SetTimer(NULL, NULL, 300, StartupTimer)) != NULL );
 	if (thePrefs.GetVerbose() && !m_hTimer)
@@ -1903,7 +1897,6 @@ void CemuleDlg::OnClose()
     // NOTE: Do not move those dtors into 'CemuleApp::InitInstance' (althought they should be there). The
 	// dtors are indirectly calling functions which access several windows which would not be available 
 	// after we have closed the main window -> crash!
-	delete theApp.mmserver;			theApp.mmserver = NULL;
 	delete theApp.listensocket;		theApp.listensocket = NULL;
 	delete theApp.clientudp;		theApp.clientudp = NULL;
 	delete theApp.sharedfiles;		theApp.sharedfiles = NULL;
@@ -1917,7 +1910,6 @@ void CemuleDlg::OnClose()
 	delete theApp.clientlist;		theApp.clientlist = NULL;
 	delete theApp.friendlist;		theApp.friendlist = NULL;
 	delete theApp.ipfilter;			theApp.ipfilter = NULL;
-	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
 	delete theApp.m_pFirewallOpener;theApp.m_pFirewallOpener = NULL;
 	delete theApp.uploadBandwidthThrottler; theApp.uploadBandwidthThrottler = NULL;

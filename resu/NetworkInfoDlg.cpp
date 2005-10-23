@@ -10,7 +10,6 @@
 #include "kademlia/kademlia/kademlia.h"
 #include "kademlia/kademlia/prefs.h"
 #include "kademlia/kademlia/indexed.h"
-#include "WebServer.h"
 #include "clientlist.h"
 
 #ifdef _DEBUG
@@ -306,25 +305,5 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 		rCtrl << GetResString(IDS_CONNECTING) << _T("\r\n");
 	else
 		rCtrl << GetResString(IDS_DISCONNECTED) << _T("\r\n");
-	rCtrl << _T("\r\n");
-
-	///////////////////////////////////////////////////////////////////////////
-	// Web Interface
-	///////////////////////////////////////////////////////////////////////////
-	rCtrl.SetSelectionCharFormat(rcfBold);
-	rCtrl << GetResString(IDS_WEBSRV) << _T("\r\n");
-	rCtrl.SetSelectionCharFormat(rcfDef);
-	rCtrl << GetResString(IDS_STATUS) << _T(":\t");
-	rCtrl << (thePrefs.GetWSIsEnabled() ? GetResString(IDS_ENABLED) : GetResString(IDS_DISABLED)) << _T("\r\n");
-	if (thePrefs.GetWSIsEnabled()){
-		CString count;
-		count.Format(_T("%i %s"), theApp.webserver->GetSessionCount(), GetResString(IDS_ACTSESSIONS));
-		rCtrl << _T("\t") << count << _T("\r\n");
-		CString strHostname;
-		if (!thePrefs.GetYourHostname().IsEmpty() && thePrefs.GetYourHostname().Find(_T('.')) != -1)
-			strHostname = thePrefs.GetYourHostname();
-		else
-			strHostname = ipstr(theApp.serverconnect->GetLocalIP());
-		rCtrl << _T("URL:\t") << _T("http://") << strHostname << _T(":") << thePrefs.GetWSPort() << _T("/\r\n");
-	}
+	rCtrl << _T("\r\n");	
 }

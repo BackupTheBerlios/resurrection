@@ -500,11 +500,11 @@ BEGIN
     EDITTEXT        IDC_UPLOAD_CAP,14,57,32,12,ES_RIGHT | ES_AUTOHSCROLL | 
                     ES_NUMBER
     CONTROL         "Downloadlimit",IDC_DLIMIT_LBL,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,86,18,68,10
+                    BS_FLAT | WS_TABSTOP,86,18,94,10
     CONTROL         "",IDC_MAXDOWN_SLIDER,"msctls_trackbar32",WS_TABSTOP,85,
                     30,131,11,WS_EX_STATICEDGE
     CONTROL         "Uploadlimit",IDC_ULIMIT_LBL,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,86,48,68,10
+                    BS_FLAT | WS_TABSTOP,86,48,102,10
     CONTROL         "",IDC_MAXUP_SLIDER,"msctls_trackbar32",WS_TABSTOP,86,60,
                     130,11,WS_EX_STATICEDGE
     EDITTEXT        IDC_PORT,41,89,38,12,ES_AUTOHSCROLL | ES_NUMBER
@@ -854,7 +854,7 @@ BEGIN
                     BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,180,202,10
     PUSHBUTTON      "Select Font...",IDC_SELECT_HYPERTEXT_FONT,14,206,86,14,
                     BS_FLAT
-    CONTROL         "Font for Server-, Message- and IRC-Window",
+    CONTROL         "Font for Server- and Message - Window",
                     IDC_HYPERTEXT_FONT_HINT,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,7,196,216,8
     CONTROL         "Reset all autocompletion histories (searchname, met-URL,...)",
@@ -2175,7 +2175,6 @@ TRAYNOTCONNECTED        ICON                    "res\\TrayDisconnected.ico"
 TRAYLOWID               ICON                    "res\\TrayLowID.ico"
 DISPLAY                 ICON                    "res\\Display.ico"
 SECURITY                ICON                    "res\\Security.ico"
-WEB                     ICON                    "res\\Web.ico"
 SHAREDFILESLIST         ICON                    "res\\SharedFilesList.ico"
 TWEAK                   ICON                    "res\\Tweak.ico"
 NOTIFICATIONS           ICON                    "res\\Notifications.ico"
@@ -2394,7 +2393,6 @@ IDB_CONNECT_CLICK       BITMAP                  "res\\Toolbar\\btn_connect_click
 IDB_CONNECT_NORMAL      BITMAP                  "res\\Toolbar\\btn_connect_normal.bmp"
 IDB_DISCONNECT_OVER     BITMAP                  "res\\Toolbar\\btn_disconnect_over.bmp"
 60035                   BITMAP                  "res\\ionix-banner.bmp"
-60090                   BITMAP                  "res\\lamapic.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3138,8 +3136,6 @@ BEGIN
     IDS_CAPACITY_LIMITS     "Bandwidth Limits"
     IDS_ADMIN               "Administrator"
     IDS_ACCESSDENIED        "Access denied!"
-    IDS_WEB_LOWUSER         "Guest"
-    IDS_WEB_ERR_CANTLOAD    "Can't load templates: Can't open file %s"
     IDS_GLOBALSEARCH        "Global (Servers)"
     IDS_METHOD              "Method"
     IDS_SW_WEBBASED         "Web-based Search"
@@ -3161,9 +3157,6 @@ BEGIN
     IDS_FR                  "Friday"
     IDS_SA                  "Saturday"
     IDS_SO                  "Sunday"
-    IDS_WEB_ADMINLOGIN      "Web Interface: Admin-Login"
-    IDS_WEB_GUESTLOGIN      "Web Interface: Guest-Login"
-    IDS_WEB_SESSIONEND      "Web Interface: Logout"
     IDS_DETAILS             "Details"
     IDS_ACTION              "Action"
     IDS_REMOVE              "Remove"
@@ -3443,7 +3436,6 @@ BEGIN
     IDS_GETFRIENDED2KLINK   "Copy friend link to clipboard"
     IDS_GETHTMLFRIENDED2KLINK "Copy friend link to clipboard (HTML)"
     IDS_LEECHERBOX          "Edit Leecher list"
-    IDS_FN_TAG_AT_END       "Show Tag at the end"
 END
 
 STRINGTABLE 
@@ -3526,8 +3518,6 @@ BEGIN
     IDS_STATS_MNUTREECPYSPE "Resurrection Stat"
     IDS_EnableDownloadInColor "Download files in color"
     IDS_WC_ADDRESS          "Address"
-    IDS_WEB_REMOTE_LINK_ADDED "Link added: "
-    IDS_WEB_REMOTE_LINK_NOT_ADDED "Link not added. Wrong password."
     IDS_SOURCEEXCHANGESWAP  "Temporary Source Exchange Swap"
     IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Download parts needed for preview first"
     IDS_PR_SHORT_LOW        "[Lo]"
@@ -3535,11 +3525,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_DISPLAYFUNNYNICK    "Enable FunnyNick display"
-    IDS_FN_TAG              "FunnyNick Tag"
-    IDS_FN_TAG_NO           "No Tag"
-    IDS_FN_TAG_CUSTOM       "Custom Tag"
-    IDS_FN_TAG_CUSTOMTEXT   "Set custom tag:"
     IDS_HASHING_PROGRESS    "Hash: %d%% - %s"
     IDS_HASHING_FINISHED    "Hashing Finished"
     IDS_ISCLIENTBANTIME_STATIC "BanTime (2-25 hours)"
@@ -3820,40 +3805,19 @@ BEGIN
     IDS_EDITCAT             "Edit Category-Properties"
     IDS_PW_WS               "Web Interface"
     IDS_ENABLED             "Enabled"
-    IDS_WEB_LOGIN           "Login"
-    IDS_WEB_ENTER_PASSWORD  "Enter your password here"
-    IDS_WEB_LOGIN_NOW       "Login Now"
-    IDS_WEB_CONFIRM_REMOVE_SERVER 
-                            "Are you sure to remove this server from list?"
-    IDS_WEB_CONTROL         "Web Interface"
-    IDS_WEB_LOGOUT          "Logout"
-    IDS_WEB_ACTIONS         "Actions"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_WEB_SHOW_UPLOAD_QUEUE "Show Queue"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Hide Queue"
-    IDS_WEB_GZIP_COMPRESSION "Gzip compression"
-    IDS_WEB_GZIP_COMMENT    "Save traffic, especially in graphs."
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Enable or disable the display of waiting queue in transfer page."
-    IDS_WEB_REFRESH_TIME    "Refresh-Time of Pages"
-    IDS_WEB_REFRESH_COMMENT "Time in seconds (zero=disabled):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "Template"
     IDS_SV_DEBUGLOG         "Debug Log"
-    IDS_WS_PASS             "Password"
-    IDS_WEB_FILESETTINGS    "File Settings"
-    IDS_WS_ERR_LOADTEMPLATE "Can't load templates: replace file %s with a newer version!"
-    IDS_WEB_CONLIMITS       "Connection limits"
     IDS_INFLST_USER_TOTALDOWNLOAD "Downloaded total"
     IDS_INFLST_USER_TOTALUPLOAD "Uploaded total"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_WEB_BADLOGINATTEMPT "Web interface: Failed login attempt"
     IDS_ERR_TOOLARGEFILE    "File larger than the supported size of the edonkey protocol (>=4GB)"
     IDS_MSGONLYFRIENDS      "Accept from friends only"
     IDS_MSGONLYSEC          "Accept from valid clients only"
@@ -3870,7 +3834,6 @@ STRINGTABLE
 BEGIN
     IDS_ALLUNASSIGNED       "All uncategorized"
     IDS_ACTSESSIONS         "Active session(s)"
-    IDS_WEBSRV              "Web Interface"
     IDS_SW_REFETCHRES       "Refetch Results"
     IDS_FILEHASH            "File Hash"
     IDS_GLOBALSEARCH2       "Global Search"
@@ -4020,15 +3983,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_WEB_SHUTDOWNSYSTEM  "Shutdown system"
-    IDS_WEB_ADMINMENU       "Admin Menu"
-    IDS_WEB_MAIN_CLOSE      "Do you really want to exit eMule?"
-    IDS_WEB_MAIN_REBOOT     "Do you really want the system to reboot?"
-    IDS_WEB_MAIN_SHUTDOWN   "Do you really want the system to shutdown?"
-    IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED "Show banned clients on queue"
-    IDS_WEB_SHOW_UPLOAD_QUEUE_FRIEND "Show friends on queue"
-    IDS_WEB_SESSIONTIMEOUT  "Session Timeout"
-    IDS_WEB_ALLOWHILEVFUNC  "Allow exit eMule, reboot and shutdown"
     IDS_SETPFSLIMIT         "Source Limit..."
     IDS_SETPFSLIMITEXPLAINED 
                             "Please enter the new source limit for the selected file(s) ! \n(set to 0 to use global setting)"
@@ -4115,13 +4069,10 @@ BEGIN
     IDS_WRN_TEMPFILES_RESERVED 
                             "The temporary directory must not be set to an eMule installation directory."
     IDS_WRN_INCTEMP_SAME    "Incoming directory and temporary directory must not be the same."
-    IDS_MMFAILED            "Failed to create MobileMule Socket!"
-    IDS_MMSTARTED           "MobileMule server started on Port %i. Protocol version: %s"
     IDS_SHOWDWLPERCENTAGE   "Show percentage of download completion in progressbar"
     IDS_TBN_ONNEWDOWNLOAD   "Download added"
     IDS_ARTIST              "Artist"
     IDS_ALBUM               "Album"
-    IDS_MMGUIDELINK         "MobileMule Guide"
 END
 
 STRINGTABLE 
@@ -4229,7 +4180,6 @@ BEGIN
                             "Failed to download and install selected language dll from %s!"
     IDS_ERR_BADFOLDER       "Invalid folder.\nFolder can not be created. Please check name and location."
     IDS_AUTOREMOVEFD        "Auto clear completed downloads"
-    IDS_MM_BLOCK            "3 failed logins for MobileMule logged - any further attempt is blocked for 10 min!"
 END
 
 STRINGTABLE 
@@ -4254,7 +4204,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MM_NEWUSER          "New user successfully logged into MobileMule-Server"
     IDS_RADCLIENTS          "From known clients"
     IDS_KADUDPPORTERR       "Kad's UDP port conflicts with either eMule's Ext UDP port or eMule's Server UDP port. The port has been changed to %u."
     IDS_CONFIRM_FILEDELETE  "Do you really want to delete all selected files from disk?"
@@ -4470,8 +4419,6 @@ BEGIN
     IDS_STORENOTES          "Store Notes"
     IDS_NOTES               "Notes"
     IDS_KADSEARCHALREADY    "Another search is already in progress. Please try again later!"
-    IDS_WEB_SHUTDOWN        "Shutdown eMule"
-    IDS_WEB_REBOOT          "Reboot system"
 END
 
 STRINGTABLE 
@@ -4544,7 +4491,6 @@ BEGIN
     IDS_DC_BROWN            "Brown"
     IDS_DC_BURLYWOOD        "Burlywood"
     IDS_DC_ORANGE           "Dark Orange"
-    IDS_DC_BLACK            "Black"
     IDS_TK4_CREDIT          "TK4 Credit"
     IDS_DONTREMOVESTATICSERVER "Don't Remove Static Server"
     IDS_EnableDownloadInBold "Downloading Files in Bold"
@@ -4556,6 +4502,7 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_DC_BLACK            "Black"
     IDS_PW_WEBCACHE         "Webcache"
     IDS_BTL_TEXT            "Buffer time limit"
     IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
@@ -4687,6 +4634,10 @@ END
 STRINGTABLE 
 BEGIN
     IDS_UPDATEIPCURL        "Update"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_LOG_IPFILTER_LOADED "Loaded IP filters from ""%s"" in %ums"
     IDS_LOG_IPFILTER_INFO   "Parsed lines:%u  Found IP ranges:%u  Duplicate:%u  Merged:%u"
     IDS_IPFILTER_SAVERR     "Failed to save IP filter to file ""%s"" - %hs"
@@ -4726,6 +4677,7 @@ STRINGTABLE
 BEGIN
     IDS_INVMODE             "Activate Invisible Mode"
     IDS_INVMODE_ONSTART     "Invisible on startup"
+    IDS_DISPLAYFUNNYNICK    "Enable FunnyNick display"
 END
 
 STRINGTABLE 
@@ -4735,7 +4687,12 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_INVMODE_VKEY        "Key:"
     IDS_SLOT_FOCUS          "Disable Slot Focus"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_POWERSHARE_COLUMN_LABEL "Powershare"
     IDS_POWERSHARE_ON_LABEL "On"
     IDS_POWERSHARE_LABEL    "Off"
@@ -4845,11 +4802,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_INVMODE_VKEY        "Key:"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_SOFTWARE_LABEL      "Software"
 END
 
@@ -4858,6 +4810,16 @@ BEGIN
     IDS_NICEHASH_STATIC     "Relax Time for Hashing"
     IDS_NICEHASH_RIGHT      "Less CPU-load"
     IDS_NICEHASH_LEFT       "Faster hashing"
+// ==> FunnyNick Tag - Stulle
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_NO_TAG              "No Tag"
+    IDS_SHORT_TAG           "[FN]"
+    IDS_FULL_TAG            "[FunnyNick]"
+	IDS_CUSTOM_TAG          "Custom Tag"
+	IDS_SET_CUSTOM_TAG      "Set custom tag"
+	IDS_FN_TAG_AT_END       "Show Tag at the end"
+// <== FunnyNick Tag - Stulle
+
 END
 
 #endif    // Englisch (USA) resources
