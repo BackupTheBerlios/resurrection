@@ -568,7 +568,11 @@
 #define IDS_SOURCEEXCHANGESWAP          648
 #define IDS_DL_TRY_TO_GET_PREVIEW_PARTS 649
 #define IDS_PR_SHORT_LOW                650
+#define IDS_IRC_CONNECT                 655
+#define IDS_IRC_DISCONNECT              656
 #define IDS_DOWNLOAD_ALPHABETICAL       661
+#define IDS_IRC_PERFORM                 673
+#define IDS_IRC_ADDTOFRIENDLIST         675
 #define IDS_PW_WARNING                  678
 #define IDS_TAKEOVER                    679
 #define IDS_CLEANUP                     680

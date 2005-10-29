@@ -9,6 +9,7 @@
 #include "PPgTweaks.h"
 #include "PPgDisplay.h"
 #include "PPgSecurity.h"
+#include "PPgWebServer.h"
 #include "PPgProxy.h"
 #include "PPgAckronicII.h"//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
 #include "PPgVipeR.h" //Spe64 Pref 1
@@ -43,6 +44,7 @@ public:
 	CPPgTweaks		m_wndTweaks;
 	CPPgDisplay		m_wndDisplay;
 	CPPgSecurity	m_wndSecurity;
+	CPPgWebServer	m_wndWebServer;
 	CPPgProxy		m_wndProxy;
 	CPPgAckronicII	m_wndAckronicII;//Ackronic - Aggiunto da Aenarion[ITA] - 2° finestra Ack
  CPPgVipeR	    m_wndVipeR;  //Spe64 Pref1

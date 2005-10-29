@@ -1,7 +1,6 @@
 ReSuRReCTIoN 1.2
 
 Fixed: Statistics (Secure Ident)
-Fixed: IP2Country in Serverwnd 
 Fixed: Chunk selection patch[Xman]/big thanx @-G6R- for crashreport (changed against Xtreme 4.5 Code)
 Fixed: error in ProcessHello
 Fixed: Friendfix [WiZaRd]
@@ -10,7 +9,8 @@ Fixed: Rating Icons - thanx [WiZaRd]
 Fixed: Sorting Prob in Queuelist thanx [WiZaRd]
 Fixed: Renaming Prob in sharedfiiles again thanx [WiZaRd]
 Fixed: some little optical bugs in treecontrol [lama]
-Fixed: Showing sharedparts[big thanx at spe64]
+Fixed: Showing sharedparts[big thanx at spe64
+Fixed: WebInterface - thanx @WiZaRd
 
 Added: ModID to Statistic [Slugfiller]
 Added: Friendlinks [eMulespana]
@@ -21,16 +21,16 @@ Added: SuperRelease [KTS]
 Added: Don`t refresh Item if not needed [Morph]
 Added: Flood Ask Protection [Dark]
 Added: Total upload /Download Column [LSD]
-Added: Feedback in [code][/code] function[lama]
+Added: Feedback in [code][/code] function[lama][WiZaRd]
 Added: Sharing Permissions [XMUle]
 Added: FakeCheck + IPFilter Update via eD2K [WiZaRd/Aireoreion/emuleplus] 
 Added: Fake check on Downloadlistctrl and Downloadclientctrl [IONIX]
 Added: Slot Focus 
 
-Re-Added: Hide Over Share
-Re-Added: Spreadbar
-Re-Added: Share only the need
-Re-Added: Powershare from Morph 
+Re-Added: Hide Over Share [Morph]
+Re-Added: Spreadbar[Morph]
+Re-Added: Share only the need [Morph]
+Re-Added: Powershare from Morph [Morph]
 
 Removed: Show Countryflags/ShowCLientFlags/ShowQueueFlags from menu Menu  
 Removed: Power-Release
@@ -38,19 +38,19 @@ Removed: WiZaRds Powershare
 Removed: unused codes
 Removed: Rare/small file column
 Removed: Slot Number column
-Removed: IP2Country (maybe it reason of Runtime error - I will re add this in further version) 
+Removed: IP2Country (maybe it`s reason of Runtime error - I will re add this in further version) 
 Removed: Webinterface & MobileMule
 
 Changed: Antileechclass (now from Ionix 4.33)
 Changed: Optimizer (now from iONix)
 Changed and fixed: Feedback function [thanx @ WiZaRd]
 
+Resu-Team (all people who helped by improving Resu to what it is) 
 
+Debuggers: -G6R- and StoNy 
+Beta-Testers: -G6R- / StoNy / Resu Beta-Test-clan from www.hwupgrade.it / -grenzgaenger- 
+Grafics: Mr.FrEEzEr / -G6R- 
+german.dll: -G6R-
+italian.dll:  wolf / -G6R- /  dd_77
 
-
-
-
-
-
-
-
+not in team but big thanx goes also to WiZaRd and spe64 - for much help with lama bugs in resu LOL - thanx a lot guys.. 

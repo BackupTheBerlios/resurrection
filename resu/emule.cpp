@@ -47,8 +47,10 @@
 #include "ClientUDPSocket.h"
 #include "DownloadQueue.h"
 #include "IPFilter.h"
+#include "MMServer.h"
 #include "Statistics.h"
 #include "OtherFunctions.h"
+#include "WebServer.h"
 #include "UploadQueue.h"
 #include "SharedFileList.h"
 #include "ServerList.h"
@@ -576,6 +578,8 @@ BOOL CemuleApp::InitInstance()
 	downloadqueue = new CDownloadQueue();	// bugfix - do this before creating the uploadqueue
 	uploadqueue = new CUploadQueue();
 	ipfilter 	= new CIPFilter();
+	webserver = new CWebServer(); // Webserver [kuchin]
+	mmserver = new CMMServer();
 	m_pPeerCache = new CPeerCacheFinder();
 FakeCheck 	= new CFakecheck(); //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updating
 thePerfLog.Startup();

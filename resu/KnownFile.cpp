@@ -29,6 +29,7 @@
 #include "SharedFileList.h"
 #include "UploadQueue.h"	//Telp Super Release
 #include "UpDownClient.h"
+#include "MMServer.h"
 #include "ClientList.h"
 #include "opcodes.h"
 #include "ini2.h"
@@ -2022,7 +2023,11 @@ bool CKnownFile::GrabImage(CString strFileName,uint8 nFramesToGrab, double dStar
 // imgResults[i] can be NULL
 void CKnownFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, void* pSender)
 {
-	if (theApp.clientlist->IsValidClient((CUpDownClient*)pSender)){
+	// continue processing
+	if (pSender == theApp.mmserver){
+		theApp.mmserver->PreviewFinished(imgResults, nFramesGrabbed);
+	}
+	else if (theApp.clientlist->IsValidClient((CUpDownClient*)pSender)){
 		((CUpDownClient*)pSender)->SendPreviewAnswer(this, imgResults, nFramesGrabbed);
 	}
 	else{

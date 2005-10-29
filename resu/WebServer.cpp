@@ -834,7 +834,6 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	Out.Replace(_T("[PriorityNormal]"), _GetPlainResString(IDS_PRIONORMAL));
 	Out.Replace(_T("[PriorityHigh]"), _GetPlainResString(IDS_PRIOHIGH));
 	Out.Replace(_T("[PriorityRelease]"), _GetPlainResString(IDS_PRIORELEASE));
-	Out.Replace(_T("[PriorityPower-Release]"), _GetPlainResString(IDS_POWERRELEASE)); //Xman PowerRelease
 	Out.Replace(_T("[PriorityAuto]"), _GetPlainResString(IDS_PRIOAUTO));
 
 	CString HTTPConState,HTTPConText,HTTPHelp;
@@ -868,7 +867,7 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 			else
 				HTTPConText = CString(cur_server->GetListName());
 
-			if (IsSessionAdmin(Data,sSession)) HTTPConText+=_T(" (<a href=\"?ses=") + sSession + _T("&w=server&c=disconnect\">")/*+_GetPlainResString(IDS_IRC_DISCONNECT)*/+_T("</a>)");
+			if (IsSessionAdmin(Data,sSession)) HTTPConText+=_T(" (<a href=\"?ses=") + sSession + _T("&w=server&c=disconnect\">")+_GetPlainResString(IDS_IRC_DISCONNECT)+_T("</a>)");
 
 			_stprintf(HTTPHeader, _T("%s"), CastItoIShort(cur_server->GetUsers()));
 			HTTPHelpU = CString(HTTPHeader);
@@ -908,10 +907,10 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 		if (Kademlia::CKademlia::isFirewalled()) {
 			HTTPConText=GetResString(IDS_FIREWALLED);
 			HTTPConText.AppendFormat(_T(" (<a href=\"?ses=%s&w=kad&c=rcfirewall\">%s</a>"), sSession , GetResString(IDS_KAD_RECHECKFW) );
-			HTTPConText.AppendFormat(_T(", <a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>)"), sSession /*, GetResString(IDS_IRC_DISCONNECT)*/ ); //changed for remove irc [lama]
+			HTTPConText.AppendFormat(_T(", <a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>)"), sSession , GetResString(IDS_IRC_DISCONNECT) );
 		} else {
 			HTTPConText=GetResString(IDS_CONNECTED);
-			HTTPConText.AppendFormat(_T(" (<a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>)"),  sSession /*, GetResString(IDS_IRC_DISCONNECT)*/ ); //changed for remove irc [lama]
+			HTTPConText.AppendFormat(_T(" (<a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>)"),  sSession , GetResString(IDS_IRC_DISCONNECT) );
 		}
 	}
 	else {
@@ -919,7 +918,7 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 			HTTPConText=GetResString(IDS_CONNECTING);
 		} else {
 			HTTPConText=GetResString(IDS_DISCONNECTED);
-			HTTPConText.AppendFormat(_T(" (<a href=\"?ses=%s&w=kad&c=connect\">%s</a>)"),  sSession /*, GetResString(IDS_IRC_CONNECT)*/ ); //changed for remove irc [lama]
+			HTTPConText.AppendFormat(_T(" (<a href=\"?ses=%s&w=kad&c=connect\">%s</a>)"),  sSession , GetResString(IDS_IRC_CONNECT) );
 		}
 	}
 	Out.Replace(_T("[KadConText]"), HTTPConText);
@@ -2929,7 +2928,7 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 	if(pThis->m_Params.bShowUploadQueueFriend)
 	{
 		Out.Replace(_T("[UploadQueueFriend]"), pThis->m_Templates.sTransferUpQueueFriendShow);
-		//Out.Replace(_T("[UploadQueueFriendList]"), _GetPlainResString(IDS_IRC_ADDTOFRIENDLIST)); removed irc [lama]
+		Out.Replace(_T("[UploadQueueFriendList]"), _GetPlainResString(IDS_IRC_ADDTOFRIENDLIST));
 
 		CString sQueueFriend;
 		
@@ -3813,6 +3812,7 @@ CString CWebServer::_GetAddServerBox(ThreadData Data)
 	Out.Replace(_T("[Port]"), _GetPlainResString(IDS_PORT));
 	Out.Replace(_T("[Name]"), _GetPlainResString(IDS_SW_NAME));
 	Out.Replace(_T("[Static]"), _GetPlainResString(IDS_STATICSERVER));
+	Out.Replace(_T("[ConnectNow]"), _GetPlainResString(IDS_IRC_CONNECT));
 	Out.Replace(_T("[Priority]"), _GetPlainResString(IDS_PRIORITY));
 	Out.Replace(_T("[Low]"), _GetPlainResString(IDS_PRIOLOW));
 	Out.Replace(_T("[Normal]"), _GetPlainResString(IDS_PRIONORMAL));
@@ -3823,8 +3823,10 @@ CString CWebServer::_GetAddServerBox(ThreadData Data)
 	Out.Replace(_T("[Apply]"), _GetPlainResString(IDS_PW_APPLY));
 	Out.Replace(_T("[URL_Disconnect]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=disconnect") ):GetPermissionDenied());
 	Out.Replace(_T("[URL_Connect]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=connect")):GetPermissionDenied());
+	Out.Replace(_T("[Disconnect]"), _GetPlainResString(IDS_IRC_DISCONNECT));
 	Out.Replace(_T("[Connect]"), _GetPlainResString(IDS_CONNECTTOANYSERVER));
 	Out.Replace(_T("[ServerOptions]"), CString(_GetPlainResString(IDS_FSTAT_CONNECTION)));
+	Out.Replace(_T("[Execute]"), _GetPlainResString(IDS_IRC_PERFORM));
 
 	return Out;
 }
@@ -3951,20 +3953,20 @@ CString CWebServer::_GetKadDlg(ThreadData Data)
 		if (Kademlia::CKademlia::isFirewalled()) {
 			Out.Replace(_T("[KADSTATUS]"), GetResString(IDS_FIREWALLED));
 			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=rcfirewall\">%s</a>"), sSession , GetResString(IDS_KAD_RECHECKFW) );
-			buffer.AppendFormat(_T("<br><a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>"), sSession /*, GetResString(IDS_IRC_DISCONNECT)*/ );//remove irc [lama]
+			buffer.AppendFormat(_T("<br><a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>"), sSession , GetResString(IDS_IRC_DISCONNECT) );
 		} else {
 
 			Out.Replace(_T("[KADSTATUS]"), GetResString(IDS_CONNECTED));
-			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>"),  sSession /*, GetResString(IDS_IRC_DISCONNECT) */);//remove irc [lama]
+			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>"),  sSession , GetResString(IDS_IRC_DISCONNECT) );
 		}
 	}
 	else {
 		if (Kademlia::CKademlia::isRunning()) {
 			Out.Replace(_T("[KADSTATUS]"), GetResString(IDS_CONNECTING));
-			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>"),  sSession /*, GetResString(IDS_IRC_DISCONNECT)*/ );//remove irc [lama]
+			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=disconnect\">%s</a>"),  sSession , GetResString(IDS_IRC_DISCONNECT) );
 		} else {
 			Out.Replace(_T("[KADSTATUS]"), GetResString(IDS_DISCONNECTED));
-			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=connect\">%s</a>"),  sSession /*, GetResString(IDS_IRC_CONNECT)*/ );//remove irc [lama]
+			buffer.Format(_T("<a href=\"?ses=%s&w=kad&c=connect\">%s</a>"),  sSession , GetResString(IDS_IRC_CONNECT) );
 		}
 	}
 	Out.Replace(_T("[KADACTION]"), buffer);

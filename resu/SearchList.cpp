@@ -24,6 +24,7 @@
 #include "Preferences.h"
 #include "UpDownClient.h"
 #include "SafeFile.h"
+#include "MMServer.h"
 #include "SharedFileList.h"
 #include "KnownFileList.h"
 #include "DownloadQueue.h"
@@ -206,6 +207,10 @@ UINT CSearchList::ProcessSearchAnswer(const uchar* in_packet, uint32 size, bool 
 		}
 		AddToList(toadd, false);
 	}
+	if (m_MobilMuleSearch)
+		theApp.mmserver->SearchFinished(false);
+	m_MobilMuleSearch = false;
+
 	if (pbMoreResultsAvailable)
 		*pbMoreResultsAvailable = false;
 	int iAddData = (int)(packet.GetLength() - packet.GetPosition());
