@@ -206,6 +206,8 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_ctrlTreeOptions.AddEditBox(m_htiFnCustomTag, RUNTIME_CLASS(CTreeOptionsEdit));
 		m_htiFnTagAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FN_TAG_AT_END), m_htiFnTag, m_bFnTagAtEnd);
 		m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
+		m_ctrlTreeOptions.SetItemState(m_htiFnTag, TVIS_BOLD, TVIS_BOLD);
+
 		// <== FunnyNick Tag - Stulle
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);

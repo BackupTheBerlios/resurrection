@@ -41,6 +41,8 @@
 #define MP_STATTREE_EXPANDALL	10960
 #define MP_STATTREE_COLLAPSEALL 10961
 #define MP_STATTREE_EXPANDMAIN	10962
+#define MP_STATTREE_COPYLAMASTAT 10963
+
 //				For GetItemText overloaded function of CStatisticsTree
 #define	GET_TITLE				0
 #define	GET_VALUE				1

@@ -4545,6 +4545,7 @@ BEGIN
     IDS_RELEASEREMOVE       "Remove Super Release"
     IDS_RELEASESET          "Enable Super Release"
     IDS_LOG_IACH            "Log IACH Events"
+    IDS_STATS_LAMASTAT      "Copy Lama-Stat"
 END
 
 STRINGTABLE 

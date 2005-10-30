@@ -28,13 +28,20 @@
 #include "emule.h"
 #include "StatisticsTree.h"
 #include "StatisticsDlg.h"
+#include "Statistics.h"
 #include "emuledlg.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
 #include "Log.h"
 #include "StringConversion.h"
 #include "opcodes.h"
-#include "Statistics.h"
+#include "clientlist.h"
+#include "downloadqueue.h"
+#include "sharedfilelist.h"
+#include "uploadqueue.h"
+#include "downloadlistctrl.h"
+#include "./SysInfo/SystemInfo.h"
+#include "transferwnd.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -142,6 +149,7 @@ void CStatisticsTree::DoMenu(CPoint doWhere, UINT nFlags)
 	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYSEL, GetResString(IDS_STATS_MNUTREECPYSEL), _T("COPY"));
 	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYVIS, GetResString(IDS_STATS_MNUTREECPYVIS), _T("COPYVISIBLE"));
 	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYALL, GetResString(IDS_STATS_MNUTREECPYALL), _T("COPYSELECTED"));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYLAMASTAT, GetResString(IDS_STATS_LAMASTAT), _T("COPYLAMASTAT"));
 	mnuContext.AppendMenu(MF_SEPARATOR);
 
 	mnuHTML.CreateMenu();
@@ -219,6 +227,7 @@ lblSaveExpanded:
 		case MP_STATTREE_COPYSEL:
 		case MP_STATTREE_COPYVIS:
 		case MP_STATTREE_COPYALL:
+		case MP_STATTREE_COPYLAMASTAT:
 			{
 				CopyText(wParam);
 				break;
@@ -475,6 +484,97 @@ bool CStatisticsTree::CopyText(int copyMode)
 					return false;
 				theApp.CopyTextToClipboard(theText);
 				return true;
+			}
+		case MP_STATTREE_COPYLAMASTAT:
+					{
+	CString fstats;
+fstats.AppendFormat(_T("Basic System Infos:\r\n"));
+fstats.AppendFormat(_T("-------------------\r\n"));
+fstats.AppendFormat(_T("|--> Emule Nickname: %s \r\n"),thePrefs.GetUserNick());
+fstats.AppendFormat(_T("|--> running Mod: %s \r\n"),MOD_VERSION);
+fstats.AppendFormat(_T("|--> CPU Usage: %3d%% \r\n"), theApp.sysinfo->GetCpuUsage());
+fstats.AppendFormat(_T("|--> Mem Usage: %.fMb \r\n"),(double)theApp.sysinfo->GetMemoryUsage()/1024);
+//fstats.AppendFormat(_T("|--> OS Info : %s \r\n"), theApp.sysinfo->GetWindowsString());
+fstats.AppendFormat(_T("\r\n"));
+
+fstats.AppendFormat(_T("Emule Settings:\r\n"));
+fstats.AppendFormat(_T("---------------\r\n"));
+fstats.AppendFormat(_T("|--> Maxup: %u (act:%u) Maxdown: %u(act:%u) \r\n"),thePrefs.GetMaxGraphUploadRate(true),thePrefs.GetMaxUpload(),thePrefs.GetMaxGraphDownloadRate(),thePrefs.GetMaxDownload());
+fstats.AppendFormat(_T("|--> Hardlimit: %u \r\n"),thePrefs.maxsourceperfile,theApp.emuledlg->transferwnd->downloadlistctrl);
+fstats.AppendFormat(_T("|--> Max Connections: %u \r\n"),thePrefs.maxconnections);
+fstats.AppendFormat(_T("|--> Max Cons/5: %u \r\n"),thePrefs.MaxConperFive);
+fstats.AppendFormat(_T("|--> Ports: TCP:%u UDP:%u \r\n"),thePrefs.port,thePrefs.udpport);
+fstats.AppendFormat(_T("\r\n"));
+	//upload
+fstats.AppendFormat(_T("Upload Stats:\r\n"));
+ fstats.AppendFormat(_T("-------------\r\n"));
+ __int64 sessionRunTime = (__int64)((GetTickCount()-theStats.starttime)/1000);
+ fstats.AppendFormat(_T("|--> %s: %s (%1.1f%%)\r\n"), GetResString(IDS_STATS_UPTIME), CastSecondsToLngHM(theStats.GetUploadTime()), (double) (100 * theStats.GetUploadTime()) / sessionRunTime);
+ fstats.AppendFormat(_T("|--> Upload-Speed: %.2f %s \r\n"),theStats.rateUp,GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Average Uploadrate: %.2f %s \r\n"),theStats.GetAvgUploadRate(AVG_SESSION),GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Max Upload Rate: %.2f %s \r\n"),theStats.maxUp,GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Max Average Upload Rate: %.2f %s \r\n"),theStats.maxUpavg,GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Uploaded Data: %s \r\n"),CastItoXBytes(theStats.sessionSentBytes));
+ //fstats.AppendFormat(_T("|--> On Queue/Banned : %u (%u banned) \r\n"),CastItoXBytes(theStats.sessionSentBytes));
+ //fstats.AppendFormat(GetResString(IDS_STATS_LEECHERCLIENTS) + _T(" (%1.1f%%)"),theStats.leecherclients, (double)100*theStats.leecherclients/totalclient);stattree.SetItemText(cligen[6], cbuffer);
+ fstats.AppendFormat(_T("\r\n"));
+	//download
+ fstats.AppendFormat(_T("Download Stats:\r\n"));
+ fstats.AppendFormat(_T("---------------\r\n"));
+ fstats.AppendFormat(_T("|--> %s: %s (%1.1f%%)\r\n"), GetResString(IDS_STATS_DOWNTIME), CastSecondsToLngHM(theStats.GetDownloadTime()), (double) (100 * theStats.GetDownloadTime()) / sessionRunTime);
+ fstats.AppendFormat(_T("|--> Download-Speed: %.2f %s \r\n"),theStats.rateDown, GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Average Downloadrate: %.2f %s \r\n"),theStats.GetAvgDownloadRate(AVG_SESSION),GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Max Download Rate: %.2f %s \r\n"),theStats.maxDown,GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Max Average Download Rate: %.2f %s \r\n"),theStats.maxDownavg,GetResString(IDS_KBYTESEC));
+ fstats.AppendFormat(_T("|--> Downloaded Data: %s \r\n"), CastItoXBytes( theStats.sessionReceivedBytes ));
+ fstats.AppendFormat(_T("\r\n"));
+	//mix
+ fstats.AppendFormat(_T("Statistics:\r\n"));
+ fstats.AppendFormat(_T("-----------\r\n"));
+ if ( theStats.sessionReceivedBytes>0 && theStats.sessionSentBytes>0 ) {
+		// Session
+ if (theStats.sessionReceivedBytes<theStats.sessionSentBytes) {
+ fstats.AppendFormat(_T("|--> %s %.2f : 1 \r\n"),GetResString(IDS_STATS_SRATIO),(float)theStats.sessionSentBytes/theStats.sessionReceivedBytes);
+		} else {
+ fstats.AppendFormat(_T("|--> %s 1 : %.2f \r\n"),GetResString(IDS_STATS_SRATIO),(float)theStats.sessionReceivedBytes/theStats.sessionSentBytes);
+		}
+	}
+	else {
+ fstats.AppendFormat(_T("|--> %s %s \r\n"), GetResString(IDS_STATS_SRATIO), GetResString(IDS_FSTAT_WAITING));
+	}
+	uint64 bytesLargestFile = 0;
+	uint64 allsize=theApp.sharedfiles->GetDatasize(bytesLargestFile); // Func returns total share size and sets pointeredd uint64 to largest single filesize
+  fstats.AppendFormat(_T("|--> Sharing: %s (%i Files)\r\n"),CastItoXBytes(allsize),theApp.sharedfiles->GetCount());
+	int myRateStats[3];
+	uint64 ui64TotFileSize=0;
+	uint64 ui64TotBytesLeftToTransfer=0;
+	uint64 ui64TotNeededSpace=0;
+	uint64 t_FreeBytes=0;
+	theApp.downloadqueue->GetDownloadStats(myRateStats,ui64TotFileSize,ui64TotBytesLeftToTransfer,ui64TotNeededSpace);
+    fstats.AppendFormat(_T("|--> Number of Files to Download: %d \r\n"),myRateStats[2]);
+	CMap<uint32, uint32, uint32, uint32> clientVersionEDonkey;
+	CMap<uint32, uint32, uint32, uint32> clientVersionEDonkeyHybrid;
+	CMap<uint32, uint32, uint32, uint32> clientVersionEMule;
+	CMap<uint32, uint32, uint32, uint32> clientVersionAMule;
+	uint32 totalclient;
+	int myStats[15];
+	theApp.clientlist->GetStatistics(totalclient, myStats,
+		clientVersionEDonkey,
+		clientVersionEDonkeyHybrid,
+		clientVersionEMule,
+		clientVersionAMule);
+	uint32 otherclient = totalclient-myStats[12]-myStats[13]; //this includes IS_IDNEEDED and clients without credits
+    fstats.AppendFormat(_T("|--> %s: %u (%.1f%%) : %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (totalclient)?((double)100*myStats[12] / totalclient):0, myStats[13] , (totalclient)?((double)100*myStats[13] / totalclient ):0, otherclient, (totalclient)?((double)100*otherclient/totalclient):0); 
+	fstats.AppendFormat(_T("\r\n"));
+	double percentSessions = 0;
+	uint32 statBadSessions = theApp.uploadqueue->GetFailedUpCount();
+	uint32 statBadSessionsdown = thePrefs.GetDownS_FailedSessions();
+	fstats.AppendFormat(_T("|--> Found Sources: %u \r\n"),(GetResString(IDS_STATS_FOUNDSRC), myStats[0]));
+	fstats.AppendFormat( _T("|--> %s: %u \r\n") , GetResString( IDS_ONQUEUE ) , myStats[2] );
+    fstats.AppendFormat(_T("|--> Failed up/down sessions: %i/%i\r\n"),statBadSessions,statBadSessionsdown);
+    fstats.AppendFormat(_T("\r\n"));
+	theApp.CopyTextToClipboard(fstats); 
+					break;
 			}
 	}
 

@@ -2422,6 +2422,7 @@
 #define IDS_NEXTEMF                     7100
 #define IDS_CLIENT_PERC                 7101
 #define IDS_PAYBACK_FIRST               7102
+#define IDS_STATS_LAMASTAT              10009
 #define IDC_REASKSRCAFTERIPCHANGE       10024
 #define IDC_MODLOG                      10227
 #define IDC_AutoHL_Groupbox             10300
