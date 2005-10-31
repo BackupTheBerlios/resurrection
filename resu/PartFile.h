@@ -257,6 +257,9 @@ public:
 	void	AddDownloadingSource(CUpDownClient* client);
 	void	RemoveDownloadingSource(CUpDownClient* client);
 
+	bool	IsA4AFAuto() const { return m_is_A4AF_auto; }//a4af
+	void	SetA4AFAuto(bool in) { m_is_A4AF_auto = in; }//a4af
+
 	CString GetProgressString(uint16 size) const;
 	CString GetInfoSummary() const;
 
@@ -371,6 +374,7 @@ private:
 	CList<uint16, uint16> corrupted_list;
 	uint32	m_ClientSrcAnswered;
 	uint16	availablePartsCount;
+	bool	m_is_A4AF_auto;
 	CWinThread* m_AllocateThread;
 	DWORD	m_lastRefreshedDLDisplay;
 	CUpDownClientPtrList m_downloadingSourceList;
@@ -391,7 +395,7 @@ private:
 	volatile UINT m_uFileOpProgress;
 
     DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
-uint16	m_Valid_FQS_QRS_Count;   //Sivka: AutoHL added by lama
+ 	uint16	m_Valid_FQS_QRS_Count;   //Sivka: AutoHL
 //>>> WiZaRd - AutoHL
 private:
 	bool	m_bUseAutoHL; 

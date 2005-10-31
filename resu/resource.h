@@ -2314,10 +2314,6 @@
 #define IDS_FAKECHECKUPERROR            4791
 #define IDS_UPDATEFAKECHECKONSTART      4793
 #define IDS_CHECKFAKE                   4795
-#define IDS_UNBAN_UPLOADER              4796
-#define IDS_ANTI_CASE_1                 4797
-#define IDS_ANTI_CASE_2                 4798
-#define IDS_ANTI_CASE_3                 4799
 #define IDC_DownloadColor               4805
 #define IDC_EnableDownloadInBold        4806
 #define IDS_DC_RED                      4807
@@ -2341,6 +2337,10 @@
 #define IDS_LOG_FC_LOADED               5008
 #define IDS_DOWNFAKECHECKFILE           5011
 #define IDS_LOG_FC_INFO                 5012
+#define IDS_ALL_A4AF_TO_OTHER           5017
+#define IDS_SWAP_A4AF_TO_THIS           5018
+#define IDS_ALL_A4AF_TO_THIS            5019
+#define IDS_ALL_A4AF_AUTO               5020
 #define IDC_IPFILTER_VERSION            5029
 #define IDC_FAKELIST_VERSION            5030
 #define IDC_STATIC_COLORS               5409
@@ -2485,6 +2485,8 @@
 #define IDS_AHL_TIMERLABEL              15009
 #define IDS_SIVKAFILESETTINGS2          15010
 #define IDS_LSD_TOTAL_UP_DL             21600
+#define IDS_TOGGLE_AUTOHL               21663
+#define IDS_ADJUST_HARDLIMIT            21664
 #define IDC_MORPH2_FILE                 50523
 #define IDC_MORPH2_SECURITY             50524
 #define IDC_MORPH2_COUNTRY              50525
@@ -2559,6 +2561,8 @@
 #define IDS_LEECHERBOX			60108
 #define IDC_SHOWLEECHERBOX              60109
 #define IDS_CD_UPOSITION                61055
+#define IDS_ACTIVE_UPLOADS              61056
+#define IDS_UPLOADS_WAITING             61057
 // ==> FunnyNick Tag - Stulle
 #define IDS_FN_TAG                      60140
 #define IDS_NO_TAG                      60141
@@ -2567,6 +2571,7 @@
 #define IDS_CUSTOM_TAG                  60144
 #define IDS_SET_CUSTOM_TAG              60145
 #define IDS_FN_TAG_AT_END               60146
+#define IDS_FEED_FILTERED               60147
 // <== FunnyNick Tag - Stulle
 
 // Next default values for new objects

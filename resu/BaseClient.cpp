@@ -274,6 +274,7 @@ m_pszFunnyNick = NULL; //>>> WiZaRd 4 Lama
 	lastMultiOHCBPacketSent = 0; // Superlexx - Multi-OHCB
 	m_bWebCacheSupportsMultiOHCBs = false;
     //KTS- webcache
+
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -348,7 +349,7 @@ CUpDownClient::~CUpDownClient(){
 	for (POSITION pos = m_WaitingPackets_list.GetHeadPosition();pos != 0;)
 		delete m_WaitingPackets_list.GetNext(pos);
 	m_WaitingPackets_list.RemoveAll(); //Spanish [TPT] - Patch
-	
+
 	DEBUG_ONLY (theApp.listensocket->Debug_ClientDeleted(this));
 	SetUploadFileID(NULL);
 
@@ -2432,6 +2433,7 @@ void CUpDownClient::AssertValid() const
 	(void)m_strFileComment;
 	(void)m_uFileRating;
 	CHECK_BOOL(m_bCollectionUploadSlot);
+
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

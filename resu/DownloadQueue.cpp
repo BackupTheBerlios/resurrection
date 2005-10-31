@@ -120,7 +120,7 @@ void CDownloadQueue::Init(){
 				if (toadd->GetStatus(true) == PS_READY)
 					theApp.sharedfiles->SafeAddKFile(toadd); // part files are always shared files
 				theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(toadd);// show in downloadwindow
-			// AutoHL added by lama
+			// AutoHL [Aireoreion]
 			if(toadd->GetStatus() != PS_PAUSED && toadd->GetStatus() != PS_ERROR)
 				counter++;
 			}
@@ -144,7 +144,7 @@ void CDownloadQueue::Init(){
 				if (toadd->GetStatus(true) == PS_READY)
 					theApp.sharedfiles->SafeAddKFile(toadd); // part files are always shared files
 				theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(toadd);// show in downloadwindow
-			// AutoHL added by lama
+			// AutoHL [Aireoreion]
 			if(toadd->GetStatus() != PS_PAUSED && toadd->GetStatus() != PS_ERROR)
 				counter++;
 
@@ -167,7 +167,7 @@ void CDownloadQueue::Init(){
 
 	ExportPartMetFilesOverview();
 
-	// AutoHL - Set AutoHL for new Files added by lama
+	// AutoHL - Set AutoHL for new Files [Aireoreion]
 	m_bIsInit = true;
 	if(thePrefs.IsUseAutoHL() && counter)
 	{
@@ -186,7 +186,7 @@ void CDownloadQueue::Init(){
 			cur_file->SetFileHardLimit(HardLimit);
 		}
 }
-	// End AutoHL added by lama
+	// End AutoHL
 }
 
 CDownloadQueue::~CDownloadQueue(){
@@ -968,7 +968,7 @@ bool CDownloadQueue::SendNextUDPPacket()
 			}
 		}
 
-		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcePerFileUDP()) //>>> WiZaRd - AutoHL added by lama
+		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcePerFileUDP()) //>>> WiZaRd - AutoHL
 		{
 			if (bGetSources2Packet){
 				// GETSOURCES2 Packet (<HASH_16><SIZE_4> *)
@@ -1711,25 +1711,6 @@ LRESULT CSourceHostnameResolveWnd::OnHostnameResolved(WPARAM wParam,LPARAM lPara
 	return TRUE;
 }
 
-//Sivka (AutoHL) added by lama
-void CDownloadQueue::InitTempVariables(CPartFile* file)
-{
-	thePrefs.SetMaxSourcesPerFileTemp(file->GetFileHardLimit());
-	thePrefs.SetEnableAutoHLTemp(file->UseAutoHL());
-	thePrefs.SetAutoHL_TimerTemp(thePrefs.GetAutoHLUpdateTimer());
-}
-
-void CDownloadQueue::UpdateFileSettings(CPartFile* file)
-{
-	if(thePrefs.GetMaxSourcesPerFileTakeOver())
-		file->SetFileHardLimit(thePrefs.GetMaxSourcesPerFileTemp());
-	if(thePrefs.GetEnableAutoHLTakeOver())
-		file->SetUseAutoHL(thePrefs.GetEnableAutoHLTemp());
-	if(thePrefs.GetAutoHL_TimerTakeOver())
-		thePrefs.m_uiAutoHLUpdateTimer = thePrefs.GetAutoHL_TimerTemp();
-}
-//Sivka (AutoHL) added by lama
-
 bool CDownloadQueue::DoKademliaFileRequest()
 {
 	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
@@ -1742,7 +1723,7 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 	if( !temp )
 		return;
 	//Do we need more sources?
-	if(!(!temp->IsStopped() && temp->GetFileHardLimit() > temp->GetSourceCount())) //>>> WiZaRd - AutoHL added by lama	
+	if(!(!temp->IsStopped() && temp->GetFileHardLimit() > temp->GetSourceCount())) //>>> WiZaRd - AutoHL
 		return;
 
 	uint32 ED2Kip = ntohl(ip);

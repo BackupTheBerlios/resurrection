@@ -238,7 +238,7 @@ CPartFile::CPartFile(CED2KFileLink* fileLink,uint8 cat)
 
 void CPartFile::Init()
 {
-//>>> WiZaRd - AutoHL  added by lama
+//>>> WiZaRd - AutoHL 
 	m_iUpdateHL = ::GetTickCount(); 
 	m_bUseAutoHL = thePrefs.IsUseAutoHL(); 
 
@@ -253,7 +253,7 @@ void CPartFile::Init()
 	}
 	else
 		m_iFileHardLimit = thePrefs.GetMaxSourcePerFile(); //default Pref-Hardlimit 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 	//KTS+ webcache
 SetSpecialFile(NULL); //>>> [ionix] - WiZaRd::eD2K Updates	
 // MORPH START - Added by Commander, WebCache 1.2f
@@ -312,6 +312,7 @@ SetSpecialFile(NULL); //>>> [ionix] - WiZaRd::eD2K Updates
 	m_uPartsSavedDueICH = 0;
 	m_category=0;
 	m_lastRefreshedDLDisplay = 0;
+	m_is_A4AF_auto=false;//a4af
 	m_bLocalSrcReqQueued = false;
 	MEMSET(src_stats,0,sizeof(src_stats));
 	MEMSET(net_stats,0,sizeof(net_stats));
@@ -435,6 +436,7 @@ void CPartFile::AssertValid() const
 	(void)m_nTotalBufferData;
 	(void)m_nLastBufferFlushTime;
 	(void)m_category;
+	CHECK_BOOL(m_is_A4AF_auto);//a4af
 	(void)m_dwFileAttributes;
 }
 
@@ -676,13 +678,6 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 					    delete newtag;
 					    break;
 				    }
-					case FT_MAXSOURCES: {
-						ASSERT( newtag->IsInt() );
-						if (newtag->IsInt())
-							m_uMaxSources = newtag->GetInt();
-					    delete newtag;
-					    break;
-				    }
 				    case FT_DLPRIORITY:{
 						ASSERT( newtag->IsInt() );
 						if (newtag->IsInt()){
@@ -865,6 +860,22 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 						delete newtag;
 						break;
 					}
+//>>> WiZaRd - AutoHL
+					case FT_HARDLIMIT:
+					{
+						if(newtag->IsInt())
+							m_iFileHardLimit = newtag->GetInt();
+						delete newtag;
+						break;
+					}
+					case FT_AUTOHL:
+					{
+						if(newtag->IsInt())
+							SetUseAutoHL(newtag->GetInt() == 1);
+						delete newtag;
+						break;
+					}
+//<<< WiZaRd - AutoHL
 //>>> [ionix] - WiZaRd::eD2K Updates
 					case FT_SPECIALFILE:
 					{
@@ -1370,6 +1381,19 @@ bool CPartFile::SavePartFile()
 			aichtag.WriteTagToFile(&file);
 			uTagCount++;
 		}
+
+//>>> WiZaRd - AutoHL
+		CTag hardlimit(FT_HARDLIMIT, GetFileHardLimit());
+		hardlimit.WriteTagToFile(&file);
+		uTagCount++;	
+
+		if(m_bUseAutoHL)
+		{
+			CTag autohl(FT_AUTOHL, 1);
+			autohl.WriteTagToFile(&file);
+			uTagCount++;
+		}
+//<<< WiZaRd - AutoHL
 //>>> [ionix] - WiZaRd::eD2K Updates
 		if(IsSpecialFile())
 		{
@@ -2510,7 +2534,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 						if( !theApp.DoCallback( cur_src ) )
 						{
 							//If we are almost maxed on sources, slowly remove these client to see if we can find a better source.
-							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (this->GetFileHardLimit()*.8 )) ) //>>> WiZaRd - AutoHL added by lama
+							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (this->GetFileHardLimit()*.8 )) ) //>>> WiZaRd - AutoHL
 							{
 								theApp.downloadqueue->RemoveSource( cur_src );
 								lastpurgetime = dwCurTick;
@@ -2529,7 +2553,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 					if( (dwCurTick - lastpurgetime) > SEC2MS(40) ){
 						lastpurgetime = dwCurTick;
 						// we only delete them if reaching the limit
-						if (GetSourceCount() >= (GetFileHardLimit()*.8 )){ //>>> WiZaRd - AutoHL added by lama
+						if (GetSourceCount() >= (GetFileHardLimit()*.8 )){ //>>> WiZaRd - AutoHL
 							theApp.downloadqueue->RemoveSource( cur_src );
 							break;
 						}			
@@ -2545,12 +2569,12 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 				}
 				case DS_ONQUEUE:
 				{
-					m_Valid_FQS_QRS_Count_Temp++; // AutoHL [ionix] added by lama
+					m_Valid_FQS_QRS_Count_Temp++; // AutoHL [ionix]
 					// To Mods, please stop instantly removing these sources..
 					// This causes sources to pop in and out creating extra overhead!
 					if( cur_src->IsRemoteQueueFull() ) 
 					{
-						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetFileHardLimit()*.8 )) ) //>>> WiZaRd - AutoHL added by lama
+						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetFileHardLimit()*.8 )) ) //>>> WiZaRd - AutoHL
 						{
 							theApp.downloadqueue->RemoveSource( cur_src );
 							lastpurgetime = dwCurTick;
@@ -2581,7 +2605,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 			NotifyStatusChange();
  
 		m_Valid_FQS_QRS_Count = m_Valid_FQS_QRS_Count_Temp; // added by sivka
-		if( GetMaxSourcePerFileUDP() > GetSourceCount()) //>>> WiZaRd - AutoHL added by lama
+		if( GetMaxSourcePerFileUDP() > GetSourceCount()) //>>> WiZaRd - AutoHL
 		{
 			if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::getTotalFile() < KADEMLIATOTALFILE) && (dwCurTick > m_LastSearchTimeKad) &&  Kademlia::CKademlia::isConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
 				//Kademlia
@@ -2651,7 +2675,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 			theApp.emuledlg->transferwnd->UpdateCatTabTitles();
 	}
 
-//>>> WiZaRd - AutoHL  added by lama
+//>>> WiZaRd - AutoHL 
 	//if( GetStatus() == PS_READY || GetStatus() == PS_EMPTY ) //not needed? (checked in DownloadQueue)
 	{
 		if( m_iUpdateHL 
@@ -2659,7 +2683,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/,
 			&& dwCurTick - m_iUpdateHL > uint32(SEC2MS(thePrefs.GetAutoHLUpdateTimer())) ) 
 			SetAutoHL(); 
 	} 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 	return datarate;
 }
 
@@ -2768,7 +2792,7 @@ void CPartFile::AddSources(CSafeMemFile* sources, uint32 serverip, uint16 server
 			continue;
 		}
 
-		if( GetFileHardLimit() > this->GetSourceCount() )  //>>> WiZaRd - AutoHL added by lama
+		if( GetFileHardLimit() > this->GetSourceCount() )  //>>> WiZaRd - AutoHL
 		{
 			debug_possiblesources++;
 			CUpDownClient* newsource = new CUpDownClient(this,port,userid,serverip,serverport,true);
@@ -3024,11 +3048,12 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 	
 	if (!bIsHashingDone){
 		SetStatus(PS_COMPLETING);
+		m_is_A4AF_auto=false;//a4af
 		datarate = 0;
-//>>> WiZaRd - AutoHL added by lama
+//>>> WiZaRd - AutoHL 
 		m_iFileHardLimit = 0; 
 		m_iUpdateHL = NULL; 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 		CAddFileThread* addfilethread = (CAddFileThread*) AfxBeginThread(RUNTIME_CLASS(CAddFileThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 		if (addfilethread){
 			SetFileOp(PFOP_HASHING);
@@ -3248,8 +3273,6 @@ BOOL CPartFile::PerformFileComplete()
 	}
 	free(newfilename);
 
-	m_SettingsSaver.DeleteFile(this); // [ionix] - Sivka AutoHL  added by lama
-
 	DWORD dwMoveResult;
 	if ((dwMoveResult = MoveCompletedPartFile(strPartfilename, strNewname, this)) != ERROR_SUCCESS)
 	{
@@ -3303,10 +3326,10 @@ BOOL CPartFile::PerformFileComplete()
 	SetPath(indir);
 	SetFilePath(m_fullname);
 	_SetStatus(PS_COMPLETE); // set status of CPartFile object, but do not update GUI (to avoid multi-thread problems)
-	//>>> WiZaRd - AutoHL added by lama
+//>>> WiZaRd - AutoHL 
 	m_iFileHardLimit = 0; 
 	m_iUpdateHL = NULL; 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 	paused = false;
 	SetFileOp(PFOP_NONE);
 
@@ -3455,8 +3478,6 @@ void CPartFile::DeleteFile(){
 	if (_taccess(BAKName, 0) == 0 && !::DeleteFile(BAKName))
 		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + GetErrorMessage(GetLastError()), BAKName);
 
-	m_SettingsSaver.DeleteFile(this); // [ionix] - Sivka AutoHL added by lama
-	
 	delete this;
 }
 
@@ -3582,7 +3603,7 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 	paused = true;
 	stopped = true;
 	insufficient = false;
-	m_iUpdateHL = NULL; //>>> WiZaRd - AutoHL added by lama
+	m_iUpdateHL = NULL; //>>> WiZaRd - AutoHL
 	datarate = 0;
 	MEMSET(m_anStates,0,sizeof(m_anStates));
 	MEMSET(src_stats,0,sizeof(src_stats));
@@ -3694,7 +3715,7 @@ void CPartFile::PauseFile(bool bInsufficient, bool resort)
 	}
 	NotifyStatusChange();
 	datarate = 0;
-	m_iUpdateHL = NULL; //>>> WiZaRd - AutoHL added by lama
+	m_iUpdateHL = NULL; //>>> WiZaRd - AutoHL
 	m_anStates[DS_DOWNLOADING] = 0; // -khaos--+++> Renamed var.
 	if (!bInsufficient)
 	{
@@ -3727,7 +3748,7 @@ void CPartFile::ResumeFile(bool resort)
 	}
 	paused = false;
 	stopped = false;
-	m_iUpdateHL = ::GetTickCount(); //>>> WiZaRd - AutoHL added by lama
+	m_iUpdateHL = ::GetTickCount(); //>>> WiZaRd - AutoHL
 	// AutoHL [Aireoreion]
 	if(m_iFileHardLimit == 0 && this->UseAutoHL())
 		m_iFileHardLimit = (theApp.downloadqueue->GetHLCount() > thePrefs.GetMaxSourcesHL()) ? thePrefs.GetMinAutoHL() : min((thePrefs.GetMaxSourcesHL()-theApp.downloadqueue->GetHLCount()), thePrefs.GetMaxAutoHL());
@@ -4296,7 +4317,7 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 			}
 		}
 
-		if (GetFileHardLimit() > GetSourceCount())  //>>> WiZaRd - AutoHL added by lama
+		if (GetFileHardLimit() > GetSourceCount())  //>>> WiZaRd - AutoHL
 		{
 			CUpDownClient* newsource;
 			if (sourceexchangeversion == 3)
@@ -5666,6 +5687,9 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left, CPartFile* right) {
     }
 
     if(!left ||
+		       !left->IsA4AFAuto() &&
+       (
+          right->IsA4AFAuto() ||
        thePrefs.GetCategory(right->GetCategory())->prio > thePrefs.GetCategory(left->GetCategory())->prio ||
        thePrefs.GetCategory(right->GetCategory())->prio == thePrefs.GetCategory(left->GetCategory())->prio &&
        (
@@ -5678,6 +5702,7 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left, CPartFile* right) {
                right->GetFileName().CompareNoCase(left->GetFileName()) < 0
            )
        )
+	   )
     ) {
         return true;
     } else {
@@ -5885,36 +5910,13 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart){
 	AddLogLine(true, GetResString(IDS_AICH_WORKED), CastItoXBytes(nRecovered), CastItoXBytes(length), nPart, GetFileName());
 	//AICH successfully recovered %s of %s from part %u for %s
 }
-uint16 CPartFile::GetMaxSources() const
-{
-	// Ignore any specified 'max sources' value if not in 'extended mode' -> don't use a parameter which was once
-	// specified in GUI but can not be seen/modified any longer..
-	return (!thePrefs.IsExtControlsEnabled() || m_uMaxSources == 0) ? thePrefs.GetMaxSourcePerFileDefault() : m_uMaxSources;
-}
-	
-uint16 CPartFile::GetMaxSourcePerFileSoft() const
-{
-	UINT temp = ((UINT)GetMaxSources() * 9L) / 10;
-	if (temp > MAX_SOURCES_FILE_SOFT)
-		return MAX_SOURCES_FILE_SOFT;
-	return temp;
-}
-
-uint16 CPartFile::GetMaxSourcePerFileUDP() const
-{	
-	UINT temp = ((UINT)GetMaxSources() * 3L) / 4;
-	if (temp > MAX_SOURCES_FILE_UDP)
-		return MAX_SOURCES_FILE_UDP;
-	return temp;
-}
-
 CString CPartFile::GetTempPath() const
 {
 	return m_fullname.Left(m_fullname.ReverseFind(_T('\\'))+1);
 }
 
 		
-//>>> WiZaRd - AutoHL added by lama
+//>>> WiZaRd - AutoHL 
 void CPartFile::SetAutoHL() 
 { 
 	//Set to avail src +15% (at least 15 srcs)
@@ -5932,6 +5934,8 @@ void CPartFile::SetAutoHL()
 void CPartFile::SetFileHardLimit(uint16 i)
 	{
 #define MINMAX(val, mini, maxi)	{val = (min(max(mini, val), maxi));}
+	if(UseAutoHL())
+	{
 	//Keep minimum...
 	i = max(i, thePrefs.GetMinAutoHL());	
 	const uint16 m_uiHLCount = theApp.downloadqueue->GetHLCount()-m_iFileHardLimit; //Save CPU 
@@ -5941,12 +5945,32 @@ void CPartFile::SetFileHardLimit(uint16 i)
 	//Here, set HL to at least as many srcs as we have actually in queue...	
 	//which is only to keep graphs looking ok - but stay below maximum
 	MINMAX(i, srclist.GetCount(), m_uiMaxHL);
+	}
 	m_iFileHardLimit = i;
 			}
-//KTS+ webcache
-// JP added handling of proxy-sources on pause/cancel/resume START
-// JP cancel proxy downloads
-//remove all sources for this file from WCBlockList, StoppedWCBlockList and ThrottledChunkList
+
+uint16 CPartFile::GetMaxSourcePerFileUDP()
+{	
+	UINT temp = ((UINT)m_iFileHardLimit * 3L) / 4;
+	if (temp > MAX_SOURCES_FILE_UDP)
+		return MAX_SOURCES_FILE_UDP;
+	return temp;
+}
+
+uint16 CPartFile::GetFileHardLimitSoft()
+{
+	UINT temp = ((UINT)m_iFileHardLimit * 9L) / 10;
+	if (temp > MAX_SOURCES_FILE_SOFT)
+		return MAX_SOURCES_FILE_SOFT;
+	return temp;
+}
+
+uint16    CPartFile::GetFileHardLimit() const 
+{ 
+	return m_iFileHardLimit; 
+} 
+//<<< WiZaRd - AutoHL
+
 void CPartFile::CancelProxyDownloads()
 {
 uchar currenthash[16];
@@ -6148,21 +6172,6 @@ void CPartFile::RemoveSrcAtPos(POSITION pos)
 }
 //KTS- webcache
 
-uint16 CPartFile::GetMaxSourcePerFileUDP()
-{	
-	UINT temp = ((UINT)m_iFileHardLimit * 3L) / 4;
-	if (temp > MAX_SOURCES_FILE_UDP)
-		return MAX_SOURCES_FILE_UDP;
-	return temp;
-			}
-
-uint16 CPartFile::GetFileHardLimitSoft()
-{
-	UINT temp = ((UINT)m_iFileHardLimit * 9L) / 10;
-	if (temp > MAX_SOURCES_FILE_SOFT)
-		return MAX_SOURCES_FILE_SOFT;
-	return temp;
-}
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 void CPartFile::RemoveLow2LowIPSourcesManual()
 	{
@@ -6282,11 +6291,6 @@ void CPartFile::RemoveNoNeededPartsSources()
 	AddDebugLogLine(false, _T("Rimozione fonti con parti non necessarie(%s) : %i fonti rimosse"),GetFileName(),removed);		
 }
 //Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-uint16    CPartFile::GetFileHardLimit() const 
-{
-	return m_iFileHardLimit; 
-		}
-//<<< WiZaRd - AutoHL added by lama
 //>>> [ionix] - WiZaRd::eD2K Updates
 void CPartFile::CheckAndUpdateIfPossible()
 {

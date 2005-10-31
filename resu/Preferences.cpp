@@ -337,13 +337,13 @@ bool	CPreferences::checkDiskspace;
 UINT	CPreferences::m_uMinFreeDiskSpace;
 bool	CPreferences::m_bSparsePartFiles;
 CString	CPreferences::m_strYourHostname;
-//>>> WiZaRd - AutoHL  added by lama
+//>>> WiZaRd - AutoHL 
 uint16  CPreferences::m_uiAutoHLUpdateTimer; 
 uint16  CPreferences::m_uiMinAutoHL; 
 uint16  CPreferences::m_uiMaxAutoHL; 
 bool    CPreferences::m_bUseAutoHL; 
 uint16  CPreferences::m_uiMaxSourcesHL; 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 // [TPT] - quick start added by lama
 bool	CPreferences::m_QuickStart;
 uint16  CPreferences::m_QuickStartMaxCon;
@@ -571,16 +571,6 @@ CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
 bool	CPreferences::m_bWinaTransToolbar;
 
-//START adding by sivka (AutoHL) added by lama
-bool	CPreferences::m_EnableAutoHLTemp;
-uint16	CPreferences::m_AutoHL_TimerTemp;
-bool	CPreferences::m_EnableAutoHLTakeOver;
-bool	CPreferences::m_AutoHL_TimerTakeOver;
-bool	CPreferences::m_MaxSourcesPerFileTakeOver;
-uint16	CPreferences::m_MaxSourcesPerFileTemp;
-bool	CPreferences::m_TakeOverFileSettings;
-bool	CPreferences::m_activeConnectionControl; //Obelix
-//END adding by sivka (AutoHL) added by lama
 //==>- Sivka - Aggressive Client Handling [WiZaRd]
 uint8  CPreferences::m_uiSivkaTimeCount;
 uint8  CPreferences::m_uiSivkaAskCount;
@@ -620,10 +610,6 @@ bool	CPreferences::IsWebCacheTestPossible()//jp check proxy config
 		&& m_bHighIdPossible
 		&& !theApp.listensocket->TooManySockets());// no fake high ID
 }
-// ==> Anti Uploader Ban - Stulle
-uint16  CPreferences::m_iAntiUploaderBanLimit;
-uint8	CPreferences::AntiUploaderBanCaseMode;
-// <== Anti Uploader Ban - Stulle
 
 //Jp proxy configuration test end
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
@@ -644,6 +630,7 @@ bool	CPreferences::m_bFnTagAtEnd;
 
 //JP webcache release END
 //KTS- webcache
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -1905,13 +1892,14 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnableDownloadInBold"), m_bShowActiveDownloadsBold);
 	ini.WriteBool(_T("UploadColor"),UploadColor);
 	//End Download Color
-//>>> WiZaRd - AutoHL  added by lama
+//>>> WiZaRd - AutoHL 
 	ini.WriteInt(_T("AutoHLUpdate"), m_uiAutoHLUpdateTimer); 
 	ini.WriteBool(_T("AutoHL"), m_bUseAutoHL); 
 	ini.WriteInt(_T("MinAutoHL"), m_uiMinAutoHL); 
 	ini.WriteInt(_T("MaxAutoHL"), m_uiMaxAutoHL); 
 	ini.WriteInt(_T("MaxSourcesHL"), m_uiMaxSourcesHL); 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
+
 	//eMulefan83 Show Client Percentage added by lama
 	ini.WriteBool(_T("EnableClientPerc"), enableClientPerc, _T("eMule")); 
 //eMulefan83 Show Client Percentage added by lama
@@ -2145,9 +2133,6 @@ void CPreferences::SavePreferences()
 	// <--- Morph: PowerShare
 	ini.WriteInt(_T("SpreadbarSetStatus"), m_iSpreadbarSetStatus, _T("eMule"));
 ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
-//Sivka (AutoHL) added by lama
-	ini.WriteBool(_T("ActiveConnectionControl"),m_activeConnectionControl,_T("eMule"));//Obelix
-    //Sivka (AutoHL) added by lama
 //>>> Sivka - Aggressive Client Handling [WiZaRd]
 	ini.WriteInt(_T("SivkaTimeCount"), m_uiSivkaTimeCount,_T("eMule"));
 	ini.WriteInt(_T("SivkaAskCount"), m_uiSivkaAskCount,_T("eMule"));
@@ -2164,7 +2149,6 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 	uReAskFileSRC = (temp >= FILEREASKTIME && temp <= 3300000) ? temp : FILEREASKTIME;
 	ini.WriteInt(_T("ReAskFileSRC"), uReAskFileSRC); // [Maella/sivka: -ReAsk SRCs after IP Change-]
     ini.WriteBool(_T("ReAskSRCAfterIDChange"), bReAskSRCAfterIPChange); // [Maella/sivka: -ReAsk SRCs after IP Change-]
-
 	// [ionix] WiZaRd - AntiNickThief 
 	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("eMule"));
 	ini.WriteInt(_T("ClientBanTime"),m_bClientBanTime ,_T("eMule"));
@@ -2172,10 +2156,6 @@ ini.WriteInt(_T("CreditSystem"), m_iCreditSystem); // Credit System
 	ini.WriteBool(_T("AntiLeecherMod"),m_bAntiLeecherMod ,_T("eMule"));
 	ini.WriteBool(_T("LeecherSecureLog"),m_bLeecherSecureLog ,_T("eMule"));
 	// [ionix] WiZaRd - AntiNickThief 
-	// ==> Anti Uploader Ban - Stulle
-	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit,_T("eMule"));
-	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode,_T("eMule"));
-	// <== Anti Uploader Ban - Stulle
 //MORPH START - Added by milobac, FakeCheck, FakeReport, Auto-updating
 	ini.WriteInt(_T("FakesDatVersion"),m_FakesDatVersion,_T("eMule"));
 	ini.WriteBool(_T("UpdateFakeStartup"),UpdateFakeStartup,_T("eMule"));
@@ -2565,14 +2545,14 @@ void CPreferences::LoadPreferences()
 	addnewfilespaused = ini.GetBool(_T("AddNewFilesPaused"),false); 
 	depth3D = ini.GetInt(_T("3DDepth"), 5);
 	m_bEnableMiniMule = ini.GetBool(_T("MiniMule"), true);
-	#define MINMAX(val, mini, maxi)	(min(max(mini, val), maxi)) //added by lama (AutoHL)
 	//>>> [ionix]: e+ - Fakecheck - modified
 	m_dwDLingFakeListVersion=ini.GetInt(_T("DownloadingFakeListVersion"),0);
 	m_strDLingFakeListLink=ini.GetString(_T("DownloadingFakeListLink"), _T(""));
 	m_dwDLingIpFilterVersion=ini.GetInt(_T("DownloadingIpFilterVersion"), 0);
 	m_strDLingIpFilterLink=ini.GetString(_T("DownloadingIpFilterLink"), _T(""));
 	//<<< [ionix]: e+ - Fakecheck - modified
-//>>> WiZaRd - AutoHL added by lama
+//>>> WiZaRd - AutoHL 
+#define MINMAX(val, mini, maxi)	(min(max(mini, val), maxi))
 	m_uiAutoHLUpdateTimer = ini.GetInt(_T("AutoHLUpdate"), 300); 
 	m_uiAutoHLUpdateTimer = MINMAX(m_uiAutoHLUpdateTimer, 10, 600);
 	m_bUseAutoHL = ini.GetBool(_T("AutoHL"), true);     
@@ -2580,7 +2560,7 @@ void CPreferences::LoadPreferences()
 	m_uiMaxAutoHL = ini.GetInt(_T("MaxAutoHL"), 1500); 
 	m_uiMaxSourcesHL = ini.GetInt(_T("MaxSourcesHL"), 7500); 
 	m_uiMaxAutoHL = max(m_uiMinAutoHL, m_uiMaxAutoHL); 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 	
 // [TPT] - quick start	added by lama
 	m_QuickStart=ini.GetBool(_T("QuickStart"),false);
@@ -2936,14 +2916,7 @@ m_iCreditSystem=ini.GetInt(_T("CreditSystem"), 2); // Credit System
 	m_bPeerCacheEnabled = ini.GetBool(_T("Enabled"), true);
 	m_nPeerCachePort = ini.GetInt(_T("PCPort"), 0);
 	m_bPeerCacheShow = ini.GetBool(_T("Show"), false);
-//Sivka (AutoHL) added by lama
-// ==> Anti Uploader Ban - Stulle
-	m_iAntiUploaderBanLimit = ini.GetInt(_T("AntiUploaderBanLimit"), 0, _T("eMule"));
-	AntiUploaderBanCaseMode = ini.GetInt(_T("AntiUploaderBanCaseMode"), 1, _T("eMule"));
-	// <== Anti Uploader Ban - Stulle
   bReAskSRCAfterIPChange = ini.GetBool(_T("ReAskSRCAfterIPChange"),false); // [Maella/sivka: -ReAsk SRCs after IP Change-]
-	m_activeConnectionControl = ini.GetBool(_T("ActiveConnectionControl"), false,_T("eMule"));//Obelix
-    //Sivka (AutoHL) added by lama
 	//>>> Sivka - Aggressive Client Handling [WiZaRd]
 	m_uiSivkaTimeCount = ini.GetInt(_T("SivkaTimeCount"), 10, _T("eMule"));
 	m_uiSivkaAskCount = ini.GetInt(_T("SivkaAskCount"), 5, _T("eMule"));
@@ -3198,7 +3171,7 @@ void CPreferences::SetMaxDownload(uint16 in)
 }
 // [ionix] - removed - We already have an AutoHL - see below ;)
 
-//>>> WiZaRd - AutoHL added bvy lama
+//>>> WiZaRd - AutoHL
 /* 
 uint16 CPreferences::GetMaxSourcePerFileUDP()
 {	
@@ -3208,7 +3181,7 @@ uint16 CPreferences::GetMaxSourcePerFileUDP()
 	return temp;
 }
 */ 
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 
 void CPreferences::SetNetworkKademlia(bool val)
 {

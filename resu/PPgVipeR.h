@@ -59,16 +59,6 @@ int m_iCreditSystem;
 	int m_bPBF;
 	HTREEITEM m_htiPBF;
 //Telp end Payback first
-// ==> Anti Uploader Ban - Stulle
-	int m_iAntiUploaderBanLimit;
-	int m_iAntiUploaderBanCase;
-// ==> Anti Uploader Ban - Stulle
-// ==> Anti Uploader Ban - Stulle
-	HTREEITEM m_htiAntiUploaderBanLimit;
-	HTREEITEM m_htiAntiCase1;
-	HTREEITEM m_htiAntiCase2;
-	HTREEITEM m_htiAntiCase3;
-	// <== Anti Uploader Ban - Stulle
 	// ==> FunnyNick Tag - Stulle
 	HTREEITEM m_htiFnTag;
 	HTREEITEM m_htiNoTag;

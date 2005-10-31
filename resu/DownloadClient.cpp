@@ -264,7 +264,7 @@ bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExcha
 	         //if client has the correct extended protocol
 	         ExtProtocolAvailable() && GetSourceExchangeVersion() > 1 &&
 	         //AND if we need more sources
-	         reqfile->GetFileHardLimitSoft() > uSources && //>>> WiZaRd - AutoHL  added by lama
+	         reqfile->GetFileHardLimitSoft() > uSources && //>>> WiZaRd - AutoHL
 	         //AND if...
 	         (
 	           //source is not complete and file is very rare
@@ -1599,13 +1599,14 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
         return true;
     }
 
-    if(!curFileisNNPFile && cur_file->GetSourceCount() < cur_file->GetFileHardLimit() || //>>> WiZaRd - AutoHL added by lama
-        curFileisNNPFile && cur_file->GetSourceCount() < cur_file->GetFileHardLimit()*.8) { //>>> WiZaRd - AutoHL added by lama
+    if(!curFileisNNPFile && cur_file->GetSourceCount() < cur_file->GetFileHardLimit() || //>>> WiZaRd - AutoHL
+        curFileisNNPFile && cur_file->GetSourceCount() < cur_file->GetFileHardLimit()*.8) { //>>> WiZaRd - AutoHL
+
             if(printDebug)
                 AddDebugLogLine(DLP_VERYLOW, false, _T("oooo Debug: cur_file does probably not have too many sources."));
 
-            if(SwapTo->GetSourceCount() > SwapTo->GetFileHardLimit() || //>>> WiZaRd - AutoHL added by lama
-               SwapTo->GetSourceCount() >= SwapTo->GetFileHardLimit()*.8 && //>>> WiZaRd - AutoHL added by lama
+            if(SwapTo->GetSourceCount() > SwapTo->GetFileHardLimit() || //>>> WiZaRd - AutoHL
+               SwapTo->GetSourceCount() >= SwapTo->GetFileHardLimit()*.8 && //>>> WiZaRd - AutoHL
                SwapTo == reqfile &&
                (
                 GetDownloadState() == DS_LOWTOLOWIP ||

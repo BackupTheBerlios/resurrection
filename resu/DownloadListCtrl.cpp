@@ -22,7 +22,6 @@
 #include "MenuCmds.h"
 #include "ClientDetailDialog.h"
 #include "FileDetailDialog.h"
-#include "SivkaFileSettings.h" //added by sivka (AutoHL)
 #include "commentdialoglst.h"
 #include "MetaDataDlg.h"
 #include "InputBox.h"
@@ -1473,7 +1472,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		const CtrlItem_Struct* content = (CtrlItem_Struct*)GetItemData(iSel);
 		if (content->type == FILE_TYPE)
 		{
-
+			CPartFile* file = (CPartFile*)content->value;//[ionix] Drop Menue
 			// get merged settings
 			bool bFirstItem = true;
 			int iSelectedItems = 0;
@@ -1485,7 +1484,8 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
             int iFilesGetPreviewParts = 0;
             int iFilesPreviewType = 0;
 			int iFilesToPreview = 0;
-//Telp Super Release
+			int iFilesA4AFAuto = 0;//a4af
+			//  Super Release
 			bool bReleaseFileSelected = false;
 			bool bNonReleaseFileSelected = false;
 			//Telp Super Release		
@@ -1514,6 +1514,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
                 iFilesGetPreviewParts += pFile->GetPreviewPrio() ? 1 : 0;
                 iFilesPreviewType += pFile->IsPreviewableFileType() ? 1 : 0;
 				iFilesToPreview += pFile->IsReadyForPreview() ? 1 : 0;
+				iFilesA4AFAuto += (!bFileDone && pFile->IsA4AFAuto()) ? 1 : 0;//A4aF
 				UINT uCurPrioMenuItem = 0;
 				if (pFile->IsAutoDownPriority())
 					uCurPrioMenuItem = MP_PRIOAUTO;
@@ -1609,10 +1610,15 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, (/*thePrefs.IsExtControlsEnabled() &&*/ iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED); // [ionix] - AutoHL
 			if (m_SourcesMenu && thePrefs.IsExtControlsEnabled()) {
-				m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, MF_ENABLED);
+				m_SourcesMenu.CheckMenuItem(MP_ALL_A4AF_AUTO, (iSelectedItems == 1 && iFilesNotDone == 1 && iFilesA4AFAuto == 1) ? MF_CHECKED : MF_UNCHECKED);//a4af
 				m_SourcesMenu.EnableMenuItem(MP_ADDSOURCE, (iSelectedItems == 1 && iFilesToStop == 1) ? MF_ENABLED : MF_GRAYED);
 			}
-			m_SourcesMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_ENABLED); // Sivka: AutoHL
+			//m_SourcesMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, (iSelectedItems == 1)?MF_ENABLED:MF_GRAYED); // Sivka: AutoHL
+//>>> WiZaRd - AutoHL
+			m_SourcesMenu.EnableMenuItem(MP_SET_HARDLIMIT, iSelectedItems ? MF_ENABLED : MF_GRAYED);
+			m_SourcesMenu.EnableMenuItem(MP_SET_AUTOHARDLIMIT, iSelectedItems ? MF_ENABLED : MF_GRAYED);
+			m_SourcesMenu.CheckMenuItem(MP_SET_AUTOHARDLIMIT, (iSelectedItems == 1 && file->UseAutoHL()) ? MF_CHECKED : MF_UNCHECKED );
+//<<< WiZaRd - AutoHL
 
 			m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
@@ -2040,6 +2046,11 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					ClearCompleted();
 					SetRedraw(true);
 					break;
+//A4AF
+				case MP_ALL_A4AF_AUTO:
+					file->SetA4AFAuto(!file->IsA4AFAuto());
+					break;
+//A4AF
 				case MPG_F2:
 					if (GetAsyncKeyState(VK_CONTROL) < 0 || selectedCount > 1) {
 						// when ctrl is pressed -> filename cleanup
@@ -2160,40 +2171,36 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					SR13_InitiateRehash(file);
 					break;
 				//MORPH END   - Added by [ionix], Import Parts [SR13]
-                                //Sivka (AutoHL)
-				case MP_SIVKA_FILE_SETTINGS:
-					if(selectedCount == 1)
+                               //>>> WiZaRd - AutoHL
+				case MP_SET_HARDLIMIT:
+				{
+					InputBox inputbox;
+					CString title = GetResString(IDS_ADJUST_HARDLIMIT);
+					CString stdval;
+					stdval.Format(_T("%u"), selectedCount >1?thePrefs.GetMaxSourcePerFile():file->GetFileHardLimit());
+					inputbox.SetLabels(title, GetResString(IDS_ADJUST_HARDLIMIT)+_T(":"), stdval);
+					if (inputbox.DoModal() == IDOK && !inputbox.GetInput().IsEmpty())
 					{
-						theApp.downloadqueue->InitTempVariables(file);
-						CSivkaFileSettings dialog;
-						dialog.DoModal();
-						if(thePrefs.GetTakeOverFileSettings())
+						const uint32 hl = max(thePrefs.GetMinAutoHL(), _tstoi(inputbox.GetInput()));
+						while (!selectedList.IsEmpty()) 
 						{
-							//file->SetGlobalLimit(dialog.m_bGlobalLimit);
-							theApp.downloadqueue->UpdateFileSettings(file);
-							m_SettingsSaver.SaveSettings(file);
-							UpdateItem(file);
-						}
-					}
-					else if(selectedCount > 1)
-					{
-						theApp.downloadqueue->InitTempVariables(selectedList.GetHead());
-						CSivkaFileSettings dialog;
-						dialog.DoModal();
-
-						while(!selectedList.IsEmpty()) {
-							if(thePrefs.GetTakeOverFileSettings())
-							{
-								//selectedList.GetHead()->SetGlobalLimit(dialog.m_bGlobalLimit);
-								theApp.downloadqueue->UpdateFileSettings(selectedList.GetHead());
-								m_SettingsSaver.SaveSettings(selectedList.GetHead());
-								UpdateItem(selectedList.GetHead());
-							}
-							selectedList.RemoveHead();
+							CPartFile* file = selectedList.RemoveHead();
+							file->SetFileHardLimit(hl);
 						}
 					}
 					break;
-                                //Sivka (AutoHL)
+				}
+				case MP_SET_AUTOHARDLIMIT:
+				{
+					while (!selectedList.IsEmpty()) 
+					{
+						CPartFile* file = selectedList.RemoveHead();
+						file->SetUseAutoHL(!file->UseAutoHL());
+					}
+					break;
+				}
+//<<< WiZaRd - AutoHL                               
+
 				default:
 					if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99){
 						theWebServices.RunURL(file, wParam);
@@ -2802,12 +2809,25 @@ void CDownloadListCtrl::CreateMenues(){
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
 		m_SourcesMenu.CreateMenu();
+// ZZ:DownloadManager -->
+	m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); //a4af
+	m_SourcesMenu.AppendMenu(MF_STRING,MP_A4AF_CHECK_THIS_NOW,GetResString(IDS_A4AF_CHECK_THIS_NOW)); // sivka [Tarod]
+	//m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); // sivka
+// <-- ZZ:DownloadManager
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_DROP_MENUE), _T("DROP"));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
-		m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY));
-		m_SourcesMenu.AppendMenu(MF_STRING, MP_SETSOURCELIMIT, GetResString(IDS_SETPFSLIMIT));
+			m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY));
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_SourcesMenu.m_hMenu, GetResString(IDS_A4AF));
 	}
+	//m_SourcesMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS)/*, _T("RestoreWindow")*/);
+//>>> WiZaRd - AutoHL
+	m_SourcesMenu.AppendMenu(MF_SEPARATOR);
+	m_SourcesMenu.AppendMenu(MF_STRING, MP_SET_HARDLIMIT, GetResString(IDS_ADJUST_HARDLIMIT));
+	m_SourcesMenu.AppendMenu(MF_STRING, MP_SET_AUTOHARDLIMIT, GetResString(IDS_TOGGLE_AUTOHL));
+//<<< WiZaRd - AutoHL
+
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
+
+	// Add 'Copy & Paste' commands
 	if (thePrefs.GetShowCopyEd2kLinkCmd())
 		m_FileMenu.AppendMenu(MF_STRING, MP_GETED2KLINK, GetResString(IDS_DL_LINK1), _T("ED2KLINK"));
 	else
@@ -2821,7 +2841,8 @@ void CDownloadListCtrl::CreateMenues(){
 	//MORPH END   - Added by IceCream, copy feedback feature
 }
 
-CString CDownloadListCtrl::getTextList() {
+CString CDownloadListCtrl::getTextList()
+{
 	CString out;
 
 	for (ListItems::iterator it = m_ListItems.begin(); it != m_ListItems.end(); it++)

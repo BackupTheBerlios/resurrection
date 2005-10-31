@@ -91,7 +91,7 @@ m_htiClientPerc = NULL;
 	m_htiRatioCredit = NULL;
 	m_htiPawcioCredit = NULL;
 	m_htiESCredit = NULL; 
-        m_htiCreditsNone = NULL;
+    m_htiCreditsNone = NULL;
 // CreditSystem
 	
 	// ==> FunnyNick Tag - Stulle
@@ -104,13 +104,7 @@ m_htiClientPerc = NULL;
 	m_htiFnTagAtEnd = NULL;
 	// <== FunnyNick Tag - Stulle
 
-	// ==> Anti Uploader Ban - Stulle
-	m_htiAntiUploaderBanLimit = NULL;
-	m_htiAntiCase1 = NULL;
-	m_htiAntiCase2 = NULL;
-	m_htiAntiCase3 = NULL;
-	// <== Anti Uploader Ban - Stulle
-	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
+//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	m_htiDropSources = NULL;
 	m_htiDropSourcesTimerNNS = NULL;
 	m_htiDropSourcesTimerFQ = NULL;
@@ -141,7 +135,6 @@ void CPPgVipeR::DoDataExchange(CDataExchange* pDX)
 //Telp+ Menu VipeR
 		int iImgAddTweaks = 8;
 //Telp- Menu VipeR
-int iImgSecu = 8; 
 int iImgCS = 8; // Creditsystems
  //<<-- ADDED STORMIT -  Morph: PowerShared //
  //<<-- ADDED STORMIT -  Morph: PowerShared //
@@ -156,7 +149,6 @@ CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 //Telp+ Menu VipeR
 		iImgAddTweaks = piml->Add(CTempIconLoader(_T("TWEAK")));
 //Telp- Menu VipeR
-          iImgSecu = piml->Add(CTempIconLoader(_T("SECURITY")));
 iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
  //<<-- ADDED STORMIT -  Morph: PowerShared //
 			// Morph: PowerShare
@@ -172,9 +164,6 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 		m_AdditionalVipeR = m_ctrlTreeOptions.InsertGroup(_T("Misc Functions "), iImgAddTweaks, TVI_ROOT);
 //Telp- Menu VipeR 
 
-		m_secu = m_ctrlTreeOptions.InsertGroup(_T("Anti-Upload Ban"), iImgSecu, TVI_ROOT);
-        m_ctrlTreeOptions.SetItemState(m_secu, TVIS_BOLD, TVIS_BOLD);
-
 		m_ctrlTreeOptions.Expand(m_secu, TVE_EXPAND);
 		m_ctrlTreeOptions.SetItemState(m_AdditionalVipeR, TVIS_BOLD, TVIS_BOLD);
 
@@ -188,14 +177,6 @@ iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
 		m_htiClientPerc = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENT_PERC), m_AdditionalVipeR, m_bEnableClientPerc);
 		m_ctrlTreeOptions.SetItemState(m_AdditionalVipeR, TVIS_BOLD, TVIS_BOLD);
 		//client percentage
-// ==> Anti Uploader Ban - Stulle
-		m_htiAntiUploaderBanLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_UNBAN_UPLOADER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_secu);
-		m_ctrlTreeOptions.AddEditBox(m_htiAntiUploaderBanLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiAntiCase1 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_1), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 0);
-		m_htiAntiCase2 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_2), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 1);
-		m_htiAntiCase3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_3), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 2);
-		m_ctrlTreeOptions.Expand(m_htiAntiUploaderBanLimit, TVE_EXPAND);
-		// <== Anti Uploader Ban - Stulle
 	// ==> FunnyNick Tag - Stulle
 		m_htiFnTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, TVI_ROOT);
 		m_htiNoTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_NO_TAG), m_htiFnTag, m_iFnTag == 0);
@@ -284,11 +265,6 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiEnablePushRareFile, m_bEnablePushRareFile); //eMulefan83 push rare file
 //Telp End push rare file
 DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystem
- // ==> Anti Uploader Ban - Stulle
-	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
-	DDV_MinMaxInt(pDX, m_iAntiUploaderBanLimit, 0, 20);
-	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiAntiUploaderBanLimit, (int &)m_iAntiUploaderBanCase);
-	// ==> Anti Uploader Ban - Stulle
 // ==> FunnyNick Tag - Stulle
 	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiFnTag, (int &)m_iFnTag);
 	DDX_TreeEdit(pDX, IDC_VP_OPTS, m_htiFnCustomTag, m_sFnCustomTag);
@@ -340,10 +316,6 @@ m_bEnableClientPerc = thePrefs.enableClientPerc;
 	m_bSlotFocus = thePrefs.SlotFocus;
 //Telp - End Slot Focus
 
-// ==> Anti Uploader Ban - Stulle
-	m_iAntiUploaderBanLimit = thePrefs.m_iAntiUploaderBanLimit;
-	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
-	// <== Anti Uploader Ban - Stulle
 	//Telp Start push small file
 	m_bEnablePushSmallFile = thePrefs.enablePushSmallFile; //Hawkstar, push small file
 //Telp End push small file
@@ -440,10 +412,7 @@ void CPPgVipeR::Localize(void)
 		if (m_htiCreditsNone)
 			m_ctrlTreeOptions.SetItemText(m_htiCreditsNone, GetResString(IDS_CREDITS_NONE));
 		//CreditSystem -
-		// ==> Anti Uploader Ban - Stulle
-	    if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
-// <== Anti Uploader Ban - Stulle
-	// ==> FunnyNick Tag - Stulle
+		// ==> FunnyNick Tag - Stulle
 		if (m_htiFnCustomTag) m_ctrlTreeOptions.SetEditLabel(m_htiFnCustomTag, GetResString(IDS_SET_CUSTOM_TAG));
 		if (m_htiFnTagAtEnd) m_ctrlTreeOptions.SetItemText(m_htiFnTagAtEnd, GetResString(IDS_FN_TAG_AT_END));
 		// <== FunnyNick Tag - Stulle
@@ -458,13 +427,6 @@ BOOL CPPgVipeR::OnApply()
 
 thePrefs.SetCreditSystem(m_iCreditSystem); // CreditSystem
 
-// ==> Anti Uploader Ban - Stulle
-thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
-		if(thePrefs.AntiUploaderBanCaseMode != m_iAntiUploaderBanCase)
-		{
-		thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
-	}
-	// <== Anti Uploader Ban - Stulle
 // ==> FunnyNick Tag - Stulle
 	if(thePrefs.FnTagMode != m_iFnTag){
 		thePrefs.FnTagMode = m_iFnTag;
@@ -534,12 +496,6 @@ void CPPgVipeR::OnDestroy()
 	//Telp Start payback first
 	m_htiPBF = NULL;
 //Telp end payback first
-// ==> Anti Uploader Ban - Stulle
-	m_htiAntiUploaderBanLimit = NULL;
-	m_htiAntiCase1 = NULL;
-	m_htiAntiCase2 = NULL;
-	m_htiAntiCase3 = NULL;
-	// <== Anti Uploader Ban - Stulle
 	// ==> FunnyNick Tag - Stulle
 	m_htiFnTag = NULL;
 	m_htiNoTag = NULL;

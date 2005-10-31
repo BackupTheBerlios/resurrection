@@ -431,7 +431,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						// no passive adding of files with only one part
 						if (reqfile->IsPartFile() && reqfile->GetFileSize() > PARTSIZE)
 						{
-							if (((CPartFile*)reqfile)->GetFileHardLimit() > ((CPartFile*)reqfile)->GetSourceCount()) //>>> WiZaRd - AutoHL added by lama	
+							if (((CPartFile*)reqfile)->GetFileHardLimit() > ((CPartFile*)reqfile)->GetSourceCount()) //>>> WiZaRd - AutoHL
 								theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
 						}
 
@@ -591,6 +591,14 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 								client->SetCommentDirty();
 							client->SetUploadFileID(reqfile);
 							client->SendCommentInfo(reqfile);
+//>>> WiZaRd - in any case, we add this client to our downloadqueue
+//this has the advantage that *every* who wants something from us will be a src for us
+							if (reqfile->IsPartFile() && reqfile->GetFileSize() > PARTSIZE)
+							{
+								if (((CPartFile*)reqfile)->GetFileHardLimit() > ((CPartFile*)reqfile)->GetSourceCount()) //>>> WiZaRd - AutoHL
+									theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client);
+							}
+//<<< WiZaRd - in any case, we add this client to our downloadqueue
 							theApp.uploadqueue->AddClientToQueue(client);
 						}
 						else
@@ -1239,7 +1247,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					// no passive adding of files with only one part
 					if (reqfile->IsPartFile() && reqfile->GetFileSize() > PARTSIZE)
 					{
-						if (((CPartFile*)reqfile)->GetFileHardLimit() > ((CPartFile*)reqfile)->GetSourceCount()) //>>> WiZaRd - AutoHL added by lama
+						if (((CPartFile*)reqfile)->GetFileHardLimit() > ((CPartFile*)reqfile)->GetSourceCount()) //>>> WiZaRd - AutoHL
 							theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
 					}
 

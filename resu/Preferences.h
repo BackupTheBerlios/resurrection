@@ -695,10 +695,6 @@ static TCHAR UpdateURLIPFilter[256];//MORPH START added by Yun.SF3: Ipfilter.dat
 	static CString	m_strNotifierMailServer;
 	static CString	m_strNotifierMailSender;
 	static CString	m_strNotifierMailReceiver;
-	// ==> Anti Uploader Ban - Stulle
-	static uint16 m_iAntiUploaderBanLimit;
-	static uint8 AntiUploaderBanCaseMode;
-	// <== Anti Uploader Ban - Stulle
 
 	enum Table
 	{
@@ -1123,9 +1119,8 @@ static	bool	IsUpdateFakeStartupEnabled()		{ return UpdateFakeStartup; }
 	static	uint16	GetMaxConnections()			{return maxconnections;}
 	static	uint16	GetMaxHalfConnections()		{return maxhalfconnections;}
 	static	uint16	GetMaxSourcePerFile()		{return maxsourceperfile;}
-	static	uint16	GetMaxSourcePerFileDefault(){return maxsourceperfile;}
-static	uint16	GetMaxSourcePerFileSoft();
-	static	uint16	GetMaxSourcePerFileUDP();
+	//static	uint16	GetMaxSourcePerFileSoft();--remove it ev'rything works fine
+	//static	uint16	GetMaxSourcePerFileUDP(); ////>>> WiZaRd - AutoHL
 	static	UINT	GetDeadServerRetries()		{return m_uDeadServerRetries;}
 	static	DWORD	GetServerKeepAliveTimeout() {return m_dwServerKeepAliveTimeout;}
 	static	bool	GetConditionalTCPAccept()	{return m_bConditionalTCPAccept;}
@@ -1554,57 +1549,11 @@ static	uint8	GetSpreadbarSetStatus()	{return m_iSpreadbarSetStatus;}
 	static bool		IsSivkaBan()				{return m_bUseSivkaBan;}
 	static bool		IsSivkaBanLog()				{return m_bLogSivkaBan;}
 //<==- Sivka - Aggressive Client Handling [WiZaRd]
-	// ==> Anti Uploader Ban - Stulle
-	static	uint16	GetAntiUploaderBanLimit()	{return m_iAntiUploaderBanLimit;}
-	static	uint8	GetAntiUploaderBanCase()	{return AntiUploaderBanCaseMode;}
-	// <== Anti Uploader Ban - Stulle
-	//START adding by sivka (AutoHL) added by lama
-	static bool		m_EnableAutoHLTemp;
-	static void		SetEnableAutoHLTemp(bool in)		{m_EnableAutoHLTemp=in;}
-	static bool		GetEnableAutoHLTemp()				{return m_EnableAutoHLTemp;}
 
-	static uint16	m_AutoHL_TimerTemp;
-	static void		SetAutoHL_TimerTemp(DWORD in)		{m_AutoHL_TimerTemp=in;}	
-	static uint16	GetAutoHL_TimerTemp()				{return m_AutoHL_TimerTemp;}
-
-	static uint16	m_MaxSourcesPerFileTemp;
-	static void		SetMaxSourcesPerFileTemp(uint16 in)	{m_MaxSourcesPerFileTemp=in;}
-	static uint16	GetMaxSourcesPerFileTemp()			{return m_MaxSourcesPerFileTemp;}
-	static bool		m_EnableAutoHLTakeOver;
-	static bool		GetEnableAutoHLTakeOver()			{return m_EnableAutoHLTakeOver;}
-
-	static bool		m_AutoHL_TimerTakeOver;
-	static bool		GetAutoHL_TimerTakeOver()			{return m_AutoHL_TimerTakeOver;}
-
-	static bool		m_MaxSourcesPerFileTakeOver;
-	static bool		GetMaxSourcesPerFileTakeOver()		{return m_MaxSourcesPerFileTakeOver;}
-
-	static bool		m_TakeOverFileSettings;
-	static void		SetTakeOverFileSettings(bool in)	{m_TakeOverFileSettings=in;}
-	static bool		GetTakeOverFileSettings()			{return m_TakeOverFileSettings;}
 
 	static bool		m_activeConnectionControl; //Obelix	
 	static bool		IsActiveConnectionControl()			{return m_activeConnectionControl;} //Obelix
-	// <--- sivka (AutoHL)
-	//>>> WiZaRd - AutoHL added by lama
-	static	uint16		m_uiMinAutoHL; 
-	static  uint16		GetMinAutoHL()				{return m_uiMinAutoHL;} 
-	static  void		SetMinAutoHL(uint16 i)      {m_uiMinAutoHL = i;} 
 
-	static  uint16		m_uiMaxAutoHL; 
-	static  uint16		GetMaxAutoHL()				{return m_uiMaxAutoHL;} 
-	static  void		SetMaxAutoHL(uint16 i)      {m_uiMaxAutoHL = i;} 
-
-	static  uint16		m_uiMaxSourcesHL; 
-	static  uint16		GetMaxSourcesHL()			{return m_uiMaxSourcesHL;} 
-	static  void		SetMaxSourcesHL(uint16 i)   {m_uiMaxSourcesHL = i;} 
-
-	static  bool		m_bUseAutoHL; 
-	static  bool		IsUseAutoHL()				{return m_bUseAutoHL;} 
-
-	static  uint16		m_uiAutoHLUpdateTimer; 
-	static  uint16		GetAutoHLUpdateTimer()		{return m_uiAutoHLUpdateTimer;} 
-	//<<< WiZaRd - AutoHL added by lama
 
 protected:
 	static	CString appdir;
@@ -1625,7 +1574,26 @@ protected:
 	static void LoadPreferences();
 	static void SavePreferences();
 	static CString GetHomepageBaseURLForLevel(uint8 nLevel);
+public:
+//>>> WiZaRd - AutoHL 
+	static	uint16		m_uiMinAutoHL; 
+	static  uint16		GetMinAutoHL()				{return m_uiMinAutoHL;} 
+	static  void		SetMinAutoHL(uint16 i)      {m_uiMinAutoHL = i;} 
 
+	static  uint16		m_uiMaxAutoHL; 
+	static  uint16		GetMaxAutoHL()				{return m_uiMaxAutoHL;} 
+	static  void		SetMaxAutoHL(uint16 i)      {m_uiMaxAutoHL = i;} 
+
+	static  uint16		m_uiMaxSourcesHL; 
+	static  uint16		GetMaxSourcesHL()			{return m_uiMaxSourcesHL;} 
+	static  void		SetMaxSourcesHL(uint16 i)   {m_uiMaxSourcesHL = i;} 
+
+	static  bool		m_bUseAutoHL; 
+	static  bool		IsUseAutoHL()				{return m_bUseAutoHL;} 
+
+	static  uint16		m_uiAutoHLUpdateTimer; 
+	static  uint16		GetAutoHLUpdateTimer()		{return m_uiAutoHLUpdateTimer;} 
+	//<<< WiZaRd - AutoHL
 };
 
 extern CPreferences thePrefs;

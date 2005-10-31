@@ -22,13 +22,6 @@
 #include "emule.h"
 #include "sharedfilelist.h"
 
-// ==> Anti Uploader Ban - Stulle
-enum AntiUploaderBanCaseSelection {
-	CS_1 = 0,
-	CS_2,
-	CS_3
-};
-// <== Anti Uploader Ban - Stulle
 //KTS+ webcache
 #include "Preferences.h"
 #include "WebCache/WebCache.h"
@@ -381,7 +374,6 @@ public:
 	void			AddRequestCount(const uchar* fileid);
 	void			UnBan();
 	void			Ban(LPCTSTR pszReason = NULL);
-    bool			AntiUploaderBanActive(); // Anti Uploader Ban - Stulle
 	uint32			GetAskedCount() const							{ return m_cAsked; }
 	void			AddAskedCount()									{ m_cAsked++; }
 	void			SetAskedCount(uint32 m_cInAsked)				{ m_cAsked = m_cInAsked; }
@@ -945,14 +937,6 @@ public:
 	void	Check4BadMod();
 	void	Check4BadName();
 //<<< WiZaRd 4 [ionix] - Bad User Banning
- // ==> Anti Uploader Ban - Stulle 
-    void SetAntiUploadBanThird(bool isactive) { m_bAntiUploadBanThird = isactive; }; 
-    bool GetAntiUploadBanThird() { return m_bAntiUploadBanThird; } 
-	uint8 m_iAntiUploaderBan;
-
-private:
-	bool     m_bAntiUploadBanThird;
-     // <== Anti Uploader Ban - Stulle
 // Mondgott :: Show RedSmurfIconOnClientDetect
 public: 
 	bool GetRedSmurfClient() const { return m_bRedSmurfClient;}
@@ -962,5 +946,6 @@ protected:
 // [ionix] - Wizard: AntiLeech
 	CKnownFile*          GetUploadingFile() const  {return theApp.sharedfiles->GetFileByID(GetUploadFileID());}
 	// [ionix] - Wizard: AntiLeech
+     
 };
 //#pragma pack()

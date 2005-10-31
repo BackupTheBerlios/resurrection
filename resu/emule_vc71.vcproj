@@ -585,9 +585,6 @@
 				RelativePath="SharedFileList.cpp">
 			</File>
 			<File
-				RelativePath=".\SivkaFileSettings.cpp">
-			</File>
-			<File
 				RelativePath="Sockets.cpp">
 			</File>
 			<File
@@ -951,9 +948,6 @@
 			</File>
 			<File
 				RelativePath="SharedFileList.h">
-			</File>
-			<File
-				RelativePath=".\SivkaFileSettings.h">
 			</File>
 			<File
 				RelativePath="Sockets.h">

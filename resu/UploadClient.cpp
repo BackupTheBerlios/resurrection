@@ -1091,47 +1091,6 @@ void CUpDownClient::AddRequestCount(const uchar* fileid)
 	new_struct->badrequests = 0;
 	m_RequestedFiles_list.AddHead(new_struct);
 }
-// ==> Anti Uploader Ban - Stulle
-bool CUpDownClient::AntiUploaderBanActive()
-{
-// Credits()->GetDownloadedTotal() <== data amount the other client gave us
-// Credits()->GetUploadedTotal(); <== data amount the other client got from us
-
-	if (thePrefs.GetAntiUploaderBanLimit() != 0){
-		switch (thePrefs.GetAntiUploaderBanCase())	{
-
-			case CS_1:{
-				if ((Credits()->GetDownloadedTotal()) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
-					m_iAntiUploaderBan = 1;
-				else
-					m_iAntiUploaderBan = 0;
-					  } break;
-
-			case CS_2:{
-				if (((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20))
-					m_iAntiUploaderBan = 1;
-				else
-					m_iAntiUploaderBan = 0;
-					  } break;
-
-			case CS_3:{
-				if (((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) >= ((uint64)thePrefs.GetAntiUploaderBanLimit()<<20)){
-					SetAntiUploadBanThird(true);
-					m_iAntiUploaderBan = 1; }
-				else if ((((Credits()->GetDownloadedTotal())-(Credits()->GetUploadedTotal())) > 0) && GetAntiUploadBanThird())
-					m_iAntiUploaderBan = 1;
-				else { 
-					SetAntiUploadBanThird(false);
-					m_iAntiUploaderBan = 0; }
-					  } break;
-		}
-		if (m_iAntiUploaderBan == 1)
-			return true;
-		else return false;
-	}
-	else return false;
-}
-// <== Anti Uploader Ban - Stulle
 
 void  CUpDownClient::UnBan()
 {
@@ -1150,10 +1109,6 @@ void  CUpDownClient::UnBan()
 
 void CUpDownClient::Ban(LPCTSTR pszReason)
 {
-// ==> Anti Uploader Ban - Stulle
-	if (AntiUploaderBanActive())
-		return
-		// <== Anti Uploader Ban - Stulle
 	theApp.clientlist->AddTrackClient(this);
 	if (!IsBanned()){
 		if (thePrefs.GetLogBannedClients())
@@ -1171,10 +1126,6 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
 	if (socket != NULL && socket->IsConnected())
 		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
-// ==> Anti Uploader Ban - Stulle
-	if (AntiUploaderBanActive())
-		return;
-	// <== Anti Uploader Ban - Stulle
 }
 
 uint32 CUpDownClient::GetWaitStartTime() const

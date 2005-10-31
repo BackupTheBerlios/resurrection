@@ -212,7 +212,10 @@
 #define MP_DROPCONNECTING		11009
 #define MP_DROP_ASKING			11010
 //Ackronic END - Aggiunto da Aenarion[ITA] - Drop
-#define MP_SIVKA_FILE_SETTINGS	17011 //Sivka AutoHL added by lama
+//>>> WiZaRd - AutoHL
+#define MP_SET_HARDLIMIT		20021
+#define MP_SET_AUTOHARDLIMIT	20022
+//<<< WiZaRd - AutoHL
 //KTS+ webcache
 #define MP_PRIOWCRELEASE		20000//jp webcache release
 //KTS- webcache

@@ -201,8 +201,8 @@ private:
 	CSourceHostnameResolveWnd m_srcwnd;
 
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
-//>>> WiZaRd - AutoHL added by lama
-	private:
+//>>> WiZaRd - AutoHL
+private:
 	uint32	m_uiHLCount;
 	// AutoHL [Aireoreion]
 	bool	m_bIsInit;
@@ -210,7 +210,7 @@ public:
 	uint32  GetHLCount()	{return m_uiHLCount;}
 	// AutoHL [Aireoreion]
 	bool	IsInit()		{return m_bIsInit == true;}
-//<<< WiZaRd - AutoHL added by lama
+//<<< WiZaRd - AutoHL
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	private:
 	DWORD	m_dwLastNNSDrop;

@@ -1431,30 +1431,6 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
 END
 
-IDD_SIVKAFILESETTINGS DIALOGEX 0, 0, 225, 58
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
-CAPTION "WiZaRd - AutoHardLimit"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Hard Limit 50...1000",IDC_HARDLIMIT_LABEL,7,9,125,8
-    EDITTEXT        IDC_HARDLIMIT,142,7,30,12,ES_RIGHT | ES_AUTOHSCROLL | 
-                    ES_NUMBER
-    CONTROL         "",IDC_HARDLIMIT_TAKEOVER,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,209,9,9,8
-    CONTROL         "AutoHL Timer 0...60 sec",IDC_AHL_TIMERLABEL,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,22,125,8
-    CONTROL         "",IDC_AHL_TIMERLABEL_TAKEOVER,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,194,22,9,8
-    EDITTEXT        IDC_AHL_TIMER,142,20,30,12,ES_RIGHT | ES_AUTOHSCROLL | 
-                    ES_NUMBER
-    CONTROL         "",IDC_AHL_TIMER_TAKEOVER,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,209,22,9,8
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,34,212,1
-    PUSHBUTTON      "Take over",IDC_TAKEOVER,7,39,56,12,BS_FLAT
-    PUSHBUTTON      "Default",IDC_DEFAULT_BUTTON,80,39,66,12,BS_FLAT
-    DEFPUSHBUTTON   "Close",IDOK,162,39,56,12,BS_FLAT
-END
 
 IDD_PPG_ACKRONICII DIALOGEX 0, 0, 230, 318
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
@@ -3020,13 +2996,16 @@ BEGIN
     IDS_IPFILTERED          "Filtered IP: %s (%s)"
     IDS_DL_TRANSFCOMPL      "Completed"
     IDS_DL_ACTIVE_TIME      "Download time"
-    IDS_STATS_FILTEREDCLIENTS "Filtered: %i"
+    IDS_STATS_FILTEREDCLIENTS "Filtered: "
     IDS_FILTERLABEL         "Filter messages containing: (Separator | )"
     IDS_ERR_LARGEREQBLOCK   "Client requested too large of a block."
     IDS_SHOWRATEONTITLE     "Show transfer rates on title"
     IDS_TBN_NOMESSAGEHISTORY "No history message!"
     IDS_PW_DAP              "Add new downloads with auto priority"
     IDS_FD_LASTCHANGE       "Last reception:"
+    IDS_FEED_FILTERED       "Filtered:"
+    IDS_UPLOADS_WAITING     "Waiting Uploads"
+    IDS_ACTIVE_UPLOADS      "Active Uploads"
 END
 
 STRINGTABLE 
@@ -4577,10 +4556,6 @@ BEGIN
     IDS_FAKECHECKUPERROR    "Error updating fake list list"
     IDS_UPDATEFAKECHECKONSTART "Update fake list on startup"
     IDS_CHECKFAKE           "Check fake"
-    IDS_UNBAN_UPLOADER      "Limit for Ban-prevention in MB [0=disabled]"
-    IDS_ANTI_CASE_1         "UL >= Limit"
-    IDS_ANTI_CASE_2         "UL-DL >= Limit"
-    IDS_ANTI_CASE_3         "UL-DL >= Limit till 1:1"
 END
 
 STRINGTABLE 
@@ -4708,6 +4683,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_RESET               "Reset"
+    IDS_ADJUST_HARDLIMIT    "Adjust Hardlimit"
 END
 
 STRINGTABLE 
@@ -4737,6 +4713,11 @@ STRINGTABLE
 BEGIN
     IDS_INVMODE_VKEY        "Key:"
     IDS_SLOT_FOCUS          "Disable Slot Focus"
+    IDS_ALL_A4AF_TO_OTHER   "Basculer toutes les Sources aux autres fichiers"
+    IDS_SWAP_A4AF_TO_THIS   "Basculer les toutes les sources sur ce fichier (A4AF)"
+    IDS_ALL_A4AF_TO_THIS    "Basculer les toutes les sources sur ce fichier "
+    IDS_ALL_A4AF_AUTO       "Swap all sources on this file"
+
 END
 
 STRINGTABLE 
@@ -4808,12 +4789,6 @@ BEGIN
                             "ReAsk SRCs after IP Change (does not work with LowID!)"
 END
 
-STRINGTABLE 
-BEGIN
-    IDS_SIVKAFILESETTINGS   "WiZaRd - AutoHardLimit"
-    IDS_AHL_TIMERLABEL      "AutoHL Timer 0...60 sec"
-    IDS_SIVKAFILESETTINGS2  "WiZaRd - AutoHardLimit"
-END
 
 STRINGTABLE 
 BEGIN
@@ -4868,6 +4843,12 @@ BEGIN
 	IDS_FN_TAG_AT_END       "Show Tag at the end"
 // <== FunnyNick Tag - Stulle
 
+
+END
+
+STRINGTABLE
+BEGIN
+    IDS_TOGGLE_AUTOHL       "Toggle AutoHL"
 END
 
 #endif    // Englisch (USA) resources
