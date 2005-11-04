@@ -37,6 +37,9 @@
 #include "emuledlg.h"
 #include "StatisticsDlg.h"
 #include "Log.h"
+//KTS+ IP to Country
+#include "IP2Country.h" 
+//KTS- IP to Country
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -57,6 +60,11 @@ TCHAR	CPreferences::olduserhash[64];
 char	CPreferences::olduserhash[64];
 #endif
 //KTS- Display User Hash
+
+//KTS+ IP to Country
+IP2CountryNameSelection	CPreferences::m_iIP2CountryNameMode;
+bool	CPreferences::m_bIP2CountryShowFlag;
+//KTS- IP to Country
 
 int     CPreferences::m_iCreditSystem;  // Credit System
 uint8	CPreferences::m_uScoreRatioThres;	// Credit System
@@ -122,6 +130,12 @@ bool    CPreferences::m_bStartInvisible;
 UINT    CPreferences::m_iInvisibleModeHotKeyModifier; 
 char    CPreferences::m_cInvisibleModeHotKey; 
 // eF-Mod end
+//Commander - Added: IP2Country Auto-updating - Start
+TCHAR	CPreferences::UpdateURLIP2Country[256];
+TCHAR	CPreferences::UpdateVerURLIP2Country[256];
+bool	CPreferences::AutoUpdateIP2Country;
+uint32	CPreferences::m_IP2CountryVersion; 
+//Commander - Added: IP2Country Auto-updating - End
 
 int		CPreferences::m_iDbgHeap;
 CString	CPreferences::strNick;
@@ -1879,6 +1893,10 @@ void CPreferences::SavePreferences()
 //Telp Start payback first
 	ini.WriteBool(_T("PBF"),m_bPBF ,_T("eMule"));
 	//Telp End payback First
+    //KTS+ IP to Country
+	ini.WriteInt(_T("IP2Country"), m_iIP2CountryNameMode,_T("eMule")); 
+	ini.WriteBool(_T("IP2CountryShowFlag"), m_bIP2CountryShowFlag,_T("eMule"));
+	//KTS- IP to Country
  	//Telp Start push rare file
     ini.WriteBool(_T("EnablePushRareFile"), enablePushRareFile, _T("eMule")); //Hawkstar, push rare file
 //Telp End push rare file
@@ -1934,6 +1952,12 @@ void CPreferences::SavePreferences()
     ini.WriteInt	(_T("InvisibleModeHKKey"),(int)m_cInvisibleModeHotKey);
     ini.WriteInt	(_T("InvisibleModeHKKeyModifier"),m_iInvisibleModeHotKeyModifier); 
 	// eF-Mod end
+	//Commander - Added: IP2Country Auto-updating - Start
+	ini.WriteInt(_T("IP2CountryVersion"),m_IP2CountryVersion,_T("eMule")); 
+	ini.WriteBool(_T("AutoUPdateIP2Country"),AutoUpdateIP2Country,_T("eMule"));
+	ini.WriteString(_T("UpdateURLIP2Country"),UpdateURLIP2Country,_T("eMule"));
+	ini.WriteString(_T("UpdateVerURLIP2Country"),UpdateVerURLIP2Country,_T("eMule"));
+	//Commander - Added: IP2Country Auto-updating - End
 
 	// Barry - New properties...
     ini.WriteBool(_T("AutoConnectStaticOnly"), m_bAutoConnectToStaticServersOnly);
@@ -2604,6 +2628,10 @@ void CPreferences::LoadPreferences()
 //Telp Start payback first
 	m_bPBF=ini.GetBool(_T("PBF"), false); 
 //Telp End payback first
+    //KTS+ IP to Country
+	m_iIP2CountryNameMode = (IP2CountryNameSelection)ini.GetInt(_T("IP2Country"), IP2CountryName_DISABLE); 
+	m_bIP2CountryShowFlag = ini.GetBool(_T("IP2CountryShowFlag"), false );
+	//KTS- IP to Country
     //eMulefan83 Show Client Percentage added by lama
 	enableClientPerc = ini.GetBool(_T("EnableClientPerc"), false); 
 //eMulefan83 Show Client Percentage added by lama	
@@ -2626,7 +2654,12 @@ void CPreferences::LoadPreferences()
 	log2disk = ini.GetBool(_T("SaveLogToDisk"),false);
 	uMaxLogFileSize = ini.GetInt(_T("MaxLogFileSize"), 1024*1024);
 	iMaxLogBuff = ini.GetInt(_T("MaxLogBuff"),64) * 1024;
-
+	//Commander - Added: IP2Country Auto-updating - Start
+	m_IP2CountryVersion=ini.GetInt(_T("IP2CountryVersion"),0); 
+	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
+	_stprintf(UpdateURLIP2Country,_T("%s"),ini.GetString(_T("UpdateURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip")));
+	_stprintf(UpdateVerURLIP2Country,_T("%s"),ini.GetString(_T("UpdateVerURLIP2Country"),_T("http://ip-to-country.webhosting.info/downloads/latest")));
+    //Commander - Added: IP2Country Auto-updating - End
     m_iLogFileFormat = (ELogFileFormat)ini.GetInt(_T("LogFileFormat"), Unicode, 0);
 	m_bEnableVerboseOptions=ini.GetBool(_T("VerboseOptions"), true);
 	if (m_bEnableVerboseOptions)

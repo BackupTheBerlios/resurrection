@@ -157,4 +157,13 @@ private:
 	uint32		m_uTCPFlags;
 	uint32		m_uUDPFlags;
 	uint32		m_uLowIDUsers;
+// IP-to-Country +
+public:
+	CString	GetCountryName() const;
+	int		GetCountryFlagIndex() const;
+	void	ResetIP2Country();
+
+private:
+	struct	IPRange_Struct2* m_structServerCountry;
+ // IP-to-Country -
 };

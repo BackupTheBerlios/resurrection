@@ -213,4 +213,29 @@ void CContact::updateType()
 			m_expires = time(NULL) + HR2S(2);
 	}
 	theApp.emuledlg->kademliawnd->ContactRef(this);
+}//KTS+ IP to Country
+CString CContact::GetCountryName() const{
+	CString tempStrk;
+
+	if(theApp.ip2country->IsIP2Country() == false) return _T("");
+	switch(thePrefs.GetIP2CountryNameMode()){
+		case IP2CountryName_SHORT:
+			tempStrk.Format(_T("<%s>"),m_structServerCountry->ShortCountryName);
+			return tempStrk;
+		case IP2CountryName_MID:
+			tempStrk.Format(_T("<%s>"),m_structServerCountry->MidCountryName);
+			return tempStrk;
+		case IP2CountryName_LONG:
+			tempStrk.Format(_T("<%s>"),m_structServerCountry->LongCountryName);
+			return tempStrk;
+	}
+	return _T("");
+}
+
+int CContact::GetCountryFlagIndex() const{
+	return m_structServerCountry->FlagIndex;
+}
+
+void CContact::ResetIP2Country(){
+	m_structServerCountry = theApp.ip2country->GetCountryFromIP(getIPAddress());
 }

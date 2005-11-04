@@ -64,6 +64,9 @@
 //KRQ+ webcache
 #include "WebCache/WebCacheSocket.h" 
 //KTS- webcache
+// IP-to-Country +
+#include "IP2Country.h" 
+// IP-to-Country -
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -122,6 +125,9 @@ void CUpDownClient::Init()
 	m_nUpDatarate = 0;
 	m_pszUsername = 0;
 m_pszFunnyNick = NULL; //>>> WiZaRd 4 Lama
+// IP-to-Country +
+	m_structUserCountry = theApp.ip2country->GetDefaultIP2Country(); 
+	// IP-to-Country -
 	m_nUserIDHybrid = 0;
 	m_dwServerIP = 0;
 	m_nServerPort = 0;
@@ -180,6 +186,11 @@ m_pszFunnyNick = NULL; //>>> WiZaRd 4 Lama
 		int nSockAddrLen = sizeof(sockAddr);
 		socket->GetPeerName((SOCKADDR*)&sockAddr, &nSockAddrLen);
 		SetIP(sockAddr.sin_addr.S_un.S_addr);
+// IP-to-Country +
+		if(m_nConnectIP != m_dwUserIP){
+			m_structUserCountry = theApp.ip2country->GetCountryFromIP(m_dwUserIP);
+		}
+		// IP-to-Country -
 	}
 	else{
 		SetIP(0);
@@ -627,6 +638,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	int nSockAddrLen = sizeof(sockAddr);
 	socket->GetPeerName((SOCKADDR*)&sockAddr, &nSockAddrLen);
 	SetIP(sockAddr.sin_addr.S_un.S_addr);
+// IP-to-Country +
+	if(theApp.ip2country->IsIP2Country()){
+		if (m_structUserCountry == theApp.ip2country->GetDefaultIP2Country()){
+			m_structUserCountry = theApp.ip2country->GetCountryFromIP(m_dwUserIP);
+		}
+	}
+	// IP-to-Country -
 
 	if (thePrefs.GetAddServersFromClients() && m_dwServerIP && m_nServerPort){
 		CServer* addsrv = new CServer(m_nServerPort, ipstr(m_dwServerIP));
@@ -3021,3 +3039,35 @@ const static LPCTSTR apszSuffix[] =
 		srand((unsigned)time(NULL));
 }
 //MORPH END   - Added by SiRoB, Dynamic FunnyNick
+// IP-to-Country +
+CString	CUpDownClient::GetCountryName(bool longName) const {
+	if(longName && theApp.ip2country->IsIP2Country() == false)	return GetResString(IDS_DISABLED);
+
+	if(theApp.ip2country->IsIP2Country() == false) return _T("");
+
+	if(longName) return m_structUserCountry->LongCountryName;
+
+	CString tempStr;
+
+	switch(thePrefs.GetIP2CountryNameMode()){
+		case IP2CountryName_SHORT:
+			tempStr.Format(_T("<%s>"),m_structUserCountry->ShortCountryName);
+			return tempStr;
+		case IP2CountryName_MID:
+			tempStr.Format(_T("<%s>"),m_structUserCountry->MidCountryName);
+			return tempStr;
+		case IP2CountryName_LONG:
+			tempStr.Format(_T("<%s>"),m_structUserCountry->LongCountryName);
+			return tempStr;
+	}
+	return _T("");
+}
+
+int CUpDownClient::GetCountryFlagIndex() const {
+	return m_structUserCountry->FlagIndex;
+}
+void CUpDownClient::ResetIP2Country(){
+	m_structUserCountry = theApp.ip2country->GetCountryFromIP(m_dwUserIP);
+}
+// IP-to-Country -
+

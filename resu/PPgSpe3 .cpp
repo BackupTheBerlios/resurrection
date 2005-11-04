@@ -9,6 +9,9 @@
 #include "serverWnd.h"
 #include "Fakecheck.h"
 #include "IPFilter.h"
+//KTS+ IP to Country
+#include "ip2country.h"
+//KTS- IP to Country
 #include ".\ppgspe3.h"
 
 #ifdef _DEBUG
@@ -48,6 +51,14 @@ BEGIN_MESSAGE_MAP(CPPgSpe3, CPropertyPage)
 	ON_BN_CLICKED(IDC_RESETIPFURL, OnBnClickedResetipfurl)
 	ON_BN_CLICKED(IDC_AUTOUPIPFILTER , OnSettingsChange)
 	//MORPH END added by Yun.SF3: Ipfilter.dat update
+//Commander - Added: IP2Country Auto-updating - Start
+	ON_EN_CHANGE(IDC_UPDATE_URL_IP2COUNTRY, OnSettingsChange)
+    ON_EN_CHANGE(IDC_UPDATE_VER_URL_IP2COUNTRY, OnSettingsChange)
+	ON_BN_CLICKED(IDC_UPDATEIPCURL, OnBnClickedUpdateipcurl)
+	ON_BN_CLICKED(IDC_RESETIPCURL, OnBnClickedResetipcurl)
+	ON_BN_CLICKED(IDC_AUTOUPIP2COUNTRY , OnSettingsChange)
+	//Commander - Added: IP2Country Auto-updating - End
+//	ON_STN_CLICKED(IDC_URL_FOR_UPDATING_IP2COUNTRY, OnStnClickedUrlForUpdatingIp2country)
 END_MESSAGE_MAP()
 
 
@@ -85,6 +96,24 @@ CString strBuffer;
 		CheckDlgButton(IDC_AUTOUPIPFILTER,0);
 	//MORPH END added by Yun.SF3: Ipfilter.dat update
 
+	//KTS+
+//Commander - Added: IP2Country Auto-updating - Start
+	GetDlgItem(IDC_UPDATE_URL_IP2COUNTRY)->SetWindowText(thePrefs.UpdateURLIP2Country);
+	if(thePrefs.AutoUpdateIP2Country)
+		CheckDlgButton(IDC_AUTOUPIP2COUNTRY,1);
+	else
+		CheckDlgButton(IDC_AUTOUPIP2COUNTRY,0);
+	//Commander - Added: IP2Country Auto-updating - End
+	
+	//Commander - Added: IP2Country Auto-updating - Start
+	GetDlgItem(IDC_UPDATE_VER_URL_IP2COUNTRY)->SetWindowText(thePrefs.UpdateVerURLIP2Country);
+	//Commander - Added: IP2Country Auto-updating - End
+
+	//Commander - Added: IP2Country Auto-updating - Start
+	strBuffer.Format(_T("v.%u"), thePrefs.GetIP2CountryVersion());
+	GetDlgItem(IDC_IP2COUNTRY_VERSION)->SetWindowText(strBuffer);
+	//Commander - Added: IP2Country Auto-updating - End
+	//KTS-
 }
 
 BOOL CPPgSpe3::OnApply()
@@ -104,6 +133,18 @@ BOOL CPPgSpe3::OnApply()
 	_tcscpy(thePrefs.UpdateURLIPFilter, buffer);
 	thePrefs.AutoUpdateIPFilter = IsDlgButtonChecked(IDC_AUTOUPIPFILTER);
 	//MORPH END   - Added by Yun.SF3: Ipfilter.dat update
+
+ //Commander - Added: IP2Country Auto-updating - Start
+    GetDlgItem(IDC_UPDATE_URL_IP2COUNTRY)->GetWindowText(buffer);
+	_tcscpy(thePrefs.UpdateURLIP2Country, buffer);
+	thePrefs.AutoUpdateIP2Country = IsDlgButtonChecked(IDC_AUTOUPIP2COUNTRY)!=0;
+	//Commander - Added: IP2Country Auto-updating - End
+
+		//Commander - Added: IP2Country Auto-updating - Start
+		GetDlgItem(IDC_UPDATE_VER_URL_IP2COUNTRY)->GetWindowText(buffer);
+		_tcscpy(thePrefs.UpdateVerURLIP2Country, buffer);
+		//thePrefs.AutoVerUpdateIP2Country = IsDlgButtonChecked(IDC_AUTOUPIP2COUNTRY);
+		//Commander - Added: IP2Country Auto-updating - End
 
 	LoadSettings();
 	SetModified(FALSE);
@@ -131,6 +172,13 @@ void CPPgSpe3::Localize(void)
 		GetDlgItem(IDC_URL_FOR_UPDATING2)->SetWindowText(GetResString(IDS_URL_FOR_UPDATING));
 		GetDlgItem(IDC_RESETIPFURL)->SetWindowText(GetResString(IDS_RESET));
 		//MORPH END   - Added by Yun.SF3: Ipfilter.dat update
+
+		//Start - Added by Commander: IP2Country update
+		GetDlgItem(IDC_AUTOUPIP2COUNTRY)->SetWindowText(GetResString(IDS_AUTOUPIP2COUNTRY));
+		GetDlgItem(IDC_UPDATEIPCURL)->SetWindowText(GetResString(IDS_UPDATEIPCURL));
+		GetDlgItem(IDC_URL_FOR_UPDATING_IP2COUNTRY)->SetWindowText(GetResString(IDS_URL_FOR_UPDATING_IP2COUNTRY));
+		GetDlgItem(IDC_URL_FOR_UPDATING_IP2COUNTRY_VERFILE)->SetWindowText(GetResString(IDS_URL_FOR_UPDATING_IP2COUNTRY_VERFILE));
+		//End - Added by Commander: IP2Country update
 
 		}
 }
@@ -172,4 +220,24 @@ void CPPgSpe3::OnBnClickedResetipfurl()
 	GetDlgItem(IDC_IPFILTER_VERSION)->SetWindowText(strBuffer);
 
 }
+//Commander - Added: IP2Country Auto-updating - Start
+void CPPgSpe3::OnBnClickedUpdateipcurl()
+{
+	OnApply();
+	theApp.ip2country->UpdateIP2CountryURL();
+	CString strBuffer;
+	strBuffer.Format(_T("v.%u"), thePrefs.GetIP2CountryVersion());
+	GetDlgItem(IDC_IP2COUNTRY_VERSION)->SetWindowText(strBuffer);
+}
 
+//Commander - Added: IP2Country Auto-updating - End
+void CPPgSpe3::OnBnClickedResetipcurl()
+{
+	CString strBuffer = _T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip");
+	GetDlgItem(IDC_UPDATE_URL_IP2COUNTRY)->SetWindowText(strBuffer);
+	strBuffer = _T("http://ip-to-country.webhosting.info/downloads/latest");
+	GetDlgItem(IDC_UPDATE_VER_URL_IP2COUNTRY)->SetWindowText(strBuffer);
+	thePrefs.m_IP2CountryVersion = 0;
+	strBuffer.Format(_T("v.%u"), thePrefs.GetIP2CountryVersion());
+	GetDlgItem(IDC_IP2COUNTRY_VERSION)->SetWindowText(strBuffer);
+}

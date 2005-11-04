@@ -30,16 +30,16 @@ flags are from http://sf.net/projects/flags/
 #include "serverwnd.h"
 #include "serverlistctrl.h"
 
-//Start
+//KTS+
 #include "kadcontactlistctrl.h"
 #include "kademliawnd.h"
-//End
+//KTS-
 
-//Start
+//KTS+
 #include "share.h"
 #include "HttpDownloadDlg.h"//MORPH - Added by SiRoB, IP2Country auto-updating
 #include "ZipFile.h"//MORPH - Added by SiRoB, ZIP File download decompress
-//End
+//KTS-
 
 
 #ifdef _DEBUG
@@ -193,9 +193,9 @@ bool CIP2Country::LoadFromFile(){
 				tempStr[4] = FirstCharCap(tempStr[4]);
 
 				count++;
-				//Start Unicode
+				//KTS+ Unicode
 				AddIPRange(_ttoi(tempStr[0]),_ttoi(tempStr[1]), tempStr[2], tempStr[3], tempStr[4]);
-				//End Unicode
+				//KTS- Unicode
 
 		}
 			fclose(readFile);

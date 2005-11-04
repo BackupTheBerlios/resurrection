@@ -1,12 +1,14 @@
-ResuRReCTioN 1.3
+ReSuRReCTioN 1.3
 
 Added: new Statistic option (copy lama-stat) [shandra/lama/spe64]
+
+
+ResuRReCTioN 1.2.1
+
 Updated: WiZaRds Auto HL (2 last iONix ones) 
 Fixed: A4AF 
 Removed: Anti Upload Ban - (due to it is not fitting Antileech from ionix) 
-
-
-
+Re-added IP2Country [KTS]
 
 ReSuRReCTIoN 1.2
 

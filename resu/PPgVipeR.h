@@ -120,6 +120,16 @@ int m_iCreditSystem;
 	HTREEITEM m_htiDropSourcesTimerHQR;
 	HTREEITEM m_htiHqrBox;
 	//Ackronic END - Aggiunto da Aenarion[ITA] - Drop
+// IP-to-Country +
+	IP2CountryNameSelection	m_iIP2CountryName;
+	HTREEITEM m_htiIP2CountryName;
+	HTREEITEM m_htiIP2CountryName_DISABLE;
+	HTREEITEM m_htiIP2CountryName_SHORT;
+	HTREEITEM m_htiIP2CountryName_MID;
+	HTREEITEM m_htiIP2CountryName_LONG;
+	int m_bIP2CountryShowFlag;
+	HTREEITEM m_htiIP2CountryShowFlag;
+	// IP-to-Country -
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();

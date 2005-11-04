@@ -930,6 +930,18 @@ void CClientList::ProcessA4AFClients() const {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
+//KTS+ IP to Country
+void CClientList::ResetIP2Country(){
+
+	CUpDownClient *cur_client;
+
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos)) { 
+		cur_client = theApp.clientlist->list.GetAt(pos); 
+		cur_client->ResetIP2Country();
+	}
+
+}
+//KTS- IP to Country
 //KTS+ webcache
 // WebCache ////////////////////////////////////////////////////////////////////////////////////
 // yonatan - not 2 be confused with the one in CUploadQueue!

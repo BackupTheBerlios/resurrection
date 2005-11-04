@@ -228,6 +228,9 @@ BEGIN
     LTEXT           "-",IDC_FRIENDS_DESCARGADO_EDIT,72,258,60,8,SS_NOPREFIX
     CONTROL         "",IDC_SPLITTER_FRIEND,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,139,5,3,278
+    LTEXT           "Country:",IDC_FRIENDS_COUNTRY,12,270,61,8
+    LTEXT           "-",IDC_FRIENDS_COUNTRY_EDIT,72,270,60,8,SS_NOPREFIX
+    ICON            "",IDC_COUNTRYFLAG2,44,269,21,20
 END
 
 IDD_STATISTICS DIALOGEX 0, 35, 511, 290
@@ -1560,10 +1563,24 @@ BEGIN
     LTEXT           "URL for updating",IDC_URL_FOR_UPDATING2,12,108,202,8,0,
                     WS_EX_TRANSPARENT
     GROUPBOX        "File",IDC_MORPH2_FILE,6,6,216,72,BS_FLAT
+    PUSHBUTTON      "Update",IDC_UPDATEIPCURL,168,246,48,14,BS_FLAT
     LTEXT           "Static",IDC_IPFILTER_VERSION,12,138,93,8
     LTEXT           "Static",IDC_FAKELIST_VERSION,12,60,94,8
     PUSHBUTTON      "Reset",IDC_RESETFAKESURL,114,60,48,14,BS_FLAT
     PUSHBUTTON      "Reset",IDC_RESETIPFURL,114,138,48,14,BS_FLAT
+    PUSHBUTTON      "Reset",IDC_RESETIPCURL,114,246,48,14,BS_FLAT
+    GROUPBOX        "IP2Country Update",IDC_STATIC,6,164,216,100
+    CONTROL         "Update Ip-to-country.csv on startup",
+                    IDC_AUTOUPIP2COUNTRY,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,12,176,183,8
+    LTEXT           "File-URL for updating",IDC_URL_FOR_UPDATING_IP2COUNTRY,
+                    12,188,168,8
+    EDITTEXT        IDC_UPDATE_URL_IP2COUNTRY,12,200,202,12,ES_AUTOHSCROLL
+    LTEXT           "Version-File-URL for updating",
+                    IDC_URL_FOR_UPDATING_IP2COUNTRY_VERFILE,12,216,170,8
+    EDITTEXT        IDC_UPDATE_VER_URL_IP2COUNTRY,12,228,202,12,
+                    ES_AUTOHSCROLL
+    LTEXT           "version",IDC_IP2COUNTRY_VERSION,12,245,64,8
     GROUPBOX        "Security",IDC_MORPH2_SECURITY,6,84,216,72,BS_FLAT
 END
 
@@ -2370,7 +2387,7 @@ IDB_CONNECT_CLICK       BITMAP                  "res\\Toolbar\\btn_connect_click
 IDB_CONNECT_NORMAL      BITMAP                  "res\\Toolbar\\btn_connect_normal.bmp"
 IDB_DISCONNECT_OVER     BITMAP                  "res\\Toolbar\\btn_disconnect_over.bmp"
 60035                   BITMAP                  "res\\ionix-banner.bmp"
-60090                   BITMAP                  "res\\lamapic.bmp"
+//60090                   BITMAP                  "res\\lamapic.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4560,6 +4577,20 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_IP2COUNTRY          "IP2Country"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COUNTRYNAME_SHORT   "Display 2 letters"
+    IDS_COUNTRYNAME_MID     "Display 3 letters"
+    IDS_COUNTRYNAME_LONG    "Display full name"
+    IDS_COUNTRYNAME_SHOWFLAG "ShowFlag"
+    IDS_COUNTRYNAME_LONG2   "Display full name"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_DOWNFAKECHECKVER    "Downloading Fake Check version file"
 END
 
@@ -4638,6 +4669,12 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_URL_FOR_UPDATING_IP2COUNTRY_VERFILE "Version-File-URL for updating"
+    IDC_URL_FOR_UPDATING_IP2COUNTRY "File-URL for updating"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_WEBCACHE_ISP        "ISP Proxyserver Settings"
     IDS_WrongPortforWebcache 
                             "Webcache Download disabled: Only transfers on Port   21, 70,  80, 210, 443, 563 and in the range from 1025 to 65535 are cached. Please use one of these Ports if you want to enable the Webcache Feature"
@@ -4656,7 +4693,9 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_AUTOUPIP2COUNTRY    "Update Ip-to-country.csv on startup"
     IDS_UPDATEIPCURL        "Update"
+    IDS_URL_FOR_UPDATING_IP2COUNTRY "File-URL for updating"
 END
 
 STRINGTABLE 

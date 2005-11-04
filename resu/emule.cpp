@@ -76,6 +76,9 @@
 #include "Log.h"
 #include "./AntiLeech/AntiLeech.h" //>>> AntiLeech Class
 #include "Collection.h"
+//KTS+ IP to Country
+#include "IP2Country.h"
+//KTS- IP to Country
 #include "fakecheck.h" //MORPH - Added by SiRoB
 
 CLogFile theLog;
@@ -581,6 +584,9 @@ BOOL CemuleApp::InitInstance()
 	webserver = new CWebServer(); // Webserver [kuchin]
 	mmserver = new CMMServer();
 	m_pPeerCache = new CPeerCacheFinder();
+	//KTS+ IP to Country
+	ip2country = new CIP2Country(); 
+	//KTS- IP to Country
 FakeCheck 	= new CFakecheck(); //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updating
 thePerfLog.Startup();
 	dlg.DoModal();

@@ -99,6 +99,9 @@
 #include "TextToSpeech.h"
 #include "Collection.h"
 #include "CollectionViewDialog.h"
+//KTS+ IP to Country
+#include "IP2Country.h" 
+//KTS- IP to Country
 
 #include "fakecheck.h" //MORPH - Added by SiRoB
 // MORPH START - Added by Commander, Friendlinks [emulEspaña]
@@ -641,21 +644,21 @@ BOOL CemuleDlg::OnInitDialog()
 //==> Toolbar [shadow2004]
 		apWnds[i]->SetWindowPos(NULL,0,66,rect.right-rect.left,rect.bottom-rect.top-66-(srect.bottom-srect.top),SWP_NOZORDER);
 
-	GetDlgItem(IDC_BTN_CONNECT)->SetWindowPos(NULL,16,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_KADEMLIA)->SetWindowPos(NULL,86,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_SERVER)->SetWindowPos(NULL,156,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_TRANSFER)->SetWindowPos(NULL,226,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_SEARCH)->SetWindowPos(NULL,296,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_FILES)->SetWindowPos(NULL,366,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_MESSAGES)->SetWindowPos(NULL,436,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_STATISTIC)->SetWindowPos(NULL,506,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_PREFERENCES)->SetWindowPos(NULL,576,4,59,59,SWP_NOZORDER);
-	GetDlgItem(IDC_BTN_TOOLS)->SetWindowPos(NULL,646,4,59,59,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_CONNECT)->SetWindowPos(NULL,16,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_KADEMLIA)->SetWindowPos(NULL,86,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_SERVER)->SetWindowPos(NULL,156,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_TRANSFER)->SetWindowPos(NULL,226,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_SEARCH)->SetWindowPos(NULL,296,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_FILES)->SetWindowPos(NULL,366,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_MESSAGES)->SetWindowPos(NULL,436,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_STATISTIC)->SetWindowPos(NULL,506,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_PREFERENCES)->SetWindowPos(NULL,576,0,59,65,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_TOOLS)->SetWindowPos(NULL,646,0,59,65,SWP_NOZORDER);
 
 
-	RECT trect4={0,39,59,59};
-	RECT trect5={1,39,59,59};// for message button
-	RECT trect6={3,39,59,59};//shared files button
+	RECT trect4={0,46,59,65};
+	RECT trect5={1,46,59,65};// for message button
+	RECT trect6={3,46,59,65};//shared files button
 	m_co_ConnectBtn.Set_TextPos(trect5);
 	m_co_KademliaBtn.Set_TextPos(trect5);
 	m_co_ServerBtn.Set_TextPos(trect5);
@@ -1920,6 +1923,9 @@ void CemuleDlg::OnClose()
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
 	delete theApp.m_pFirewallOpener;theApp.m_pFirewallOpener = NULL;
+	//KTS+ IP to Country
+	delete theApp.ip2country;		theApp.ip2country = NULL;
+	//KTS- IP to Country
 	delete theApp.uploadBandwidthThrottler; theApp.uploadBandwidthThrottler = NULL;
 	delete theApp.lastCommonRouteFinder; theApp.lastCommonRouteFinder = NULL;
 
@@ -3363,7 +3369,7 @@ BOOL CemuleDlg::OnEraseBkgnd(CDC* pDC)
 	m_co_ToolMid.GetBitmap(&bmpInfo);
 	dcMemory3.CreateCompatibleDC(pDC);
 	CBitmap* pOldBitmap3 = dcMemory3.SelectObject(&m_co_ToolMid);
-	pDC->StretchBlt(387,0, rect.right-253-387, bmpInfo.bmHeight, &dcMemory3,0,0, bmpInfo.bmWidth, bmpInfo.bmHeight ,SRCCOPY);
+	pDC->StretchBlt(80,0, rect.right-310-80, bmpInfo.bmHeight, &dcMemory3,0,0, bmpInfo.bmWidth, bmpInfo.bmHeight ,SRCCOPY); // 310 Pixel von Rechts  387 Pixel von Links wird Center gezerrt
 
 	dcMemory1.SelectObject(pOldBitmap1);
 	dcMemory2.SelectObject(pOldBitmap2);

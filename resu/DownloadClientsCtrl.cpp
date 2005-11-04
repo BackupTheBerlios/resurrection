@@ -36,6 +36,9 @@
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "SharedFileList.h"
 #include "fakecheck.h" // [ionix] - Fakecheck
+// IP-to-Country +
+#include "IP2Country.h" 
+// IP-to-Country -
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -328,9 +331,26 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					POINT point = {cur_rec.left, cur_rec.top+1};
 					m_ImageList.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
 					Sbuffer = client->GetUserName();
+// IP-to-Country +
+					CString tempStr;
+					tempStr.Format(_T("%s%s"), client->GetCountryName(), Sbuffer);
+					Sbuffer = tempStr;
+
+					if(theApp.ip2country->ShowCountryFlag() ){
+						cur_rec.left+=20;
+						POINT point2= {cur_rec.left,cur_rec.top+1};
+						int index = client->GetCountryFlagIndex();
+						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, index , point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
+					}
+					// IP-to-Country -
 					cur_rec.left +=20;
 					dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 					cur_rec.left -=20;
+// IP-to-Country +
+					if(theApp.ip2country->ShowCountryFlag() ){
+						cur_rec.left-=20;
+					}
+					// IP-to-Country -
 					break;
 					}
 				case 1:

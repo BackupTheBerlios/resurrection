@@ -934,9 +934,16 @@ protected:
     void    SetSwapForSourceExchangeTick() { lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
 	//>>> WiZaRd 4 [ionix] - Bad User Banning
 public:	
+	// IP-to-Country +
+ 	CString			GetCountryName(bool longName = false) const;
+	int				GetCountryFlagIndex() const;
+	void			ResetIP2Country();
 	void	Check4BadMod();
 	void	Check4BadName();
 //<<< WiZaRd 4 [ionix] - Bad User Banning
+private:
+	struct	IPRange_Struct2* m_structUserCountry;
+// IP-to-Country -
 // Mondgott :: Show RedSmurfIconOnClientDetect
 public: 
 	bool GetRedSmurfClient() const { return m_bRedSmurfClient;}

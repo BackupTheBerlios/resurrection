@@ -35,6 +35,9 @@ there client on the eMule forum..
 */
 #pragma once
 #include "../utils/UInt128.h"
+//KTS+ IP to Country
+#include "IP2Country.h"
+//KTS- IP to Country
 ////////////////////////////////////////
 namespace Kademlia {
 ////////////////////////////////////////
@@ -46,6 +49,9 @@ class CContact
 {
 	friend class CRoutingZone;
 	friend class CRoutingBin;
+	//KTS+ IP to Country
+	friend class CKadContactListCtrl;
+	//KTS- IP to Country
 public:
 
 	~CContact();
@@ -89,11 +95,18 @@ public:
 	time_t getExpireTime() const {return m_expires;}
 
 	time_t getLastTypeSet() const {return m_lastTypeSet;}
+//KTS+ IP to Country
+	CString	GetCountryName() const;
+	int		GetCountryFlagIndex() const;
+	void	ResetIP2Country();
+	uint32		m_ip;
+	struct	IPRange_Struct2* m_structServerCountry;
+//KTS- IP to Country
 private:
 	void initContact(); // Common var initialization goes here
 	CUInt128	m_clientID;
 	CUInt128	m_distance;
-	uint32		m_ip;
+	//uint32		m_ip;
 	uint16		m_tcpPort;
 	uint16		m_udpPort;
 	byte		m_type;

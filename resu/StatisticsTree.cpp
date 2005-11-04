@@ -42,6 +42,7 @@
 #include "downloadlistctrl.h"
 #include "./SysInfo/SystemInfo.h"
 #include "transferwnd.h"
+#include "./SysInfo/SysInfo.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -494,8 +495,8 @@ fstats.AppendFormat(_T("|--> Emule Nickname: %s \r\n"),thePrefs.GetUserNick());
 fstats.AppendFormat(_T("|--> running Mod: %s \r\n"),MOD_VERSION);
 fstats.AppendFormat(_T("|--> CPU Usage: %3d%% \r\n"), theApp.sysinfo->GetCpuUsage());
 fstats.AppendFormat(_T("|--> Mem Usage: %.fMb \r\n"),(double)theApp.sysinfo->GetMemoryUsage()/1024);
-
-//fstats.AppendFormat(_T("|--> OS Info : %s \r\n"), theApp.sysinfo->GetWindowsString());
+fstats.AppendFormat(_T("|--> CPU Infos: %s %s %s @%3d%Mhz \r\n"),theApp.sysinfo->GetCPUNameString(),theApp.sysinfo->GetCPUVendorIdentifier(),theApp.sysinfo-> GetCPUIdentifier(),theApp.sysinfo->GetCPUSpeed());
+fstats.AppendFormat(_T("|--> OS Info : %s Build:%u \r\n"), theApp.sysinfo->GetOSType(),theApp.sysinfo->GetBuildNumber());
 fstats.AppendFormat(_T("\r\n"));
 
 fstats.AppendFormat(_T("Emule Settings:\r\n"));
@@ -521,7 +522,6 @@ fstats.AppendFormat(_T("Upload Stats:\r\n"));
  fstats.AppendFormat(_T("|--> %s %u \r\n"), GetResString(IDS_ACTIVE_UPLOADS),theApp.uploadqueue->GetActiveUploadsCount()); 
  fstats.AppendFormat(_T("|--> %s %u \r\n"), GetResString(IDS_UPLOADS_WAITING),theApp.uploadqueue->GetUploadQueueLength());
 //fstats.AppendFormat(_T("|--> On Queue/Banned : %u (%u banned) \r\n"),CastItoXBytes(theStats.sessionSentBytes));
- //fstats.AppendFormat(GetResString(IDS_STATS_LEECHERCLIENTS) + _T(" (%1.1f%%)"),theStats.leecherclients, (double)100*theStats.leecherclients/totalclient);stattree.SetItemText(cligen[6], cbuffer);
  fstats.AppendFormat(_T("\r\n"));
 	//download
  fstats.AppendFormat(_T("Download Stats:\r\n"));
@@ -557,6 +557,8 @@ fstats.AppendFormat(_T("Upload Stats:\r\n"));
 	uint64 t_FreeBytes=0;
 	theApp.downloadqueue->GetDownloadStats(myRateStats,ui64TotFileSize,ui64TotBytesLeftToTransfer,ui64TotNeededSpace);
     fstats.AppendFormat(_T("|--> Number of Files to Download: %d \r\n"),myRateStats[2]);
+	fstats.AppendFormat( _T("|--> %s: %u") , GetResString( IDS_STATS_COMPDL ) , thePrefs.GetDownSessionCompletedFiles() );
+	fstats.AppendFormat(_T("\r\n"));
 	CMap<uint32, uint32, uint32, uint32> clientVersionEDonkey;
 	CMap<uint32, uint32, uint32, uint32> clientVersionEDonkeyHybrid;
 	CMap<uint32, uint32, uint32, uint32> clientVersionEMule;
@@ -564,27 +566,30 @@ fstats.AppendFormat(_T("Upload Stats:\r\n"));
 	uint32 totalclient;
 	int myStats[15];
 	theApp.clientlist->GetStatistics(totalclient, myStats,
-		clientVersionEDonkey,
-		clientVersionEDonkeyHybrid,
-		clientVersionEMule,
-		clientVersionAMule);
+	clientVersionEDonkey,
+	clientVersionEDonkeyHybrid,
+	clientVersionEMule,
+	clientVersionAMule);
 	uint32 otherclient = totalclient-myStats[12]-myStats[13]; //this includes IS_IDNEEDED and clients without credits
     fstats.AppendFormat(_T("|--> %s: %u (%.1f%%) : %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (totalclient)?((double)100*myStats[12] / totalclient):0, myStats[13] , (totalclient)?((double)100*myStats[13] / totalclient ):0, otherclient, (totalclient)?((double)100*otherclient/totalclient):0); 
 	fstats.AppendFormat(_T("\r\n"));
 	double percentSessions = 0;
 	uint32 statBadSessions = theApp.uploadqueue->GetFailedUpCount();
 	uint32 statBadSessionsdown = thePrefs.GetDownS_FailedSessions();
-	fstats.AppendFormat(_T("|--> Found Sources: %u \r\n"),(GetResString(IDS_STATS_FOUNDSRC), myStats[0]));
-	fstats.AppendFormat( _T("|--> %s: %u \r\n") , GetResString( IDS_ONQUEUE ) , myStats[2] );
-    fstats.AppendFormat(_T("|--> Failed up/down sessions: %i/%i\r\n"),statBadSessions,statBadSessionsdown);
+	//fstats.AppendFormat(_T("|--> %s: %u \r\n"),(GetResString(IDS_STATS_FOUNDSRC), myStats[0]));
+	//uint32 cnt;
+	//double topper = 0.0;
+	//topper = (double)cnt/myStats[2];
+	//fstats.AppendFormat( _T("|--> %s: %u \r\n") , GetResString( IDS_ONQUEUE ) , myStats[2] );
+	fstats.AppendFormat(_T("|--> Failed Up sessions: %u (%.2f%%) \r\n"),statBadSessions,percentSessions);
+	fstats.AppendFormat(_T("|--> Failed Down sessions: %u (%.2f%%) \r\n"),statBadSessionsdown,percentSessions);
 	fstats.AppendFormat (_T("|--> %s: %u"), GetResString(IDS_BANNED), theApp.clientlist->GetBannedCount());
     fstats.AppendFormat (_T("  |--> %s %u"), GetResString(IDS_FEED_FILTERED), theStats.filteredclients); 
-    fstats.AppendFormat(_T("\r\n"));
-	fstats.AppendFormat(_T("\r\n"));
 	fstats.AppendFormat(_T("\r\n"));
 	fstats.AppendFormat(_T("\r\n"));
 	fstats.AppendFormat(_T("|--> *Modded by NoSFeLaMa* \r\n"));
-	fstats.AppendFormat(_T("|--> HomeBoard: http://lamas_gruft.real-life-board.de/ \r\n"));
+	fstats.AppendFormat(_T("|--> SupportBoard: http://lamas_gruft.real-life-board.de/ \r\n"));
+
 	theApp.CopyTextToClipboard(fstats); 
 					break;
 			}

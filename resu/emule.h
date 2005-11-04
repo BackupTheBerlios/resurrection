@@ -53,6 +53,9 @@ class CFakecheck; //MORPH - Added by milobac, FakeCheck, FakeReport, Auto-updati
 //KTS+// sicks ajout [lama]
 class CSystemInfo;  
 //KTS-// sicks ajout [lama]
+//KTS+ IP to Country
+class CIP2Country; 
+//KTS- IP to Country
 struct SLogItem;
 
 enum AppState{
@@ -71,7 +74,10 @@ public:
 	// ZZ:UploadSpeedSense <--
 
 	CPUInfo 			cpu; 		// [ionix] - Optimizer
-	CemuleDlg*			emuledlg;
+		//KTS+ IP to Country
+	CIP2Country*		ip2country; 
+	//KTS- IP to Country
+        CemuleDlg*			emuledlg;
 	CClientList*		clientlist;
 	CKnownFileList*		knownfiles;
 	CServerConnect*		serverconnect;

@@ -7,7 +7,11 @@
 #include "OtherFunctions.h"
 #include "UserMsgs.h"
 #include "Preferences.h"
-#include "SharedFileList.h" // Morph: PowerShare	
+#include "SharedFileList.h" // Morph: PowerShare
+// IP-to-Country +
+#include "IP2Country.h"
+// IP-to-Country -
+	
 #include "ClientCredits.h" //Credit Syst Spe64
 
 
@@ -104,6 +108,14 @@ m_htiClientPerc = NULL;
 	m_htiFnTagAtEnd = NULL;
 	// <== FunnyNick Tag - Stulle
 
+// IP-to-Country +
+	m_htiIP2CountryName = NULL;
+	m_htiIP2CountryName_DISABLE = NULL;
+	m_htiIP2CountryName_SHORT = NULL;
+	m_htiIP2CountryName_MID = NULL;
+	m_htiIP2CountryName_LONG = NULL;
+	m_htiIP2CountryShowFlag = NULL;
+	// IP-to-Country -
 //Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	m_htiDropSources = NULL;
 	m_htiDropSourcesTimerNNS = NULL;
@@ -135,6 +147,10 @@ void CPPgVipeR::DoDataExchange(CDataExchange* pDX)
 //Telp+ Menu VipeR
 		int iImgAddTweaks = 8;
 //Telp- Menu VipeR
+// IP-to-Country +
+		int iImgIP2Country = 8;
+		// IP-to-Country -
+
 int iImgCS = 8; // Creditsystems
  //<<-- ADDED STORMIT -  Morph: PowerShared //
  //<<-- ADDED STORMIT -  Morph: PowerShared //
@@ -149,6 +165,9 @@ CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 //Telp+ Menu VipeR
 		iImgAddTweaks = piml->Add(CTempIconLoader(_T("TWEAK")));
 //Telp- Menu VipeR
+  // IP-to-Country +
+			iImgIP2Country = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL"))); 
+	         // IP-to-Country -
 iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
  //<<-- ADDED STORMIT -  Morph: PowerShared //
 			// Morph: PowerShare
@@ -168,6 +187,15 @@ iImgUM = piml->Add(CTempIconLoader(_T("UPLOAD")));
 		m_ctrlTreeOptions.SetItemState(m_AdditionalVipeR, TVIS_BOLD, TVIS_BOLD);
 
 iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // Creditsystems
+// IP-to-Country +
+		m_htiIP2CountryName = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_IP2COUNTRY), iImgIP2Country, TVI_ROOT);
+		m_ctrlTreeOptions.SetItemState(m_htiIP2CountryName, TVIS_BOLD, TVIS_BOLD);
+		m_htiIP2CountryName_DISABLE = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DISABLED), m_htiIP2CountryName, m_iIP2CountryName == IP2CountryName_DISABLE);
+		m_htiIP2CountryName_SHORT = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_COUNTRYNAME_SHORT), m_htiIP2CountryName, m_iIP2CountryName == IP2CountryName_SHORT);
+		m_htiIP2CountryName_MID = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_COUNTRYNAME_MID), m_htiIP2CountryName, m_iIP2CountryName == IP2CountryName_MID);
+		m_htiIP2CountryName_LONG = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_COUNTRYNAME_LONG), m_htiIP2CountryName, m_iIP2CountryName == IP2CountryName_LONG);
+		m_htiIP2CountryShowFlag = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_COUNTRYNAME_SHOWFLAG), m_htiIP2CountryName, m_bIP2CountryShowFlag);
+		// IP-to-Country -
 
 		//Telp Start payback first
 		m_htiPBF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACK_FIRST), m_AdditionalVipeR, m_bPBF);
@@ -254,6 +282,10 @@ m_ctrlTreeOptions.SetItemState(m_htiUM, TVIS_BOLD, TVIS_BOLD);
 		m_bInitializedTreeOpts = true;
 
  ///////////////////////////////////////////////////////////////////////////////////
+ // IP-to-Country +
+	DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiIP2CountryName, (int &)m_iIP2CountryName);
+	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiIP2CountryShowFlag, m_bIP2CountryShowFlag);
+	// IP-to-Country -
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiClientPerc, m_bEnableClientPerc);
 //Telp Start payback First
 	DDX_TreeCheck(pDX, IDC_VP_OPTS, m_htiPBF, m_bPBF);
@@ -301,6 +333,11 @@ DDX_TreeRadio(pDX, IDC_VP_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // C
 
 BOOL CPPgVipeR::OnInitDialog()
 {
+
+// IP-to-Country +
+	m_iIP2CountryName = thePrefs.GetIP2CountryNameMode(); 
+	m_bIP2CountryShowFlag = thePrefs.IsIP2CountryShowFlag();
+	// IP-to-Country -
 
 m_iCreditSystem = thePrefs.GetCreditSystem(); // CreditSystem 
 
@@ -434,6 +471,21 @@ thePrefs.SetCreditSystem(m_iCreditSystem); // CreditSystem
 	_stprintf (thePrefs.m_sFnCustomTag,_T("%s"), m_sFnCustomTag);
 	thePrefs.m_bFnTagAtEnd = m_bFnTagAtEnd;
 	// <== FunnyNick Tag - Stulle
+// IP-to-Country +
+	if(	(thePrefs.m_iIP2CountryNameMode != IP2CountryName_DISABLE || thePrefs.m_bIP2CountryShowFlag) !=
+		((IP2CountryNameSelection)m_iIP2CountryName != IP2CountryName_DISABLE || m_bIP2CountryShowFlag)	){
+		//check if need to load or unload DLL and ip table
+		if((IP2CountryNameSelection)m_iIP2CountryName != IP2CountryName_DISABLE || m_bIP2CountryShowFlag){
+			theApp.ip2country->Load();
+		}
+		else{
+			theApp.ip2country->Unload();
+		}
+	}
+	thePrefs.m_iIP2CountryNameMode = m_iIP2CountryName;
+	thePrefs.m_bIP2CountryShowFlag = m_bIP2CountryShowFlag;
+	theApp.ip2country->Refresh();//refresh passive windows
+	// IP-to-Country -
 
 	//Ackronic START - Aggiunto da Aenarion[ITA] - Drop
 	if(m_iDropSourcesTimerNNS < 2)
@@ -543,6 +595,14 @@ void CPPgVipeR::OnDestroy()
 	m_htiPowershareAuto = NULL;
 	m_htiPowershareLimited = NULL;
  //<<-- ADDED STORMIT -  Morph: PowerShared //	
+// IP-to-Country +
+	m_htiIP2CountryName = NULL;
+	m_htiIP2CountryName_DISABLE = NULL;
+	m_htiIP2CountryName_SHORT = NULL;
+	m_htiIP2CountryName_MID = NULL;
+	m_htiIP2CountryName_LONG = NULL;
+	m_htiIP2CountryShowFlag = NULL;
+	// IP-to-Country -
 
 
 	CPropertyPage::OnDestroy();

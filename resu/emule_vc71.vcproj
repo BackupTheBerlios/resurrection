@@ -80,7 +80,7 @@
 			UseOfMFC="1"
 			CharacterSet="1"
 			DeleteExtensionsOnClean="*.obj;*.ilk;*.pdb;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.bat;*.asm;$(TargetPath)"
-			WholeProgramOptimization="FALSE">
+			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
@@ -90,7 +90,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
-				OptimizeForProcessor="2"
+				OptimizeForProcessor="0"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1"
@@ -315,6 +315,9 @@
 			</File>
 			<File
 				RelativePath="Ini2.cpp">
+			</File>
+			<File
+				RelativePath=".\IP2Country.cpp">
 			</File>
 			<File
 				RelativePath="IPFilter.cpp">
@@ -810,6 +813,9 @@
 			</File>
 			<File
 				RelativePath="Ini2.h">
+			</File>
+			<File
+				RelativePath=".\IP2Country.h">
 			</File>
 			<File
 				RelativePath="IPFilter.h">

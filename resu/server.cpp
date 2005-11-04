@@ -20,6 +20,10 @@
 #include "Opcodes.h"
 #include "OtherFunctions.h"
 #include "Packets.h"
+// IP-to-Country +
+#include "IP2Country.h" 
+#include "preferences.h" 
+// IP-to-Country -
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,6 +54,9 @@ CServer::CServer(const ServerMet_Struct* in_data)
 	m_uDescReqChallenge = 0;
 	m_uLowIDUsers = 0;
 	challenge = 0;
+// IP-to-Country +
+	m_structServerCountry = theApp.ip2country->GetCountryFromIP(ip);  
+	// IP-to-Country -
 }
 
 CServer::CServer(uint16 in_port, LPCTSTR i_addr)
@@ -78,6 +85,9 @@ CServer::CServer(uint16 in_port, LPCTSTR i_addr)
 	m_uDescReqChallenge = 0;
 	m_uLowIDUsers = 0;
 	challenge = 0;
+// IP-to-Country +
+	m_structServerCountry = theApp.ip2country->GetCountryFromIP(ip);  
+	// IP-to-Country -
 }
 
 CServer::CServer(const CServer* pOld)
@@ -106,6 +116,9 @@ CServer::CServer(const CServer* pOld)
 	m_uDescReqChallenge = pOld->m_uDescReqChallenge;
 	m_uLowIDUsers = pOld->m_uLowIDUsers;
 	challenge = pOld->challenge;
+// IP-to-Country +
+	m_structServerCountry = theApp.ip2country->GetCountryFromIP(ip);  
+	// IP-to-Country -
 }
 
 CServer::~CServer()
@@ -239,6 +252,9 @@ void CServer::SetIP(uint32 newip)
 {
 	ip = newip;
 	_tcscpy(ipfull, ipstr(ip));
+// IP-to-Country +
+	m_structServerCountry = theApp.ip2country->GetCountryFromIP(ip);  
+	// IP-to-Country -
 }
 
 void CServer::SetDynIP(LPCTSTR newdynip)
@@ -253,4 +269,30 @@ void CServer::SetLastDescPingedCount(bool bReset)
 	else
 		lastdescpingedcout++;
 }
+// IP-to-Country +
+CString CServer::GetCountryName() const{
+	CString tempStr;
 
+	if(theApp.ip2country->IsIP2Country() == false) return _T("");
+
+	switch(thePrefs.GetIP2CountryNameMode()){
+		case IP2CountryName_SHORT:
+			tempStr.Format(_T("<%s>"),m_structServerCountry->ShortCountryName);
+			return tempStr;
+		case IP2CountryName_MID:
+			tempStr.Format(_T("<%s>"),m_structServerCountry->MidCountryName);
+			return tempStr;
+		case IP2CountryName_LONG:
+			tempStr.Format(_T("<%s>"),m_structServerCountry->LongCountryName);
+			return tempStr;
+	}
+	return _T("");
+}
+int CServer::GetCountryFlagIndex() const{
+	return m_structServerCountry->FlagIndex;
+}
+
+void CServer::ResetIP2Country(){
+	m_structServerCountry = theApp.ip2country->GetCountryFromIP(ip);
+}
+// IP-to-Country -

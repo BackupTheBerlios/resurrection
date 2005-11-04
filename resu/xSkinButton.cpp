@@ -38,7 +38,7 @@ CxSkinButton::CxSkinButton()
 	m_DrawMode=1;			// normal drawing mode
 	m_FocusRectMargin=0;	// disable focus dotted rect
 	hClipRgn=NULL;			// no clipping region
-	m_TextColor=RGB(255,48,48); // Blutrot // default button text color
+	m_TextColor=RGB(0,0,0); // schwarz
 	m_button_down = m_tracking = m_Checked = false;
 	m_TextRect.left = 0;
 	m_TextRect.top = 0;

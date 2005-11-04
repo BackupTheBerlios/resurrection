@@ -34,6 +34,9 @@
 #include "kademlia/net/KademliaUDPListener.h"
 #include "UploadQueue.h"
 #include "ToolTipCtrlX.h"
+// IP-to-Country +
+#include "IP2Country.h"
+// IP-to-Country -
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -381,9 +384,25 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					POINT point = {cur_rec.left, cur_rec.top+1};
 					imagelist.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
 					Sbuffer = client->GetUserName();
+// IP-to-Country +
+					CString tempStr;
+					tempStr.Format(_T("%s%s"), client->GetCountryName(), Sbuffer);
+					Sbuffer = tempStr;
+
+					if(theApp.ip2country->ShowCountryFlag() ){
+						cur_rec.left+=20;
+						POINT point2= {cur_rec.left,cur_rec.top+1};
+						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, client->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
+					}
+					// IP-to-Country -
 					cur_rec.left += 20;
 					dc.DrawText(Sbuffer, Sbuffer.GetLength(), &cur_rec, DLC_DT_TEXT);
 					cur_rec.left -= 20;
+// IP-to-Country +
+					if(theApp.ip2country->ShowCountryFlag() ){
+						cur_rec.left-=20;
+					}
+					// IP-to-Country -
 					break;
 				}
 				case 1:
