@@ -303,9 +303,9 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					POINT point = {cur_rec.left, cur_rec.top+1};
 					imagelist.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
 					if (client->GetUserName()==NULL)
-						Sbuffer.Format(_T("<%s> (%s)"), client->GetCountryName(), GetResString(IDS_UNKNOWN));
+						Sbuffer.Format(_T("%s (%s)"), client->GetCountryName(), GetResString(IDS_UNKNOWN));
 					else
-						Sbuffer.Format(_T("<%s> %s"), client->GetCountryName(), client->GetUserName()); 
+						Sbuffer.Format(_T("%s %s"), client->GetCountryName(), client->GetUserName()); 
 // IP-to-Country +
 					if(theApp.ip2country->ShowCountryFlag()){
 						cur_rec.left+=20;

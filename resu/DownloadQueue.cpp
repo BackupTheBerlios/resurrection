@@ -1431,7 +1431,13 @@ UINT CDownloadQueue::GetPausedFileCount() const
 	}
 	return result;
 }
-
+//FRTK(kts)+ AAF auto
+void CDownloadQueue::DisableAllA4AFAuto(void)
+{
+	for (POSITION pos = filelist.GetHeadPosition(); pos != NULL; )
+		filelist.GetNext(pos)->SetA4AFAuto(false);
+}
+//KTA- A4AF auto
 void CDownloadQueue::SetAutoCat(CPartFile* newfile){
 	if(thePrefs.GetCatCount()==1)
 		return;

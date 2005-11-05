@@ -92,7 +92,9 @@ public:
 
     void    StartNextFileIfPrefs(int cat);
 	void	StartNextFile(int cat=-1,bool force=false);
-
+	//FRTK(kts)+ A4AF auto
+	void	DisableAllA4AFAuto(void);
+	//FRTK(kts)- A4AF auto
 	// sources
 	CUpDownClient* GetDownloadClientByIP(uint32 dwIP);
 	CUpDownClient* GetDownloadClientByIP_UDP(uint32 dwIP, uint16 nUDPPort);

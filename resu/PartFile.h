@@ -170,7 +170,11 @@ public:
 
 //<<-- ADDED STORMIT -  Morph: PowerShare //
 	void	WritePartStatus(CSafeMemFile* file, CUpDownClient* client = NULL) /*const*/; // Morph: PowerShare // SLUGFILLER: hideOS
-	void	WriteCompleteSourcesCount(CSafeMemFile* file) const;
+		//FRTK(kts)+ A4AF auto
+	bool	IsA4AFAuto() const				{return m_is_A4AF_auto;}
+	void	SetA4AFAuto(bool in)			{m_is_A4AF_auto = in;}
+	//FRTK(kts)- A4AF auto
+        void	WriteCompleteSourcesCount(CSafeMemFile* file) const;
 	void	AddSources(CSafeMemFile* sources,uint32 serverip, uint16 serverport);
 	void	AddSource(LPCTSTR pszURL, uint32 nIP);
 	static bool CanAddSource(uint32 userid, uint16 port, uint32 serverip, uint16 serverport, UINT* pdebug_lowiddropped = NULL, bool Ed2kID = true);
@@ -256,9 +260,6 @@ public:
 
 	void	AddDownloadingSource(CUpDownClient* client);
 	void	RemoveDownloadingSource(CUpDownClient* client);
-
-	bool	IsA4AFAuto() const { return m_is_A4AF_auto; }//a4af
-	void	SetA4AFAuto(bool in) { m_is_A4AF_auto = in; }//a4af
 
 	CString GetProgressString(uint16 size) const;
 	CString GetInfoSummary() const;
@@ -367,6 +368,9 @@ private:
 	bool	newdate;	// indicates if there was a writeaccess to the .part file
 	uint32	lastpurgetime;
 	uint32	m_LastNoNeededCheck;
+	//FRTK(kts)+ A4AF auto
+	bool	m_is_A4AF_auto;
+	//FRTK(kts)- A4AF auto
 	CTypedPtrList<CPtrList, Gap_Struct*> gaplist;
 	CTypedPtrList<CPtrList, Requested_Block_Struct*> requestedblocks_list;
 	CArray<uint16,uint16> m_SrcpartFrequency;
@@ -374,7 +378,6 @@ private:
 	CList<uint16, uint16> corrupted_list;
 	uint32	m_ClientSrcAnswered;
 	uint16	availablePartsCount;
-	bool	m_is_A4AF_auto;
 	CWinThread* m_AllocateThread;
 	DWORD	m_lastRefreshedDLDisplay;
 	CUpDownClientPtrList m_downloadingSourceList;

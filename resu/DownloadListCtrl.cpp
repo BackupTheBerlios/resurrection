@@ -1495,7 +1495,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
             int iFilesGetPreviewParts = 0;
             int iFilesPreviewType = 0;
 			int iFilesToPreview = 0;
-			int iFilesA4AFAuto = 0;//a4af
+			//FRTK(kts)+ A4AF auto
+			int iFilesA4AFAuto = 0;
+			//FRTK(kts)- A4AF auto
 			//  Super Release
 			bool bReleaseFileSelected = false;
 			bool bNonReleaseFileSelected = false;
@@ -1525,7 +1527,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
                 iFilesGetPreviewParts += pFile->GetPreviewPrio() ? 1 : 0;
                 iFilesPreviewType += pFile->IsPreviewableFileType() ? 1 : 0;
 				iFilesToPreview += pFile->IsReadyForPreview() ? 1 : 0;
-				iFilesA4AFAuto += (!bFileDone && pFile->IsA4AFAuto()) ? 1 : 0;//A4aF
+				//FRTK(kts)+ A4AF auto
+				iFilesA4AFAuto += (!bFileDone && pFile->IsA4AFAuto()) ? 1 : 0;
+				//FRTK(kts)- A4AF auto
+
 				UINT uCurPrioMenuItem = 0;
 				if (pFile->IsAutoDownPriority())
 					uCurPrioMenuItem = MP_PRIOAUTO;
@@ -1621,7 +1626,11 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, (/*thePrefs.IsExtControlsEnabled() &&*/ iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED); // [ionix] - AutoHL
 			if (m_SourcesMenu && thePrefs.IsExtControlsEnabled()) {
-				m_SourcesMenu.CheckMenuItem(MP_ALL_A4AF_AUTO, (iSelectedItems == 1 && iFilesNotDone == 1 && iFilesA4AFAuto == 1) ? MF_CHECKED : MF_UNCHECKED);//a4af
+				//FRTK(kts)+ A4AF auto
+				m_SourcesMenu.CheckMenuItem(MP_ALL_A4AF_AUTO, (iSelectedItems == 1 && iFilesNotDone == 1 && iFilesA4AFAuto == 1) ? MF_CHECKED : MF_UNCHECKED);
+				//FRTK(kts)- A4AF auto
+				m_SourcesMenu.EnableMenuItem(MP_ALL_A4AF_TO_THIS, (iFilesNotDone == iSelectedItems) ? MF_ENABLED : MF_GRAYED); // sivka [Tarod]
+				m_SourcesMenu.EnableMenuItem(MP_ALL_A4AF_TO_OTHER, (iFilesNotDone == iSelectedItems) ? MF_ENABLED : MF_GRAYED); // sivka
 				m_SourcesMenu.EnableMenuItem(MP_ADDSOURCE, (iSelectedItems == 1 && iFilesToStop == 1) ? MF_ENABLED : MF_GRAYED);
 			}
 			//m_SourcesMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, (iSelectedItems == 1)?MF_ENABLED:MF_GRAYED); // Sivka: AutoHL
@@ -2057,11 +2066,59 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					ClearCompleted();
 					SetRedraw(true);
 					break;
-//A4AF
+				//FRTK(kts)+ A4AF auto
 				case MP_ALL_A4AF_AUTO:
 					file->SetA4AFAuto(!file->IsA4AFAuto());
 					break;
-//A4AF
+				//FRTK(kts)- A4AF auto
+				//FRTK(kts)+
+				case MP_ALL_A4AF_TO_THIS:
+					SetRedraw(false);
+					if (selectedCount == 1 && (file->GetStatus(false) == PS_READY || file->GetStatus(false) == PS_EMPTY))
+					{
+						theApp.downloadqueue->DisableAllA4AFAuto();
+
+						// [TPT] - Code Improvement
+						for (POSITION pos = file->A4AFsrclist.GetHeadPosition(); pos != 0;)
+						{
+							POSITION cur_pos = pos;
+							file->A4AFsrclist.GetNext(pos);
+							CUpDownClient *cur_source = file->A4AFsrclist.GetAt(cur_pos);
+							if( cur_source->GetDownloadState() != DS_DOWNLOADING
+								&& cur_source->GetRequestFile()
+								/*&& (cur_source->GetDownloadState() == DS_NONEEDEDPARTS)*/
+								&& !cur_source->IsSwapSuspended(file) )
+							{
+								CPartFile* oldfile = cur_source->GetRequestFile();
+								if (cur_source->SwapToAnotherFile(_T("A4AF_TO_THISx"), false, false, false, file, true, false, true)){
+									cur_source->DontSwapTo(oldfile);
+								UpdateItem(cur_source);//LSD High CPU
+								}
+							}
+						}
+					}
+					SetRedraw(true);
+					UpdateItem(file);
+					break;
+				case MP_ALL_A4AF_TO_OTHER:
+					SetRedraw(false);
+					if (selectedCount == 1 && (file->GetStatus(false) == PS_READY || file->GetStatus(false) == PS_EMPTY))
+					{
+						theApp.downloadqueue->DisableAllA4AFAuto();
+
+						// [TPT] - Code Improvement
+						for (POSITION pos = file->srclist.GetHeadPosition(); pos != 0;)
+						{
+							POSITION cur_pos = pos;
+							CUpDownClient *cur_source = file->srclist.GetAt(cur_pos);//LSD
+							file->srclist.GetNext(pos);
+							file->srclist.GetAt(cur_pos)->SwapToAnotherFile(_T("A4AF_TO_OTHERx"), false, false, false, NULL, true, false, true);
+							UpdateItem(cur_source);//LSD High CPU
+						}
+					}
+					SetRedraw(true);
+					break;
+				//FRTK(kts)-
 				case MPG_F2:
 					if (GetAsyncKeyState(VK_CONTROL) < 0 || selectedCount > 1) {
 						// when ctrl is pressed -> filename cleanup
@@ -2820,11 +2877,9 @@ void CDownloadListCtrl::CreateMenues(){
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
 		m_SourcesMenu.CreateMenu();
-// ZZ:DownloadManager -->
-	m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); //a4af
-	m_SourcesMenu.AppendMenu(MF_STRING,MP_A4AF_CHECK_THIS_NOW,GetResString(IDS_A4AF_CHECK_THIS_NOW)); // sivka [Tarod]
-	//m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); // sivka
-// <-- ZZ:DownloadManager
+		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO));
+		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_THIS, GetResString(IDS_ALL_A4AF_TO_THIS)); // sivka [Tarod]
+		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); // sivka
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_DROP_MENUE), _T("DROP"));//Ackronic - Aggiunto da Aenarion[ITA] - Drop
 			m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY));
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_SourcesMenu.m_hMenu, GetResString(IDS_A4AF));

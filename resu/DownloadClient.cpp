@@ -649,7 +649,7 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 		if (!bPartsNeeded)
         {
 			SetDownloadState(DS_NONEEDEDPARTS);
-            //SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::ProcessFileStatus() UDP"), true, false, false, NULL, true, false);
+            SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::ProcessFileStatus() UDP"), true, false, false, NULL, true, false);
         }
 		else
 			SetDownloadState(DS_ONQUEUE);
@@ -657,7 +657,7 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 	reqfile->UpdatePartsInfo();
 }
 
-bool CUpDownClient::AddRequestForAnotherFile(CPartFile* file){
+/*bool CUpDownClient::AddRequestForAnotherFile(CPartFile* file){
 	for (POSITION pos = m_OtherNoNeeded_list.GetHeadPosition();pos != 0;){
 		if (m_OtherNoNeeded_list.GetNext(pos) == file)
 			return false;
@@ -670,8 +670,18 @@ bool CUpDownClient::AddRequestForAnotherFile(CPartFile* file){
 	file->A4AFsrclist.AddTail(this); // [enkeyDEV(Ottavio84) -A4AF-]
 
 	return true;
-}
+}*/
+// Maella -Code Improvement-
+bool CUpDownClient::AddRequestForAnotherFile(CPartFile* file){
+	if(m_OtherRequests_list.Find(file) != NULL) return false; // Found
+	if(m_OtherNoNeeded_list.Find(file) != NULL) return false; // Found
+	m_OtherRequests_list.AddTail(file);
 
+	file->A4AFsrclist.AddTail(this); // [enkeyDEV(Ottavio84) -A4AF-]
+
+	return true;
+}
+//FRTK -->Xman end
 void CUpDownClient::ClearDownloadBlockRequests()
 {
 	for (POSITION pos = m_DownloadBlocks_list.GetHeadPosition();pos != 0;){

@@ -4081,7 +4081,8 @@ BEGIN
     IDS_USS_TRACEROUTEOFTENFAILED 
                             "UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."
     IDS_USS_STARTING        "UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"
-    IDS_A4AF                "Source Handling"
+    IDS_SWAP_A4AF_TO_THIS   "Swap (A4AF) Sources To This File Now"
+    IDS_SWAP_A4AF_TO_OTHER  "Swap (A4AF) Sources To Any Other File Now"
     IDS_MOBILEMULE          "MobileMule"
     IDS_ENABLEMM            "Enable MobileMule"
     IDS_AUTOCAT_LABEL       "Auto cat-assignment (pattern, separated by |)"
@@ -4094,6 +4095,10 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_ALL_A4AF_AUTO       "Automatically Swap All (A4AF) Sources To This File"
+    IDS_A4AF                "Source Handling"
+    IDS_ALL_A4AF_TO_THIS    "Swap All Sources To This File Now"
+    IDS_ALL_A4AF_TO_OTHER   "Swap All Sources To Any Other File Now"
     IDS_SELECT_FONT         "Select Font"
     IDS_SERVER_LIMITS       "Soft- / Hard-File Limit"
     IDS_SERVERINFO          "Server Information"
@@ -4752,11 +4757,6 @@ STRINGTABLE
 BEGIN
     IDS_INVMODE_VKEY        "Key:"
     IDS_SLOT_FOCUS          "Disable Slot Focus"
-    IDS_ALL_A4AF_TO_OTHER   "Basculer toutes les Sources aux autres fichiers"
-    IDS_SWAP_A4AF_TO_THIS   "Basculer les toutes les sources sur ce fichier (A4AF)"
-    IDS_ALL_A4AF_TO_THIS    "Basculer les toutes les sources sur ce fichier "
-    IDS_ALL_A4AF_AUTO       "Swap all sources on this file"
-
 END
 
 STRINGTABLE 

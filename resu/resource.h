@@ -2350,7 +2350,6 @@
 #define IDS_DOWNFAKECHECKFILE           5011
 #define IDS_LOG_FC_INFO                 5012
 #define IDS_ALL_A4AF_TO_OTHER           5017
-#define IDS_SWAP_A4AF_TO_THIS           5018
 #define IDS_ALL_A4AF_TO_THIS            5019
 #define IDS_ALL_A4AF_AUTO               5020
 #define IDC_IP2COUNTRY_VERSION          5028
@@ -2593,6 +2592,8 @@
 #define IDS_FN_TAG_AT_END               60146
 #define IDS_FEED_FILTERED               60147
 // <== FunnyNick Tag - Stulle
+#define IDS_SWAP_A4AF_TO_THIS           60148
+#define IDS_SWAP_A4AF_TO_OTHER          60149
 
 // Next default values for new objects
 // 

@@ -312,7 +312,9 @@ SetSpecialFile(NULL); //>>> [ionix] - WiZaRd::eD2K Updates
 	m_uPartsSavedDueICH = 0;
 	m_category=0;
 	m_lastRefreshedDLDisplay = 0;
-	m_is_A4AF_auto=false;//a4af
+	//FRTK(kts)+ A44AF auto
+	m_is_A4AF_auto=false;
+	//FRTK(kts)- A4AF auto
 	m_bLocalSrcReqQueued = false;
 	MEMSET(src_stats,0,sizeof(src_stats));
 	MEMSET(net_stats,0,sizeof(net_stats));
@@ -436,7 +438,9 @@ void CPartFile::AssertValid() const
 	(void)m_nTotalBufferData;
 	(void)m_nLastBufferFlushTime;
 	(void)m_category;
-	CHECK_BOOL(m_is_A4AF_auto);//a4af
+	//FRTK(kts)+ A4AF auto
+	CHECK_BOOL(m_is_A4AF_auto);
+	//FRTK(kts)- A4AF auto
 	(void)m_dwFileAttributes;
 }
 
@@ -3048,7 +3052,6 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 	
 	if (!bIsHashingDone){
 		SetStatus(PS_COMPLETING);
-		m_is_A4AF_auto=false;//a4af
 		datarate = 0;
 //>>> WiZaRd - AutoHL 
 		m_iFileHardLimit = 0; 
@@ -3073,6 +3076,9 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 	else{
 		StopFile();
 		SetStatus(PS_COMPLETING);
+		//FRTK(kts)+ A4AF auto
+		m_is_A4AF_auto=false;
+		//FRTK(kts)- A4AF auto
 		CWinThread *pThread = AfxBeginThread(CompleteThreadProc, this, THREAD_PRIORITY_BELOW_NORMAL, 0, CREATE_SUSPENDED); // Lord KiRon - using threads for file completion
 		if (pThread){
 			SetFileOp(PFOP_COPYING);
@@ -5687,9 +5693,11 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left, CPartFile* right) {
     }
 
     if(!left ||
+		//FRTK(kts)+ A4AF auto
 		       !left->IsA4AFAuto() &&
        (
           right->IsA4AFAuto() ||
+		//FRTK(kts)- A4AF auto
        thePrefs.GetCategory(right->GetCategory())->prio > thePrefs.GetCategory(left->GetCategory())->prio ||
        thePrefs.GetCategory(right->GetCategory())->prio == thePrefs.GetCategory(left->GetCategory())->prio &&
        (
@@ -5702,7 +5710,9 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left, CPartFile* right) {
                right->GetFileName().CompareNoCase(left->GetFileName()) < 0
            )
        )
+		//FRTK(kts)+ A4AF auto
 	   )
+		//FRTK(kts)- A4AF auto
     ) {
         return true;
     } else {
@@ -6098,6 +6108,20 @@ for (POSITION pos = srclist.GetHeadPosition(); pos != NULL;)
 			++counterNotOur;
 				}
 			}
+//JP also count A4AF sources now we can use them
+for (POSITION pos = A4AFsrclist.GetHeadPosition(); pos != NULL;)
+{
+	CUpDownClient* cur_client = A4AFsrclist.GetNext(pos);
+	if (cur_client->SupportsWebCache() || cur_client->IsProxy() )
+		counter++;
+	if (cur_client->SupportsWebCache())
+	{
+		if (cur_client->IsBehindOurWebCache())
+			++counterOur;
+		else if (cur_client->GetWebCacheName() != "")
+			++counterNotOur;
+	}
+}
 CPartFile* self = const_cast< CPartFile * >( this );
 self->WebcacheSources = counter;
 self->WebcacheSourcesOurProxy = counterOur;

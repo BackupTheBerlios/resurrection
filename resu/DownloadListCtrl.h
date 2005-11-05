@@ -118,7 +118,9 @@ protected:
 	//FRTK(kts)+
 	CTitleMenu	m_PermMenu;	// xMule_MOD: showSharePermissions
 	//FRTK(kts)-
-
+//FRTK(kts)+ A4AF auto
+	CMenu		m_A4AFMenu;
+//FRTK(kts)- A4AF auto
 	CMenu		m_SourcesMenu;
 	bool		m_bRemainSort;
 	typedef std::pair<void*, CtrlItem_Struct*> ListItemsPair;
