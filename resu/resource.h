@@ -2272,6 +2272,8 @@
 #define IDC_STATIC_PORT                 3003
 #define IDC_BTL                         3004
 #define IDC_BTL_TEXT                    3005
+#define IDC_SRV_NE                      3020
+#define IDC_SERVNAME                    3021
 #define IDS_FEEDBACK_FROM2              3094
 #define IDS_FEEDBACK_FILENAME2          3095
 #define IDS_FEEDBACK_FILETYPE2          3096

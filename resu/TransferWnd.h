@@ -52,6 +52,11 @@ public:
 	};
 
 	void ShowQueueCount(uint32 number);
+// [$ick$] cpu & mem
+        void ShowCPU();
+        void ShowMem(double number);
+// [$ick$] cpu & mem
+	void ShowServer();//KTS Show Server Transferwnd [Mondgott]
 	void UpdateListCount(EWnd2 listindex, int iCount = -1);
 	void UpdateFilesCount(int iCount);
 	void Localize();
@@ -61,10 +66,6 @@ public:
 	void SwitchUploadList();
 	void ResetTransToolbar(bool bShowToolbar, bool bResetLists = true);
 	void SetToolTipsDelay(DWORD dwDelay);
-//KTS+ // sicks ajout [lama]
-    void ShowCPU();
-    void ShowMem(double number);
-	//KTS- // sicks ajout [lama]
 	// Dialog Data
 	enum { IDD = IDD_TRANSFER };
 	CUploadListCtrl			uploadlistctrl;

@@ -118,10 +118,12 @@ BEGIN
     CONTROL         "",IDC_DOWNLOADCLIENTS,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | NOT 
                     WS_VISIBLE | WS_TABSTOP,5,171,500,107,WS_EX_STATICEDGE
-    LTEXT           "CPU:",IDC_CPU,206,280,17,8
-    LTEXT           "count",IDC_CPUCOUNT,223,280,29,8
-    LTEXT           "MB:",IDC_MEM,257,280,18,8
-    LTEXT           "count",IDC_MEMCOUNT,281,280,29,8
+    RTEXT           "CPU :",IDC_CPU,162,279,20,8
+    LTEXT           "count",IDC_CPUCOUNT,185,279,25,8
+    RTEXT           "RAM :",IDC_MEM,212,279,20,8
+    LTEXT           "count",IDC_MEMCOUNT,235,279,25,8
+    LTEXT           "Server :",IDC_SRV_NE,300,279,30,8
+    LTEXT           "Servername",IDC_SERVNAME,335,279,100,8
 END
 
 IDD_SERVER DIALOGEX 0, 35, 511, 289

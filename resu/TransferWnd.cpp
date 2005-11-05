@@ -31,11 +31,16 @@
 #include "SharedFileList.h"
 #include "DropDownButton.h"
 #include "ToolTipCtrlX.h"
-//KTS+ sicks [lama]
+#include "SharedFilesWnd.h"
+// [$ick$] cpu & mem
 #include ".\SysInfo\SystemInfo.h" 
 #include ".\SysInfo\SysInfo.h"
-//KTS- sicks [lama]
-#include "SharedFilesWnd.h"
+//KTS+ Show Server Transferwnd [Mondgott]
+#include "Server.h"
+#include "ServerList.h"
+#include "Sockets.h"
+//KTS- Show Server Transferwnd [Mondgott]
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -127,12 +132,17 @@ BOOL CTransferWnd::OnInitDialog()
 	AddAnchor(IDC_QUEUECOUNT_LABEL, BOTTOM_LEFT);
 	AddAnchor(IDC_QUEUE_REFRESH_BUTTON, BOTTOM_RIGHT);
 	AddAnchor(IDC_DLTAB, CSize(50, 0), TOP_RIGHT);
-	//KTS+ sicks - cpu && mem [lama]
-    AddAnchor(IDC_MEMCOUNT,BOTTOM_LEFT); // compteur
-	AddAnchor(IDC_MEM,BOTTOM_LEFT); // texte
+    // [$ick$] - cpu & mem
+    AddAnchor(IDC_MEMCOUNT,BOTTOM_LEFT); // contador
+	AddAnchor(IDC_MEM,BOTTOM_LEFT); // texto
     AddAnchor(IDC_CPUCOUNT,BOTTOM_LEFT);  
 	AddAnchor(IDC_CPU,BOTTOM_LEFT); 
-    //KTS- sicks fin [lama]
+    // [$ick$] end
+	//KTS+ Show Server Transferwnd [Mondgott]
+	AddAnchor(IDC_SRV_NE,BOTTOM_LEFT); 
+	AddAnchor(IDC_SERVNAME,BOTTOM_LEFT);
+	//KTS- Show Server Transferwnd [Mondgott]
+
 	switch (thePrefs.GetTransferWnd1()) {
 		default:
 		case 0: {
@@ -204,6 +214,39 @@ void CTransferWnd::ShowQueueCount(uint32 number)
 	GetDlgItem(IDC_QUEUECOUNT)->SetWindowText(buffer);
 }
 
+// [$ick$] - cpu & mem
+void CTransferWnd::ShowCPU()
+{
+	TCHAR buffer[100];
+
+       _stprintf(buffer,_T("%3d%%"),theApp.sysinfo->GetCpuUsage());
+        SetDlgItemText(IDC_CPU, _T("CPU :"));
+	this->GetDlgItem(IDC_CPUCOUNT)->SetWindowText(buffer);
+}
+void CTransferWnd::ShowMem(double number)
+{
+	TCHAR buffer[100];
+
+        _stprintf(buffer,_T("%.f MB"),number);
+      	SetDlgItemText(IDC_MEM, _T("RAM :"));
+	this->GetDlgItem(IDC_MEMCOUNT)->SetWindowText(buffer);
+}
+// [$ick$] end
+//KTS+ Show Server Transferwnd [Mondgott]
+void CTransferWnd::ShowServer()
+{
+	SetDlgItemText(IDC_SERVNAME,GetResString(IDS_NOTCONNECTED));
+	 if (theApp.serverconnect->IsConnected())
+	{
+	CServer* cur_server = theApp.serverconnect->GetCurrentServer();
+	CServer* srv = cur_server ? theApp.serverlist->GetServerByAddress(cur_server->GetAddress(), cur_server->GetPort()) : NULL;
+	TCHAR buffer[100];
+	_stprintf(buffer,_T("%s"),srv->GetListName());
+	SetDlgItemText(IDC_SRV_NE, _T("Server :"));
+	this->GetDlgItem(IDC_SERVNAME)->SetWindowText(buffer);
+	}
+} 
+//KTS- Show Server Transferwnd [Mondgott]
 void CTransferWnd::DoDataExchange(CDataExchange* pDX)
 {
 	CResizableDialog::DoDataExchange(pDX);
@@ -374,26 +417,8 @@ BOOL CTransferWnd::PreTranslateMessage(MSG* pMsg)
 		if (downloadlistactive)
 			downloadlistctrl.ShowSelectedFileDetails();
 		  //MORPH START - Added by SiRoB, Fix
-  /*else if (m_dwShowListIDC != IDC_DOWNLOADLIST + IDC_UPLOADLIST)
-  switch(m_dwShowListIDC){
-    case IDC_UPLOADLIST:
-    uploadlistctrl.ShowSelectedUserDetails();
-    break;
-    case IDC_QUEUELIST:
-    queuelistctrl.ShowSelectedUserDetails();
-    break;
-    case IDC_CLIENTLIST:
-    clientlistctrl.ShowSelectedUserDetails();
-    break;
-    case IDC_DOWNLOADCLIENTS:
-    downloadclientsctrl.ShowSelectedUserDetails();
-    break;
-  }*/
-  //MORPH END  - Added by SiRoB, Fix
 		else if (m_dwShowListIDC != IDC_DOWNLOADLIST + IDC_UPLOADLIST)
-		{
-			switch (m_dwShowListIDC)
-			{
+  switch(m_dwShowListIDC){
 				case IDC_UPLOADLIST:
 					uploadlistctrl.ShowSelectedUserDetails();
 					break;
@@ -406,10 +431,9 @@ BOOL CTransferWnd::PreTranslateMessage(MSG* pMsg)
 				case IDC_DOWNLOADCLIENTS:
 					downloadclientsctrl.ShowSelectedUserDetails();
 					break;
-				default:
-					ASSERT(0);
-			}
+			
 		}
+  //MORPH END  - Added by SiRoB, Fix
 		else
 		{
 			switch (m_uWnd2)
@@ -1466,25 +1490,6 @@ CString CTransferWnd::GetCatTitle(int catid)
 	}
 	return _T("?");
 }
-//KTS+
-// sicks - cpu && mem [lama]
-
-void CTransferWnd::ShowCPU()
-{
-	TCHAR buffer[100];
-    _stprintf(buffer,_T("%3d%%"),theApp.sysinfo->GetCpuUsage());
-    SetDlgItemText(IDC_CPU, _T("Cpu:"));
-	this->GetDlgItem(IDC_CPUCOUNT)->SetWindowText(buffer);
-}
-void CTransferWnd::ShowMem(double number)
-{
-	TCHAR buffer[100];
-    _stprintf(buffer,_T("%.fMb"),number);
-   	SetDlgItemText(IDC_MEM, _T("Mem:"));
-	this->GetDlgItem(IDC_MEMCOUNT)->SetWindowText(buffer);
-}
-
-// sicks fin [lama]
 
 void CTransferWnd::OnBnClickedChangeView()
 {

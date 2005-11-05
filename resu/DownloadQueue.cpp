@@ -39,27 +39,30 @@
 #include "TaskbarNotifier.h"
 #include "MenuCmds.h"
 #include "Log.h"
-//KTS+// sicks ajout [lama]
+// [$ick$] for cpu & mem
 #include ".\SysInfo\SystemInfo.h" 
 #include ".\SysInfo\SysInfo.h"
-//KTS-// sicks ajout [lama]
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-//KTS+// sicks ajout [lama]
-DWORD	TimerCpuMem = ::GetTickCount();
+
+// [$ick$] cpu & mem
+DWORD Timer = ::GetTickCount();
 double	mem_m = NULL;
-//KTS-// sicks ajout [lama]
-// [TPT] - WiZaRd - QuickStart added by lama
+// [$ick$]  cpu & mem
+
+// [TPT] - WiZaRd - QuickStart
 uint32 MaxconnPerFiveBack;
 uint32 MaxconBack;
 uint32 MaxUploadBack; 
 uint32 MaxDownloadBack; 
 DWORD quicktime;
 int countfiles = 0; 
-// [TPT] - WiZaRd - QuickStart added by lama
+// [TPT] - WiZaRd - QuickStart
+
 CDownloadQueue::CDownloadQueue()
 {
 	filesrdy = 0;
@@ -455,16 +458,18 @@ uint32 friendDownspeed = downspeed;
 	avarage_dr_list.AddTail(newitem);
 	m_datarateMS+=datarateX;
 
-	//KTS+// sicks ajout [lama]
-	if( ::GetTickCount() - TimerCpuMem > 2500 ) 
+// [$ick$] show cpu & mem
+if( ::GetTickCount() - Timer > 2500 ) 
 	{
 		mem_m = (theApp.sysinfo->GetMemoryUsage()/1024);
 		memuse = mem_m;
 		theApp.emuledlg->transferwnd->ShowCPU();
 		theApp.emuledlg->transferwnd->ShowMem(memuse);
-		TimerCpuMem = ::GetTickCount();
+theApp.emuledlg->transferwnd->ShowServer(); //Show Server Transferwnd [Mondgott]
+Timer = ::GetTickCount();
 	}
-	//KTS-// sicks ajout [lama]
+// [$ick$] cpu & mem
+
 	if (udcounter == 5){
 		if (theApp.serverconnect->IsUDPSocketAvailable()){
 		    if((!lastudpstattime) || (::GetTickCount() - lastudpstattime) > UDPSERVERSTATTIME){
